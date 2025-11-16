@@ -13,7 +13,7 @@ export const LandingView = () => {
       <Products />
       <Process />
       <CaseStudies />
-      <FAQs />s
+      <FAQs />
     </div>
   );
 };

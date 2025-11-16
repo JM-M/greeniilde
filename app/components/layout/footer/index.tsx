@@ -6,8 +6,9 @@ export const Footer = () => {
     <footer className="bg-muted/30 border-t border-border mt-8">
       <div className="container mx-auto flex flex-col gap-6 px-4 py-8 text-sm text-muted-foreground md:flex-row md:items-center md:justify-between">
         <div>
-          <p className="text-base font-semibold text-foreground">{siteConfig.name}</p>
-          <p className="mt-1">{siteConfig.description}</p>
+          <p className="text-base font-semibold text-foreground">
+            {siteConfig.name}
+          </p>
         </div>
         <div className="flex flex-wrap gap-4">
           {siteConfig.nav.map((item) => (
@@ -38,4 +39,3 @@ export const Footer = () => {
     </footer>
   );
 };
-

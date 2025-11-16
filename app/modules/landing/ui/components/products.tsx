@@ -7,6 +7,7 @@ import {
 import { ScrollArea, ScrollBar } from "@/app/components/ui/scroll-area";
 import { ProductCard } from "@/app/modules/products/ui/components/product-card";
 import { ProductCarousel } from "@/app/modules/products/ui/components/product-carousel";
+import { SectionHeader } from "@/app/components/shared/section-header";
 
 const productTabs = [
   {
@@ -54,20 +55,25 @@ const featuredProduct = {
 
 export const Products = () => {
   return (
-    <section className="container mx-auto px-4 py-16">
+    <section className="container mx-auto px-4 py-16 space-y-6">
+      <SectionHeader
+        title="Products"
+        description="We offer a wide range of products to suit your needs."
+      />
       <Tabs defaultValue={productTabs[0].value}>
-        <ScrollArea className="-mx-4 mb-2 px-4">
-          <TabsList className="flex w-max gap-2">
-            {productTabs.map((tab) => (
-              <TabsTrigger key={tab.value} value={tab.value}>
-                {tab.label}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-          <ScrollBar orientation="horizontal" />
-        </ScrollArea>
+        <TabsList className="flex flex-wrap justify-center bg-transparent h-fit gap-2">
+          {productTabs.map((tab) => (
+            <TabsTrigger
+              key={tab.value}
+              value={tab.value}
+              className="flex-[unset] hover:bg-primary/10 cursor-pointer data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+            >
+              {tab.label}
+            </TabsTrigger>
+          ))}
+        </TabsList>
 
-        <div className="mt-6 space-y-4">
+        <div className="mt-2 space-y-4">
           {productTabs.map((tab) => (
             <TabsContent key={tab.value} value={tab.value}>
               <ProductCarousel />

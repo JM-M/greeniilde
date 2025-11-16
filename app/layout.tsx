@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Stack_Sans_Notch } from "next/font/google";
 import { Navbar } from "./components/layout/navbar";
 import { Footer } from "./components/layout/footer";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const stackSans = Stack_Sans_Notch({
+  variable: "--font-stack-sans",
   subsets: ["latin"],
 });
 
@@ -27,7 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}
+        className={`${stackSans.variable} ${geistMono.variable} font-sans antialiased`}
       >
         <Navbar />
         {children}

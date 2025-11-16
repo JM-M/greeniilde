@@ -74,13 +74,13 @@ export const CaseStudies = () => {
               key={study.name}
               className="pl-3 md:pl-4 md:basis-1/2 lg:basis-1/3"
             >
-              <div className="border rounded-xl p-4 space-y-4 bg-card">
+              <div className="border rounded-xl p-4 space-y-2 bg-card">
                 <div className="w-full aspect-4/3 rounded-lg bg-secondary" />
                 <div>
                   <p className="text-lg font-semibold">{study.name}</p>
-                  <p className="text-sm text-muted-foreground">
+                  {/* <p className="text-sm text-muted-foreground">
                     Coming soon: metrics & outcomes
-                  </p>
+                  </p> */}
                 </div>
               </div>
             </CarouselItem>

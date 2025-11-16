@@ -1,3 +1,5 @@
+import { SectionHeader } from "@/app/components/shared/section-header";
+
 const steps = [
   {
     title: "Free Assessment",
@@ -23,13 +25,14 @@ const steps = [
 
 export const Process = () => {
   return (
-    <section className="container px-4 py-10 mx-auto">
-      <div className="flex flex-col items-center space-y-8 text-center">
+    <section className="container mx-auto px-4 py-16 space-y-6">
+      <SectionHeader
+        title="Our Process"
+        description="We follow a simple process to install your solar system."
+      />
+      <div className="flex flex-col items-center text-center pt-16">
         {steps.map((step, idx) => (
-          <div
-            key={step.title}
-            className="flex flex-col items-center space-y-4"
-          >
+          <div key={step.title} className="flex flex-col items-center ">
             <div>
               <h3 className="text-2xl font-semibold">{step.title}</h3>
               <p className="mt-2 text-base text-muted-foreground max-w-xl">
@@ -37,7 +40,7 @@ export const Process = () => {
               </p>
             </div>
             {idx < steps.length - 1 && (
-              <div className="h-12 w-px bg-border" aria-hidden="true" />
+              <div className="h-60 w-px bg-border my-4" aria-hidden="true" />
             )}
           </div>
         ))}

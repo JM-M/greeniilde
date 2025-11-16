@@ -78,7 +78,7 @@ export const ProductCarousel = () => {
               key={product.name}
               className="pl-3 md:pl-4 md:basis-1/2 lg:basis-1/3"
             >
-              <ProductCard {...product} />
+              <ProductCard {...product} className="h-full" />
             </CarouselItem>
           ))}
         </CarouselContent>
