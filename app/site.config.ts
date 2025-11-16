@@ -5,8 +5,10 @@ export const siteConfig = {
   ogImage: "https://greeniilde.com/og.png",
   description: "Greeniilde is a platform for creating and sharing content.",
   links: {
-    twitter: "https://twitter.com/greeniilde",
-    github: "https://github.com/greeniilde",
+    x: "https://x.com/greeniilde",
+    tiktok: "https://www.tiktok.com/@greeniilde",
+    instagram: "https://www.instagram.com/greeniilde",
+    facebook: "https://www.facebook.com/greeniilde",
   },
   nav: [
     {

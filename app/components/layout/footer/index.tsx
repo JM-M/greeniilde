@@ -1,5 +1,14 @@
 import Link from "next/link";
+import { SiX, SiTiktok, SiInstagram, SiFacebook } from "react-icons/si";
+import { Button } from "@/app/components/ui/button";
 import { siteConfig } from "@/app/site.config";
+
+const socialLinks = [
+  { href: siteConfig.links.x, label: "X", icon: SiX },
+  { href: siteConfig.links.tiktok, label: "TikTok", icon: SiTiktok },
+  { href: siteConfig.links.instagram, label: "Instagram", icon: SiInstagram },
+  { href: siteConfig.links.facebook, label: "Facebook", icon: SiFacebook },
+];
 
 export const Footer = () => {
   return (
@@ -21,19 +30,14 @@ export const Footer = () => {
             </Link>
           ))}
         </div>
-        <div className="flex gap-3">
-          <Link
-            href={siteConfig.links.twitter}
-            className="transition-colors hover:text-foreground"
-          >
-            Twitter
-          </Link>
-          <Link
-            href={siteConfig.links.github}
-            className="transition-colors hover:text-foreground"
-          >
-            GitHub
-          </Link>
+        <div className="flex gap-2">
+          {socialLinks.map(({ href, label, icon: Icon }) => (
+            <Button key={label} variant="ghost" size="icon" asChild>
+              <Link href={href} aria-label={label}>
+                <Icon />
+              </Link>
+            </Button>
+          ))}
         </div>
       </div>
     </footer>
