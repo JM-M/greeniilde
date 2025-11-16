@@ -1,4 +1,4 @@
-import { PrimaryCta } from "@/app/components/shared/primary-cta";
+import { PrimaryCta } from "@/app/components/shared/primary-cta/button";
 import { SectionHeader } from "@/app/components/shared/section-header";
 
 const steps = [
