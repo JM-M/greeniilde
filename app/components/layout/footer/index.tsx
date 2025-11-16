@@ -1,5 +1,11 @@
 import Link from "next/link";
-import { SiX, SiTiktok, SiInstagram, SiFacebook } from "react-icons/si";
+import {
+  SiX,
+  SiTiktok,
+  SiInstagram,
+  SiFacebook,
+  SiWhatsapp,
+} from "react-icons/si";
 import { Button } from "@/app/components/ui/button";
 import { siteConfig } from "@/app/site.config";
 
@@ -8,6 +14,7 @@ const socialLinks = [
   { href: siteConfig.links.tiktok, label: "TikTok", icon: SiTiktok },
   { href: siteConfig.links.instagram, label: "Instagram", icon: SiInstagram },
   { href: siteConfig.links.facebook, label: "Facebook", icon: SiFacebook },
+  { href: siteConfig.links.whatsapp, label: "WhatsApp", icon: SiWhatsapp },
 ];
 
 export const Footer = () => {

@@ -9,6 +9,7 @@ export const siteConfig = {
     tiktok: "https://www.tiktok.com/@greeniilde",
     instagram: "https://www.instagram.com/greeniilde",
     facebook: "https://www.facebook.com/greeniilde",
+    whatsapp: "https://wa.me/2348065653807",
   },
   nav: [
     {
