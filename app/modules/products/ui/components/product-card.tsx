@@ -6,6 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/app/components/ui/card";
+import { cn } from "@/app/lib/utils";
 
 type ProductCardProps = {
   name: string;
@@ -21,9 +22,14 @@ export const ProductCard = ({
   className,
 }: ProductCardProps) => {
   return (
-    <Card className={className}>
+    <Card
+      className={cn(
+        "cursor-pointer transition-all duration-300 hover:scale-102",
+        className,
+      )}
+    >
       <CardHeader className="gap-4">
-        <div className="aspect-video w-full rounded-2xl bg-secondary" />
+        <div className="bg-secondary aspect-square w-full rounded-2xl" />
         <div className="space-y-2">
           <CardTitle>{name}</CardTitle>
           <CardDescription className="text-lg font-semibold">

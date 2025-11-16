@@ -40,12 +40,14 @@ export const Navbar = () => {
     return () => observer.disconnect();
   }, []);
 
+  const shouldDarkenBg = isScrolled || pathname !== "/";
+
   return (
     <>
       <div
         className={cn(
           "fixed inset-x-0 top-0 z-50 border-b border-white/10 px-4 transition-colors supports-backdrop-filter:backdrop-blur-xl",
-          isScrolled
+          shouldDarkenBg
             ? "bg-primary/80 shadow-md"
             : "text-background bg-transparent",
         )}

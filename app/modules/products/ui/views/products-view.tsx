@@ -1,4 +1,11 @@
+import { ProductGrid } from "../components/product-grid";
+import { ProductViewHeader } from "../components/product-view-header";
+
 export const ProductsView = () => {
-  console.log("ProductsView");
-  return <div>ProductsView</div>;
+  return (
+    <div className="view-container">
+      <ProductViewHeader />
+      <ProductGrid />
+    </div>
+  );
 };
