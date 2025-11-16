@@ -2,12 +2,11 @@
 
 import { cn } from "@/app/lib/utils";
 import { siteConfig } from "@/app/site.config";
-import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
-import { Button } from "../../ui/button";
 import { MenuIcon } from "lucide-react";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Button } from "../../ui/button";
 import { useActiveIndicator } from "./use-active-indicator";
 
 export const Navbar = () => {
@@ -34,7 +33,7 @@ export const Navbar = () => {
       ([entry]) => {
         setIsScrolled(!entry.isIntersecting);
       },
-      { rootMargin: "-1px 0px 0px 0px" }
+      { rootMargin: "-1px 0px 0px 0px" },
     );
 
     observer.observe(sentinel);
@@ -45,30 +44,30 @@ export const Navbar = () => {
     <>
       <div
         className={cn(
-          "fixed inset-x-0 top-0 z-50 border-b border-white/10 px-4 supports-backdrop-filter:backdrop-blur-xl transition-colors",
+          "fixed inset-x-0 top-0 z-50 border-b border-white/10 px-4 transition-colors supports-backdrop-filter:backdrop-blur-xl",
           isScrolled
             ? "bg-primary/80 shadow-md"
-            : "bg-transparent text-background"
+            : "text-background bg-transparent",
         )}
       >
-        <nav className="container mx-auto flex items-center min-h-14 gap-3">
+        <nav className="container mx-auto flex min-h-14 items-center gap-3">
           <Button
             variant="ghost"
             size="icon-sm"
             aria-label="Open navigation menu"
-            className="md:hidden text-background"
+            className="text-background md:hidden"
           >
             <MenuIcon />
           </Button>
-          <Link href="/" className="text-2xl font-bold text-background">
+          <Link href="/" className="text-background text-2xl font-bold">
             {siteConfig.name}
           </Link>
-          <div className="relative ml-auto hidden md:flex items-center h-14 gap-6 text-sm font-medium">
+          <div className="relative ml-auto hidden h-14 items-center gap-6 text-sm font-medium md:flex">
             {siteConfig.nav.map((item, index) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="transition-colors h-full px-2 flex items-center hover:text-background text-background/80"
+                className="hover:text-background text-background/80 flex h-full items-center px-2 transition-colors"
                 ref={(el) => {
                   itemRefs.current[index] = el;
                 }}
@@ -78,7 +77,7 @@ export const Navbar = () => {
             ))}
             <span
               aria-hidden
-              className="pointer-events-none absolute bottom-0 block h-0.5 rounded-full bg-background transition-all duration-300"
+              className="bg-background pointer-events-none absolute bottom-0 block h-0.5 rounded-full transition-all duration-300"
               style={{
                 width: `${styles.width}px`,
                 transform: `translateX(${styles.left}px)`,
@@ -87,7 +86,7 @@ export const Navbar = () => {
           </div>
         </nav>
       </div>
-      <div ref={sentinelRef} className="h-1" aria-hidden />
+      <div ref={sentinelRef} className="h-px" aria-hidden />
     </>
   );
 };

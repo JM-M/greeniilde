@@ -1,13 +1,13 @@
+import { SectionHeader } from "@/app/components/shared/section-header";
+import { Button } from "@/app/components/ui/button";
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
 } from "@/app/components/ui/tabs";
-import { ScrollArea, ScrollBar } from "@/app/components/ui/scroll-area";
-import { ProductCard } from "@/app/modules/products/ui/components/product-card";
 import { ProductCarousel } from "@/app/modules/products/ui/components/product-carousel";
-import { SectionHeader } from "@/app/components/shared/section-header";
+import Link from "next/link";
 
 const productTabs = [
   {
@@ -48,18 +48,18 @@ const featuredProduct = {
 
 export const Products = () => {
   return (
-    <section id="products" className="container mx-auto px-4 py-16 space-y-6">
+    <section id="products" className="container mx-auto space-y-6 px-4 py-16">
       <SectionHeader
         title="Products"
         description="We offer a wide range of products to suit your needs."
       />
       <Tabs defaultValue={productTabs[0].value}>
-        <TabsList className="flex flex-wrap justify-center mx-auto bg-transparent h-fit gap-2">
+        <TabsList className="mx-auto flex h-fit flex-wrap justify-center gap-2 bg-transparent">
           {productTabs.map((tab) => (
             <TabsTrigger
               key={tab.value}
               value={tab.value}
-              className="flex-[unset] hover:bg-primary/10 cursor-pointer data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+              className="hover:bg-primary/10 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground flex-[unset] cursor-pointer"
             >
               {tab.label}
             </TabsTrigger>
@@ -74,6 +74,17 @@ export const Products = () => {
           ))}
         </div>
       </Tabs>
+      <div>
+        <Button
+          variant="link"
+          className="text-primary mx-auto flex w-fit"
+          asChild
+        >
+          <Link href="/products" prefetch>
+            View All Products
+          </Link>
+        </Button>
+      </div>
     </section>
   );
 };
