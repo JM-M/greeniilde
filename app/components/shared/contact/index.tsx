@@ -16,23 +16,26 @@ import { ContactFormChannel } from "./channels/form";
 import { ContactWhatsappChannel } from "./channels/whatsapp";
 
 export const Contact = () => {
+  const triggerClassName =
+    "flex-[unset] hover:bg-primary/10 cursor-pointer data-[state=active]:bg-primary data-[state=active]:text-primary-foreground";
+
   return (
     <div>
       <Tabs defaultValue="form" className="w-full">
-        <TabsList className="mb-6 mx-auto flex-wrap justify-center gap-2">
-          <TabsTrigger value="form">
+        <TabsList className="mb-6 mx-auto flex-wrap justify-center gap-2 flex  bg-transparent h-fit">
+          <TabsTrigger value="form" className={triggerClassName}>
             <Send />
             Form
           </TabsTrigger>
-          <TabsTrigger value="whatsapp">
+          <TabsTrigger value="whatsapp" className={triggerClassName}>
             <SiWhatsapp className="size-4" />
             WhatsApp
           </TabsTrigger>
-          <TabsTrigger value="email">
+          <TabsTrigger value="email" className={triggerClassName}>
             <Mail />
             Email
           </TabsTrigger>
-          <TabsTrigger value="call">
+          <TabsTrigger value="call" className={triggerClassName}>
             <PhoneCall />
             Call
           </TabsTrigger>
