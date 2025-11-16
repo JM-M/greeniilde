@@ -1,3 +1,4 @@
+import { PrimaryCta } from "@/app/components/shared/primary-cta";
 import { SectionHeader } from "@/app/components/shared/section-header";
 
 const steps = [
@@ -25,7 +26,7 @@ const steps = [
 
 export const Process = () => {
   return (
-    <section id="process" className="container mx-auto px-4 py-16 space-y-6">
+    <section id="process" className="container mx-auto px-4 py-16 space-y-8">
       <SectionHeader
         title="Our Process"
         description="We follow a simple process to install your solar system."
@@ -44,6 +45,9 @@ export const Process = () => {
             )}
           </div>
         ))}
+      </div>
+      <div className="flex justify-center">
+        <PrimaryCta label="Book a project consult" className="max-w-xs" />
       </div>
     </section>
   );

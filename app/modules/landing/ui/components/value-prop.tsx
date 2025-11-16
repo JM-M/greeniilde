@@ -1,3 +1,4 @@
+import { PrimaryCta } from "@/app/components/shared/primary-cta";
 import { Button } from "@/app/components/ui/button";
 
 const features = [
@@ -69,18 +70,21 @@ export const ValueProp = () => {
     >
       <div className="container relative z-10 mx-auto px-4">
         <div className="grid overflow-hidden rounded-3xl border border-white/10 bg-white/5 shadow-2xl shadow-black/30 backdrop-blur lg:grid-cols-2">
-        <video
-          className="relative order-1 min-h-[320px] w-full object-cover lg:order-2 lg:min-h-full"
-          src="/videos/installation.mp4"
-          autoPlay
-          muted
-          loop
-          playsInline
-        />
+          <video
+            className="relative order-1 min-h-[320px] w-full object-cover lg:order-2 lg:min-h-full"
+            src="/videos/installation.mp4"
+            autoPlay
+            muted
+            loop
+            playsInline
+          />
 
           <div className="order-2 border-b border-white/10 bg-slate-950/90 p-8 backdrop-blur lg:order-1 lg:border-b-0 lg:border-r lg:p-10">
             <Content />
           </div>
+        </div>
+        <div className="mt-10 flex justify-center">
+          <PrimaryCta label="Book a project consult" className="max-w-xs" />
         </div>
       </div>
     </section>

@@ -21,7 +21,7 @@ export const Hero = () => {
           />
           <HeroActions
             primaryCta="Book a project consult"
-            secondaryCta="Download spec sheet"
+            secondaryCta="Get in touch"
           />
           <HeroFocusAreas areas={focusAreas} />
         </div>

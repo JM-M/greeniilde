@@ -1,3 +1,4 @@
+import { PrimaryCta } from "@/app/components/shared/primary-cta";
 import { Button } from "@/app/components/ui/button";
 
 type HeroActionsProps = {
@@ -7,9 +8,7 @@ type HeroActionsProps = {
 
 export const HeroActions = ({ primaryCta, secondaryCta }: HeroActionsProps) => (
   <div className="flex flex-col gap-4 sm:flex-row sm:items-center lg:justify-center">
-    <Button size="lg" className="h-14 lg:flex-[unset] sm:flex-1 w-full sm:w-auto">
-      {primaryCta}
-    </Button>
+    <PrimaryCta label={primaryCta} className="lg:flex-[unset] sm:flex-1" />
     <Button
       size="lg"
       variant="outline"
@@ -19,4 +18,3 @@ export const HeroActions = ({ primaryCta, secondaryCta }: HeroActionsProps) => (
     </Button>
   </div>
 );
-

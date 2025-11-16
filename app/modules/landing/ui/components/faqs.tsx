@@ -1,3 +1,4 @@
+import { PrimaryCta } from "@/app/components/shared/primary-cta";
 import {
   Collapsible,
   CollapsibleContent,
@@ -25,11 +26,11 @@ const faqs = [
 
 export const FAQs = () => {
   return (
-    <section id="faqs" className="container mx-auto px-4 py-10">
+    <section id="faqs" className="container mx-auto px-4 py-12 space-y-8">
       <h2 className="text-center text-2xl font-semibold">
         Frequently Asked Questions
       </h2>
-      <div className="mx-auto mt-8 max-w-2xl space-y-4">
+      <div className="mx-auto max-w-2xl space-y-4">
         {faqs.map((faq, index) => (
           <Collapsible
             key={faq.question}
@@ -48,6 +49,9 @@ export const FAQs = () => {
             </CollapsibleContent>
           </Collapsible>
         ))}
+      </div>
+      <div className="flex justify-center">
+        <PrimaryCta label="Book a project consult" className="max-w-xs" />
       </div>
     </section>
   );
