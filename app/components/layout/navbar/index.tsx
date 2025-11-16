@@ -1,7 +1,9 @@
 "use client";
 
+import { cn } from "@/app/lib/utils";
 import { siteConfig } from "@/app/site.config";
 import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "../../ui/button";
 import { MenuIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
@@ -21,43 +23,71 @@ export const Navbar = () => {
 
   const { itemRefs, styles } = useActiveIndicator(activeIndex);
 
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const sentinel = sentinelRef.current;
+    if (!sentinel) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsScrolled(!entry.isIntersecting);
+      },
+      { rootMargin: "-1px 0px 0px 0px" }
+    );
+
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <div className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-transparent px-4  supports-backdrop-filter:backdrop-blur-xl text-background">
-      <nav className="container mx-auto flex items-center min-h-14 gap-3">
-        <Button
-          variant="ghost"
-          size="icon-sm"
-          aria-label="Open navigation menu"
-          className="md:hidden"
-        >
-          <MenuIcon />
-        </Button>
-        <Link href="/" className="text-2xl font-bold">
-          {siteConfig.name}
-        </Link>
-        <div className="relative ml-auto hidden md:flex items-center h-14 gap-6 text-sm font-medium">
-          {siteConfig.nav.map((item, index) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="transition-colors h-full px-2 flex items-center hover:text-background text-background/80"
-              ref={(el) => {
-                itemRefs.current[index] = el;
+    <>
+      <div
+        className={cn(
+          "fixed inset-x-0 top-0 z-50 border-b border-white/10 px-4 supports-backdrop-filter:backdrop-blur-xl transition-colors",
+          isScrolled
+            ? "bg-primary/80 shadow-md"
+            : "bg-transparent text-background"
+        )}
+      >
+        <nav className="container mx-auto flex items-center min-h-14 gap-3">
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            aria-label="Open navigation menu"
+            className="md:hidden text-background"
+          >
+            <MenuIcon />
+          </Button>
+          <Link href="/" className="text-2xl font-bold text-background">
+            {siteConfig.name}
+          </Link>
+          <div className="relative ml-auto hidden md:flex items-center h-14 gap-6 text-sm font-medium">
+            {siteConfig.nav.map((item, index) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="transition-colors h-full px-2 flex items-center hover:text-background text-background/80"
+                ref={(el) => {
+                  itemRefs.current[index] = el;
+                }}
+              >
+                {item.title}
+              </Link>
+            ))}
+            <span
+              aria-hidden
+              className="pointer-events-none absolute bottom-0 block h-0.5 rounded-full bg-background transition-all duration-300"
+              style={{
+                width: `${styles.width}px`,
+                transform: `translateX(${styles.left}px)`,
               }}
-            >
-              {item.title}
-            </Link>
-          ))}
-          <span
-            aria-hidden
-            className="pointer-events-none absolute bottom-0 block h-0.5 rounded-full bg-background transition-all duration-300"
-            style={{
-              width: `${styles.width}px`,
-              transform: `translateX(${styles.left}px)`,
-            }}
-          />
-        </div>
-      </nav>
-    </div>
+            />
+          </div>
+        </nav>
+      </div>
+      <div ref={sentinelRef} className="h-1" aria-hidden />
+    </>
   );
 };
