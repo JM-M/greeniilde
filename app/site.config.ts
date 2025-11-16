@@ -10,20 +10,28 @@ export const siteConfig = {
   },
   nav: [
     {
-      title: "Home",
-      href: "/",
+      title: "Overview",
+      href: "/#hero",
+    },
+    {
+      title: "Solutions",
+      href: "/#value-prop",
     },
     {
       title: "Products",
-      href: "/products",
+      href: "/#products",
     },
     {
-      title: "Services",
-      href: "/services",
+      title: "Process",
+      href: "/#process",
     },
     {
-      title: "Contact Us",
-      href: "/contact-us",
+      title: "Case Studies",
+      href: "/#case-studies",
+    },
+    {
+      title: "FAQs",
+      href: "/#faqs",
     },
   ],
 };

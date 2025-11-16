@@ -23,19 +23,20 @@ export const Navbar = () => {
   const { itemRefs, styles } = useActiveIndicator(activeIndex);
 
   return (
-    <div className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-transparent px-4 supports-backdrop-filter:backdrop-blur-xl text-background">
-      <nav className="container mx-auto flex items-center gap-3">
+    <div className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-transparent px-4  supports-backdrop-filter:backdrop-blur-xl text-background">
+      <nav className="container mx-auto flex items-center min-h-14 gap-3">
         <Button
           variant="ghost"
           size="icon-sm"
           aria-label="Open navigation menu"
+          className="md:hidden"
         >
           <MenuIcon />
         </Button>
         <Link href="/" className="text-2xl font-bold">
           {siteConfig.name}
         </Link>
-        <div className="relative ml-auto flex items-center h-14 gap-6 text-sm font-medium">
+        <div className="relative ml-auto hidden md:flex items-center h-14 gap-6 text-sm font-medium">
           {siteConfig.nav.map((item, index) => (
             <Link
               key={item.href}

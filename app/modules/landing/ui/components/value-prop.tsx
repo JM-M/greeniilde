@@ -63,7 +63,10 @@ const Content = () => (
 
 export const ValueProp = () => {
   return (
-    <section className="relative overflow-hidden py-16 text-white bg-">
+    <section
+      id="value-prop"
+      className="relative overflow-hidden py-16 text-white bg-"
+    >
       <div className="container relative z-10 mx-auto px-4">
         <div className="grid overflow-hidden rounded-3xl border border-white/10 bg-white/5 shadow-2xl shadow-black/30 backdrop-blur lg:grid-cols-2">
           <div className="relative order-1 min-h-[320px] bg-[url('/images/hero.jpg')] bg-cover bg-center lg:order-2 lg:min-h-full" />

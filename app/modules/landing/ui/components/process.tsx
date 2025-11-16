@@ -25,7 +25,7 @@ const steps = [
 
 export const Process = () => {
   return (
-    <section className="container mx-auto px-4 py-16 space-y-6">
+    <section id="process" className="container mx-auto px-4 py-16 space-y-6">
       <SectionHeader
         title="Our Process"
         description="We follow a simple process to install your solar system."

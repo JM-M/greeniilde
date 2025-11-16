@@ -55,7 +55,7 @@ const featuredProduct = {
 
 export const Products = () => {
   return (
-    <section className="container mx-auto px-4 py-16 space-y-6">
+    <section id="products" className="container mx-auto px-4 py-16 space-y-6">
       <SectionHeader
         title="Products"
         description="We offer a wide range of products to suit your needs."

@@ -53,7 +53,7 @@ export const CaseStudies = () => {
   }, [api]);
 
   return (
-    <section className="container px-4 py-16 mx-auto space-y-6">
+    <section id="case-studies" className="container px-4 py-16 mx-auto space-y-6">
       <div className="text-center space-y-2">
         <p className="text-sm font-medium tracking-wide text-muted-foreground uppercase">
           Proof in the field

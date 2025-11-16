@@ -28,7 +28,10 @@ const heroMetrics = [
 
 export const Hero = () => {
   return (
-    <header className="relative overflow-hidden bg-[#040b06] text-white bg-[url('/images/hero.jpg')] bg-cover bg-center">
+    <header
+      id="hero"
+      className="relative overflow-hidden bg-[#040b06] text-white bg-[url('/images/hero.jpg')] bg-cover bg-center"
+    >
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,#07150d,transparent_60%)]" />
       <div className="absolute inset-y-0 left-1/2 hidden w-240 -translate-x-1/4 rounded-full bg-emerald-700/15 blur-3xl lg:block" />
 

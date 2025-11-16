@@ -25,7 +25,7 @@ const faqs = [
 
 export const FAQs = () => {
   return (
-    <section className="container mx-auto px-4 py-10">
+    <section id="faqs" className="container mx-auto px-4 py-10">
       <h2 className="text-center text-2xl font-semibold">
         Frequently Asked Questions
       </h2>
