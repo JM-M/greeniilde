@@ -38,13 +38,6 @@ const productTabs = [
     description:
       "Deliver consistent irrigation with minimal maintenance and zero fuel costs.",
   },
-  {
-    value: "maintenance",
-    label: "Maintenance",
-    title: "Full-service maintenance",
-    description:
-      "Keep your system running at peak output with routine inspections and tune-ups.",
-  },
 ];
 
 const featuredProduct = {
@@ -61,7 +54,7 @@ export const Products = () => {
         description="We offer a wide range of products to suit your needs."
       />
       <Tabs defaultValue={productTabs[0].value}>
-        <TabsList className="flex flex-wrap justify-center bg-transparent h-fit gap-2">
+        <TabsList className="flex flex-wrap justify-center mx-auto bg-transparent h-fit gap-2">
           {productTabs.map((tab) => (
             <TabsTrigger
               key={tab.value}
