@@ -23,7 +23,7 @@ export const PrimaryCtaDialog = ({
   onOpenChange,
 }: PrimaryCtaDialogProps) => (
   <Dialog open={isOpen} onOpenChange={onOpenChange}>
-    <DialogContent>
+    <DialogContent className="max-h-[90vh]">
       <DialogHeader>
         <DialogTitle className="text-2xl font-bold text-primary">
           {title}
@@ -32,7 +32,7 @@ export const PrimaryCtaDialog = ({
           {description}
         </DialogDescription>
       </DialogHeader>
-      <ScrollArea className="max-h-[80vh] pr-2">
+      <ScrollArea className="max-h-[calc(90vh-10rem)] pr-2">
         <Contact />
       </ScrollArea>
     </DialogContent>
