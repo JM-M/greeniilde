@@ -12,7 +12,6 @@ export const Navbar = () => {
   const pathname = usePathname();
   const activeIndex = useMemo(() => {
     const index = siteConfig.nav.findIndex((item) => {
-      console.log({ item, pathname });
       if (pathname === "/") return item.href === "/";
       if (item.href !== "/") return pathname.startsWith(item.href);
       return false;
@@ -41,7 +40,7 @@ export const Navbar = () => {
             <Link
               key={item.href}
               href={item.href}
-              className="transition-colors h-full flex items-center hover:text-background text-background/80"
+              className="transition-colors h-full px-2 flex items-center hover:text-background text-background/80"
               ref={(el) => {
                 itemRefs.current[index] = el;
               }}

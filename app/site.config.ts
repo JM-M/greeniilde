@@ -10,10 +10,6 @@ export const siteConfig = {
   },
   nav: [
     {
-      title: "Overview",
-      href: "/#hero",
-    },
-    {
       title: "Solutions",
       href: "/#value-prop",
     },

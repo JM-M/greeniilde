@@ -51,13 +51,16 @@ export const Hero = () => {
           </div>
 
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center lg:justify-center">
-            <Button size="lg" className="h-14 w-full sm:w-auto">
+            <Button
+              size="lg"
+              className="h-14 lg:flex-[unset] sm:flex-1 w-full sm:w-auto"
+            >
               Book a project consult
             </Button>
             <Button
               size="lg"
               variant="outline"
-              className="h-14 w-full border-white/30 text-foreground sm:w-auto"
+              className="h-14 lg:flex-[unset] sm:flex-1 w-full border-white/30 text-foreground sm:w-auto"
             >
               Download spec sheet
             </Button>
