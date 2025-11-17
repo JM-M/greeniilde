@@ -4,7 +4,6 @@ import {
   Item,
   ItemActions,
   ItemContent,
-  ItemDescription,
   ItemFooter,
   ItemHeader,
   ItemMedia,
@@ -53,17 +52,15 @@ export function CartItem({
           <span className="text-sm font-medium">{price}</span>
         </ItemHeader>
         <ItemFooter>
-          <ItemDescription className="text-xs">
-            <ProductQuantityControls
-              minusButtonProps={{ size: "icon-sm" }}
-              plusButtonProps={{ size: "icon-sm" }}
-              inputProps={{ className: "h-8" }}
-              value={quantity}
-              onChange={onChangeQuantity}
-              min={1}
-              className="w-auto"
-            />
-          </ItemDescription>
+          <ProductQuantityControls
+            minusButtonProps={{ size: "icon-sm" }}
+            plusButtonProps={{ size: "icon-sm" }}
+            inputProps={{ className: "h-8" }}
+            value={quantity}
+            onChange={onChangeQuantity}
+            min={1}
+            className="w-auto"
+          />
 
           <ItemActions className="basis-full gap-2 sm:basis-auto">
             <Button
