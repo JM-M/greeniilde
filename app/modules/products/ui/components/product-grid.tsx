@@ -106,13 +106,14 @@ const products = [
 
 export const ProductGrid = () => {
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+    <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
       {products.map((product, index) => (
         <Link key={index} href={`/products/1`}>
           <ProductCard
             name={product.name}
             price={product.price}
             specs={product.specs}
+            className="h-full"
           />
         </Link>
       ))}

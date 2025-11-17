@@ -18,7 +18,7 @@ export const siteConfig = {
     },
     {
       title: "Products",
-      href: "/#products",
+      href: "/products",
     },
     {
       title: "Process",
@@ -26,7 +26,7 @@ export const siteConfig = {
     },
     {
       title: "Case Studies",
-      href: "/#case-studies",
+      href: "/case-studies",
     },
     {
       title: "FAQs",
