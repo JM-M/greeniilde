@@ -10,6 +10,8 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/app/components/ui/sheet";
+import { ArrowRightIcon } from "lucide-react";
+import Link from "next/link";
 import { CartItem } from "./cart-item";
 import { useCartSheet } from "./cart-sheet-context";
 
@@ -84,8 +86,17 @@ export function CartSheet({
             <span className="text-muted-foreground text-sm">Subtotal</span>
             <span className="text-base font-semibold">{subtotal}</span>
           </div>
-          <Button className="w-full" onClick={onCheckout}>
-            Checkout
+          <Button className="w-full" asChild>
+            <Link
+              href="/checkout"
+              onClick={() => {
+                if (onCheckout) onCheckout();
+                setOpen(false);
+              }}
+            >
+              Proceed to checkout
+              <ArrowRightIcon />
+            </Link>
           </Button>
         </SheetFooter>
       </SheetContent>

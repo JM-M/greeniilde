@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Stack_Sans_Notch } from "next/font/google";
-import { Navbar } from "./components/layout/navbar";
+import { Geist_Mono, Stack_Sans_Notch } from "next/font/google";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { Footer } from "./components/layout/footer";
+import { Navbar } from "./components/layout/navbar";
 import "./globals.css";
 
 const stackSans = Stack_Sans_Notch({
@@ -29,9 +30,11 @@ export default function RootLayout({
       <body
         className={`${stackSans.variable} ${geistMono.variable} font-sans antialiased`}
       >
-        <Navbar />
-        {children}
-        <Footer />
+        <NuqsAdapter>
+          <Navbar />
+          {children}
+          <Footer />
+        </NuqsAdapter>
       </body>
     </html>
   );
