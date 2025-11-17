@@ -20,4 +20,3 @@ export const SortDialog = ({ open, onOpenChange }: SortDialogProps) => {
     </ResponsiveDialog>
   );
 };
-
