@@ -7,6 +7,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "../../ui/button";
+import { CartButton } from "./cart-button";
+import { CartSheet } from "./cart-sheet";
+import { CartSheetProvider } from "./cart-sheet-context";
 import { useActiveIndicator } from "./use-active-indicator";
 
 export const Navbar = () => {
@@ -42,8 +45,34 @@ export const Navbar = () => {
 
   const shouldDarkenBg = isScrolled || pathname !== "/";
 
+  // Dummy cart data (replace with real cart state later)
+  const demoItems = [
+    {
+      id: "sku-1",
+      title: "Solar Window Film",
+      price: "$39.00",
+      quantity: 1,
+      imageUrl: "/images/hero.jpg",
+    },
+    {
+      id: "sku-2",
+      title: "Insulation Kit",
+      price: "$20.00",
+      quantity: 2,
+      imageUrl: "/images/hero.jpg",
+    },
+  ];
+  const demoCount = demoItems.reduce((sum, i) => sum + i.quantity, 0);
+  const demoSubtotal = "$79.00";
+
   return (
-    <>
+    <CartSheetProvider>
+      <CartSheet
+        className="text-background ml-auto md:ml-0"
+        count={demoCount}
+        items={demoItems}
+        subtotal={demoSubtotal}
+      />
       <div
         className={cn(
           "fixed inset-x-0 top-0 z-50 border-b border-white/10 px-4 transition-colors supports-backdrop-filter:backdrop-blur-xl",
@@ -52,19 +81,21 @@ export const Navbar = () => {
             : "text-background bg-transparent",
         )}
       >
-        <nav className="container mx-auto flex min-h-14 items-center gap-3">
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            aria-label="Open navigation menu"
-            className="text-background md:hidden"
-          >
-            <MenuIcon />
-          </Button>
-          <Link href="/" className="text-background text-2xl font-bold">
-            {siteConfig.name}
-          </Link>
-          <div className="relative ml-auto hidden h-14 items-center gap-6 text-sm font-medium md:flex">
+        <nav className="container mx-auto flex min-h-14 items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              aria-label="Open navigation menu"
+              className="text-background md:hidden"
+            >
+              <MenuIcon />
+            </Button>
+            <Link href="/" className="text-background text-2xl font-bold">
+              {siteConfig.name}
+            </Link>
+          </div>
+          <div className="relative hidden h-14 items-center gap-6 text-sm font-medium md:flex">
             {siteConfig.nav.map((item, index) => (
               <Link
                 key={item.href}
@@ -86,9 +117,12 @@ export const Navbar = () => {
               }}
             />
           </div>
+          <div className="md:ml-0">
+            <CartButton className="text-background" />
+          </div>
         </nav>
       </div>
       <div ref={sentinelRef} className="h-px" aria-hidden />
-    </>
+    </CartSheetProvider>
   );
 };
