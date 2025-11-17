@@ -76,7 +76,7 @@ export const ProductCarousel = () => {
           {featuredProducts.map((product) => (
             <CarouselItem
               key={product.name}
-              className="pl-3 md:pl-4 md:basis-1/2 lg:basis-1/3"
+              className="pl-3 md:pl-4 md:basis-1/2 lg:basis-1/3 xl:basis-1/4"
             >
               <ProductCard {...product} className="h-full" />
             </CarouselItem>

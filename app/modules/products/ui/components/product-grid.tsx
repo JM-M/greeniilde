@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ProductCard } from "./product-card";
 
 const products = [
@@ -107,12 +108,13 @@ export const ProductGrid = () => {
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
       {products.map((product, index) => (
-        <ProductCard
-          key={index}
-          name={product.name}
-          price={product.price}
-          specs={product.specs}
-        />
+        <Link key={index} href={`/products/1`}>
+          <ProductCard
+            name={product.name}
+            price={product.price}
+            specs={product.specs}
+          />
+        </Link>
       ))}
     </div>
   );
