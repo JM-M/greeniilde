@@ -10,39 +10,24 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/app/components/ui/sheet";
+import { useSuspenseRetrieveCart } from "@/app/modules/cart/hooks/use-cart-queries";
 import { ArrowRightIcon } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { CartItem } from "./cart-item";
 import { useCartSheet } from "./cart-sheet-context";
 
-type CartLineItem = {
-  id: string;
-  title: string;
-  price: string;
-  quantity: number;
-  imageUrl?: string;
-};
-
 type CartSheetProps = {
   className?: string;
-  count?: number;
-  items?: CartLineItem[];
-  subtotal?: string;
-  onChangeQuantity?: (id: string, next: number) => void;
-  onRemoveItem?: (id: string) => void;
-  onCheckout?: () => void;
 };
 
-export function CartSheet({
-  className,
-  count = 0,
-  items = [],
-  subtotal = "$0.00",
-  onChangeQuantity,
-  onRemoveItem,
-  onCheckout,
-}: CartSheetProps) {
+export function CartSheet({ className }: CartSheetProps) {
   const { open, setOpen } = useCartSheet();
+
+  const router = useRouter();
+
+  const { items, numCartItems, cart, subtotal, total } =
+    useSuspenseRetrieveCart();
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -50,7 +35,8 @@ export function CartSheet({
         <SheetHeader className="p-4">
           <SheetTitle>Your cart</SheetTitle>
           <SheetDescription>
-            {count === 1 ? "1 item" : `${count} items`} in your cart
+            {numCartItems === 1 ? "1 item" : `${numCartItems} items`} in your
+            cart
           </SheetDescription>
         </SheetHeader>
 
@@ -66,15 +52,9 @@ export function CartSheet({
                   key={item.id}
                   id={item.id}
                   title={item.title}
-                  price={item.price}
+                  price={String(item.total)}
                   quantity={item.quantity}
-                  imageUrl={item.imageUrl}
-                  onChangeQuantity={(q) =>
-                    onChangeQuantity ? onChangeQuantity(item.id, q) : undefined
-                  }
-                  onRemove={() =>
-                    onRemoveItem ? onRemoveItem(item.id) : undefined
-                  }
+                  imageUrl={item.thumbnail}
                 />
               ))
             )}
@@ -90,7 +70,7 @@ export function CartSheet({
             <Link
               href="/checkout"
               onClick={() => {
-                if (onCheckout) onCheckout();
+                router.push("/checkout");
                 setOpen(false);
               }}
             >

@@ -5,7 +5,7 @@ import { siteConfig } from "@/app/site.config";
 import { MenuIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "../../ui/button";
 import { CartButton } from "./cart-button";
 import { CartSheet } from "./cart-sheet";
@@ -67,12 +67,10 @@ export const Navbar = () => {
 
   return (
     <CartSheetProvider>
-      <CartSheet
-        className="text-background ml-auto md:ml-0"
-        count={demoCount}
-        items={demoItems}
-        subtotal={demoSubtotal}
-      />
+      {/* TODO: Add a fallback for the cart sheet */}
+      <Suspense fallback={<></>}>
+        <CartSheet className="text-background ml-auto md:ml-0" />
+      </Suspense>
       <div
         className={cn(
           "fixed inset-x-0 top-0 z-50 border-b border-white/10 px-4 transition-colors supports-backdrop-filter:backdrop-blur-xl",
@@ -118,7 +116,10 @@ export const Navbar = () => {
             />
           </div>
           <div className="md:ml-0">
-            <CartButton className="text-background" />
+            {/* TODO: Add a fallback for the cart button */}
+            <Suspense fallback={<></>}>
+              <CartButton className="text-background" />
+            </Suspense>
           </div>
         </nav>
       </div>
