@@ -11,58 +11,22 @@ import {
   getProductPriceRange,
 } from "@/app/modules/products/utils";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-
-const productTabs = [
-  {
-    value: "panels",
-    label: "Panels",
-    title: "High-efficiency solar panels",
-    description:
-      "Capture more sunlight with monocrystalline modules engineered for modern rooftops.",
-  },
-  {
-    value: "inverters",
-    label: "Inverters",
-    title: "Reliable inverters",
-    description:
-      "Streamline energy conversion with smart monitoring for every installation.",
-  },
-  {
-    value: "batteries",
-    label: "Batteries",
-    title: "Energy storage",
-    description:
-      "Store surplus power safely for overnight usage and cloudy days.",
-  },
-  {
-    value: "solar-pumps",
-    label: "Solar Pumps",
-    title: "Agricultural pumps",
-    description:
-      "Deliver consistent irrigation with minimal maintenance and zero fuel costs.",
-  },
-];
+import { useLandingProductsParams } from "../../hooks/use-landing-products-params";
+import { getMeilisearchFilterFromLandingProductsParams } from "../../utils";
 
 export const Products = () => {
   const { data: categoriesData } = useSuspenseListCategories({});
   const categories = categoriesData.product_categories;
 
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null); // TODO: Move to query params with nuqs
-
-  // Set initial selected category to first category when categories load
-  useEffect(() => {
-    if (categories.length > 0 && !selectedCategory) {
-      setSelectedCategory(categories[0].id);
-    }
-  }, [categories, selectedCategory]);
+  const [landingProductsParams, setLandingProductsParams] =
+    useLandingProductsParams();
+  const selectedCategory = landingProductsParams.categoryId;
 
   const { data: productsData } = useSuspenseGetProductsFromMeilisearch({
-    filter: selectedCategory
-      ? `categories.id = "${selectedCategory}"`
-      : undefined,
+    filter: getMeilisearchFilterFromLandingProductsParams(
+      landingProductsParams,
+    ),
   });
-  console.log("productsData: ", productsData);
 
   const products =
     productsData?.hits.map((hit) => {
@@ -84,9 +48,17 @@ export const Products = () => {
       />
       <Tabs
         value={selectedCategory || undefined}
-        onValueChange={setSelectedCategory}
+        onValueChange={(value) =>
+          setLandingProductsParams({ categoryId: value })
+        }
       >
         <TabsList className="mx-auto flex h-fit flex-wrap justify-center gap-2 bg-transparent">
+          <TabsTrigger
+            value="all"
+            className="hover:bg-primary/10 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground flex-[unset] cursor-pointer"
+          >
+            All
+          </TabsTrigger>
           {categories.map((category) => (
             <TabsTrigger
               key={category.id}
