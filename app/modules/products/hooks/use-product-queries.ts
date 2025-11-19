@@ -12,7 +12,9 @@ import {
 } from "@/app/lib/api/products";
 import { HttpTypes } from "@medusajs/types";
 import {
+  useQuery,
   useSuspenseQuery,
+  type UseQueryOptions,
   type UseSuspenseQueryOptions,
 } from "@tanstack/react-query";
 import { productQueries } from "../queries";
@@ -97,7 +99,10 @@ export const useSuspenseProductHits = (
 export const useSuspenseGetProductsFromMeilisearch = (
   input: Parameters<typeof getProductsFromMeilisearch>[0],
   options?: Omit<
-    UseSuspenseQueryOptions<Awaited<ReturnType<typeof getProductsFromMeilisearch>>, Error>,
+    UseSuspenseQueryOptions<
+      Awaited<ReturnType<typeof getProductsFromMeilisearch>>,
+      Error
+    >,
     "queryKey" | "queryFn"
   >,
 ) => {
@@ -107,12 +112,38 @@ export const useSuspenseGetProductsFromMeilisearch = (
 };
 
 /**
+ * Hook to get products directly from Meilisearch index (non-suspense version)
+ * @param input - Meilisearch search parameters
+ * @param options - React Query options
+ */
+export const useGetProductsFromMeilisearch = (
+  input: Parameters<typeof getProductsFromMeilisearch>[0],
+  options?: Omit<
+    UseQueryOptions<
+      Awaited<ReturnType<typeof getProductsFromMeilisearch>>,
+      Error
+    >,
+    "queryKey" | "queryFn"
+  >,
+) => {
+  return useQuery(
+    productQueries.getProductsFromMeilisearchNonSuspense.queryOptions(
+      input,
+      options,
+    ),
+  );
+};
+
+/**
  * Hook to get filterable attributes from Meilisearch index
  * @param options - React Query options
  */
 export const useSuspenseGetFilterableAttributes = (
   options?: Omit<
-    UseSuspenseQueryOptions<Awaited<ReturnType<typeof getFilterableAttributes>>, Error>,
+    UseSuspenseQueryOptions<
+      Awaited<ReturnType<typeof getFilterableAttributes>>,
+      Error
+    >,
     "queryKey" | "queryFn"
   >,
 ) => {
@@ -128,7 +159,10 @@ export const useSuspenseGetFilterableAttributes = (
  */
 export const useSuspenseGetFacetDistributions = (
   options?: Omit<
-    UseSuspenseQueryOptions<Awaited<ReturnType<typeof getFacetDistributions>>, Error>,
+    UseSuspenseQueryOptions<
+      Awaited<ReturnType<typeof getFacetDistributions>>,
+      Error
+    >,
     "queryKey" | "queryFn"
   >,
 ) => {

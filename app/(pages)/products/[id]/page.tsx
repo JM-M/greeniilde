@@ -1,7 +1,12 @@
 import { ProductDetailsView } from "@/app/modules/products/ui/views/product-details-view";
 
-const ProductDetailsPage = () => {
-  return <ProductDetailsView />;
+interface ProductDetailsPageProps {
+  params: Promise<{ id: string }>;
+}
+
+const ProductDetailsPage = async ({ params }: ProductDetailsPageProps) => {
+  const { id } = await params;
+  return <ProductDetailsView productId={id} />;
 };
 
 export default ProductDetailsPage;

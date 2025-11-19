@@ -1,4 +1,8 @@
 import {
+  getProductReviews,
+  getProductReviewStats,
+} from "@/app/lib/api/product-reviews";
+import {
   getFacetDistributions,
   getFilterableAttributes,
   getProduct,
@@ -7,7 +11,10 @@ import {
   listProducts,
   searchProducts,
 } from "@/app/lib/api/products";
-import { createSuspenseQueryAction } from "@/app/lib/query/create-query-action";
+import {
+  createQueryAction,
+  createSuspenseQueryAction,
+} from "@/app/lib/query/create-query-action";
 
 // Create query utilities
 const listProductsQuery = createSuspenseQueryAction(listProducts, [
@@ -35,6 +42,11 @@ const getProductsFromMeilisearchQuery = createSuspenseQueryAction(
   ["products", "getProductsFromMeilisearch"],
 );
 
+const getProductsFromMeilisearchQueryNonSuspense = createQueryAction(
+  getProductsFromMeilisearch,
+  ["products", "getProductsFromMeilisearch"],
+);
+
 const getFilterableAttributesQuery = createSuspenseQueryAction(
   getFilterableAttributes,
   ["products", "getFilterableAttributes"],
@@ -45,6 +57,16 @@ const getFacetDistributionsQuery = createSuspenseQueryAction(
   ["products", "getFacetDistributions"],
 );
 
+const getProductReviewsQuery = createSuspenseQueryAction(getProductReviews, [
+  "products",
+  "getProductReviews",
+]);
+
+const getProductReviewStatsQuery = createSuspenseQueryAction(
+  getProductReviewStats,
+  ["products", "getProductReviewStats"],
+);
+
 // Export query utilities for easy access to query keys
 // Usage: productQueries.listProducts.queryKey(query)
 export const productQueries = {
@@ -53,6 +75,10 @@ export const productQueries = {
   searchProducts: searchProductsQuery,
   getProductHits: getProductHitsQuery,
   getProductsFromMeilisearch: getProductsFromMeilisearchQuery,
+  getProductsFromMeilisearchNonSuspense:
+    getProductsFromMeilisearchQueryNonSuspense,
   getFilterableAttributes: getFilterableAttributesQuery,
   getFacetDistributions: getFacetDistributionsQuery,
+  getProductReviews: getProductReviewsQuery,
+  getProductReviewStats: getProductReviewStatsQuery,
 } as const;

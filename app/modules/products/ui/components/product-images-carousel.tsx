@@ -10,10 +10,17 @@ import {
 } from "@/app/components/ui/carousel";
 import { ScrollArea, ScrollBar } from "@/app/components/ui/scroll-area";
 import { cn } from "@/app/lib/utils";
+import Image from "next/image";
 
 const placeholderSlides = Array.from({ length: 8 });
 
-export const ProductImagesCarousel = () => {
+interface ProductImagesCarouselProps {
+  images: string[];
+}
+
+export const ProductImagesCarousel = ({
+  images,
+}: ProductImagesCarouselProps) => {
   const [api, setApi] = useState<CarouselApi>();
   const [selectedIndex, setSelectedIndex] = useState(0);
 
@@ -36,9 +43,16 @@ export const ProductImagesCarousel = () => {
     <div className="w-full space-y-4">
       <Carousel className="w-full" setApi={setApi}>
         <CarouselContent>
-          {placeholderSlides.map((_, index) => (
+          {images.map((image, index) => (
             <CarouselItem key={index}>
-              <div className="bg-secondary aspect-square w-full rounded-xl" />
+              <div className="bg-secondary relative aspect-square w-full overflow-hidden rounded-xl">
+                <Image
+                  src={image}
+                  alt={`Product image ${index + 1}`}
+                  fill
+                  className="object-cover"
+                />
+              </div>
             </CarouselItem>
           ))}
         </CarouselContent>
@@ -46,7 +60,7 @@ export const ProductImagesCarousel = () => {
 
       <ScrollArea className="w-full" type="scroll">
         <div className="flex items-center gap-2 pb-2">
-          {placeholderSlides.map((_, index) => (
+          {images.map((image, index) => (
             <button
               key={index}
               type="button"
@@ -58,7 +72,14 @@ export const ProductImagesCarousel = () => {
                   : "border-border hover:border-primary/40",
               )}
             >
-              <div className="bg-secondary absolute inset-1 rounded-md" />
+              <div className="bg-secondary absolute inset-1 rounded-md">
+                <Image
+                  src={image}
+                  alt={`Product image ${index + 1}`}
+                  fill
+                  className="object-cover"
+                />
+              </div>
               <span className="sr-only">{`Go to slide ${index + 1}`}</span>
             </button>
           ))}

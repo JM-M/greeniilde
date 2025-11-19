@@ -5,6 +5,7 @@ import { categoryQueries } from "../modules/categories";
 const PagesLayout = async ({ children }: { children: React.ReactNode }) => {
   const queryClient = getQueryClient();
 
+  // TODO: Create and use a server action (you may have to create a new route) that gets all categories (within a reasonable limit).
   queryClient.prefetchQuery(categoryQueries.listCategories.queryOptions({}));
 
   return (

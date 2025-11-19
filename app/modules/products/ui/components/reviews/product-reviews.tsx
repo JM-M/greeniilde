@@ -1,4 +1,9 @@
 "use client";
+import {
+  useSuspenseGetProductReviews,
+  useSuspenseGetProductReviewStats,
+} from "../../../hooks/use-product-review-queries";
+import { useProductDetailsContext } from "../../contexts/product-details-context";
 import { ReviewsList } from "./list/reviews-list";
 import { ReviewsDistribution } from "./summary/reviews-distribution";
 import { ReviewsSummary } from "./summary/reviews-summary";
@@ -69,6 +74,17 @@ export function ProductReviews() {
       helpfulCount: 1,
     },
   ];
+
+  const { product } = useProductDetailsContext();
+  const productId = product?.id;
+
+  const { data: reviewsData } = useSuspenseGetProductReviews(productId);
+  const { data: statsData } = useSuspenseGetProductReviewStats(productId);
+
+  console.log("product reviews: ", reviewsData);
+  console.log("product review stats: ", statsData);
+
+  if (!productId) return null;
 
   return (
     <div className="my-4 space-y-6">

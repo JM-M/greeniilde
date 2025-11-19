@@ -1,32 +1,43 @@
-import { ProductConfigurations } from "../components/product-configurations";
-import { ProductDetailsTabs } from "../components/product-details-tabs";
-import { ProductImagesCarousel } from "../components/product-images-carousel";
-import { ProductInfo } from "../components/product-info";
-import { ProductPurchaseControls } from "../components/product-purchase-controls";
-import { SimilarProducts } from "../components/similar-products";
+import { REGION_ID } from "@/app/constants/api";
+import { getQueryClient } from "@/app/lib/query/get-query-client";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import { Suspense } from "react";
+import { productQueries } from "../../queries";
+import { ProductDetailsViewClient } from "../components/product-details-view-client";
 
-export const ProductDetailsView = () => {
+interface ProductDetailsViewProps {
+  productId: string;
+}
+
+export const ProductDetailsView = async ({
+  productId,
+}: ProductDetailsViewProps) => {
+  const queryClient = getQueryClient();
+
+  // TODO: Convert to an infinite query
+  queryClient.prefetchQuery(
+    productQueries.getProduct.queryOptions({
+      productId,
+      query: {
+        fields: `*variants.calculated_price,*categories`,
+        region_id: REGION_ID,
+      },
+    }),
+  );
+
+  queryClient.prefetchQuery(
+    productQueries.getProductReviews.queryOptions(productId),
+  );
+
+  queryClient.prefetchQuery(
+    productQueries.getProductReviewStats.queryOptions(productId),
+  );
+
   return (
-    <div className="view-container">
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-10">
-        <div>
-          <ProductImagesCarousel />
-        </div>
-
-        <div className="space-y-6 lg:sticky lg:top-24">
-          <ProductInfo />
-          <ProductConfigurations />
-          <ProductPurchaseControls />
-        </div>
-      </div>
-
-      <div className="mt-8">
-        <ProductDetailsTabs />
-      </div>
-
-      <div className="mt-10">
-        <SimilarProducts />
-      </div>
-    </div>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <Suspense fallback={<div>Loading...</div>}>
+        <ProductDetailsViewClient />
+      </Suspense>
+    </HydrationBoundary>
   );
 };

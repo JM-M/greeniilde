@@ -19,6 +19,7 @@ export const ProductsView = async ({
   const queryClient = getQueryClient();
 
   // Investigate: Cannot update a component (`Router`) while rendering a different component (`ProductsViewClient`). To locate the bad setState() call inside `ProductsViewClient`
+  // TODO: Convert to an infinite query
   queryClient.prefetchQuery(
     productQueries.getProductsFromMeilisearch.queryOptions({
       sort: convertSortToMeilisearch(productSortParams.sort),
