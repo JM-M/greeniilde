@@ -10,6 +10,15 @@ export function getProductPriceRange(product: ProductIndexDocument): {
   min: number;
   max: number;
 } | null {
+  // Use pre-calculated min_price and max_price if available (preferred)
+  if (product.min_price !== undefined && product.max_price !== undefined) {
+    return {
+      min: product.min_price,
+      max: product.max_price,
+    };
+  }
+
+  // Fallback to calculating from variants (for backward compatibility)
   if (!product.variants || product.variants.length === 0) {
     return null;
   }

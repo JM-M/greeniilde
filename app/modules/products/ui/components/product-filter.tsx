@@ -11,58 +11,60 @@ import { ScrollArea } from "@/app/components/ui/scroll-area";
 import { Separator } from "@/app/components/ui/separator";
 import { Slider } from "@/app/components/ui/slider";
 import { ChevronDown } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { useSuspenseListCategories } from "../../../categories/hooks/use-category-queries";
 import { useProductFilterParams } from "../../hooks/use-product-filter-params";
+import { useSuspenseGetFacetDistributions } from "../../hooks/use-product-queries";
 
-// Product categories based on product names
-const CATEGORIES = [
-  "Panels",
-  "Inverters",
-  "Batteries",
-  "Pumps",
-  "Services",
-] as const;
-
-// Unique specs extracted from product data
-const SPECS = [
-  "6.5 kW output",
-  "25-year warranty",
-  "Wi-Fi monitoring",
-  "Hybrid ready",
-  "98% efficiency",
-  "Mobile app",
-  "18 kWh storage",
-  "Stackable modules",
-  "Indoor/outdoor",
-  "45m head",
-  "Brushless motor",
-  "Remote monitoring",
-  "Quarterly checks",
-  "Priority support",
-  "Performance reports",
-] as const;
-
-const PRICE_MIN = 0;
-const PRICE_MAX = 10000;
+// TODO: clean up this component
 
 export const ProductFilter = () => {
   const [{ categories, priceRange, specs }, setFilters] =
     useProductFilterParams();
+
+  const { data: facetDistributions } = useSuspenseGetFacetDistributions();
+
+  // Get available categories from facets and fetch category details
+  const { data: categoriesData } = useSuspenseListCategories({});
+
+  // Get available category objects (with id and name)
+  const availableCategories = categoriesData?.product_categories || [];
+
+  // Get available specs from tags.value facets
+  const availableSpecs = Object.keys(facetDistributions?.["tags.value"] || {});
+
+  // Get actual price range from facets
+  const minPrices = Object.keys(facetDistributions?.["min_price"] || {}).map(
+    Number,
+  );
+  const maxPrices = Object.keys(facetDistributions?.["max_price"] || {}).map(
+    Number,
+  );
+  const actualMinPrice = minPrices.length > 0 ? Math.min(...minPrices) : 0;
+  const actualMaxPrice = maxPrices.length > 0 ? Math.max(...maxPrices) : 0;
+
+  // Calculate step size based on price range (reactive to facet changes)
+  const stepSize = useMemo(() => {
+    const priceDifference = actualMaxPrice - actualMinPrice;
+
+    return Math.max(Math.min(priceDifference / 100, 100), 1);
+  }, [actualMinPrice, actualMaxPrice]);
+
   const [priceSliderValue, setPriceSliderValue] = useState<number[]>(
-    priceRange.length === 2 ? priceRange : [PRICE_MIN, PRICE_MAX],
+    priceRange?.length === 2 ? priceRange : [actualMinPrice, actualMaxPrice],
   );
 
-  const handleCategoryChange = (category: string, checked: boolean) => {
-    setFilters({
-      categories: checked
-        ? [...categories, category]
-        : categories.filter((c) => c !== category),
-    });
-  };
-
-  const handlePriceRangeChange = (values: number[]) => {
-    // Update local state immediately for smooth UI feedback
-    setPriceSliderValue(values);
+  const handleCategoryChange = (categoryId: string, checked: boolean) => {
+    if (checked) {
+      // When checking a category, add it to the selection
+      const newCategories = [...categories, categoryId];
+      setFilters({ categories: newCategories });
+    } else {
+      // When unchecking a category, remove it from the selection
+      const newCategories = categories.filter((id) => id !== categoryId);
+      // If all are unchecked, reset to empty array (show all)
+      setFilters({ categories: newCategories });
+    }
   };
 
   const handlePriceRangeCommit = (values: number[]) => {
@@ -78,102 +80,114 @@ export const ProductFilter = () => {
 
   return (
     <div className="space-y-4">
-      {/* Category Filter */}
-      <Collapsible defaultOpen>
-        <CollapsibleTrigger className="flex w-full items-center justify-between py-2 text-sm font-medium [&[data-state=open]>svg]:rotate-180">
-          <span>Categories</span>
-          <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200" />
-        </CollapsibleTrigger>
-        <CollapsibleContent className="pt-2">
-          <ScrollArea className="h-48">
-            <div className="space-y-3 pr-4">
-              {CATEGORIES.map((category) => {
-                const isChecked = categories.includes(category);
-                return (
-                  <div key={category} className="flex items-center space-x-2">
-                    <Checkbox
-                      id={`category-${category}`}
-                      checked={isChecked}
-                      onCheckedChange={(checked) =>
-                        handleCategoryChange(category, checked === true)
-                      }
-                    />
-                    <Label
-                      htmlFor={`category-${category}`}
-                      className="cursor-pointer text-sm font-normal"
-                    >
-                      {category}
-                    </Label>
-                  </div>
-                );
-              })}
-            </div>
-          </ScrollArea>
-        </CollapsibleContent>
-      </Collapsible>
+      {/* Category Filter - Only show if categories are available */}
+      {availableCategories.length > 0 && (
+        <>
+          <Collapsible defaultOpen>
+            <CollapsibleTrigger className="flex w-full items-center justify-between py-2 text-sm font-medium [&[data-state=open]>svg]:rotate-180">
+              <span>Categories</span>
+              <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200" />
+            </CollapsibleTrigger>
+            <CollapsibleContent className="pt-2">
+              <ScrollArea className="h-48">
+                <div className="space-y-3 pr-4">
+                  {availableCategories.map((category) => {
+                    // Only check if explicitly selected (not when categories is empty)
+                    const isChecked = categories.includes(category.id);
+                    return (
+                      <div
+                        key={category.id}
+                        className="flex items-center space-x-2"
+                      >
+                        <Checkbox
+                          id={`category-${category.id}`}
+                          checked={isChecked}
+                          onCheckedChange={(checked) =>
+                            handleCategoryChange(category.id, checked === true)
+                          }
+                        />
+                        <Label
+                          htmlFor={`category-${category.id}`}
+                          className="cursor-pointer text-sm font-normal"
+                        >
+                          {category.name}
+                        </Label>
+                      </div>
+                    );
+                  })}
+                </div>
+              </ScrollArea>
+            </CollapsibleContent>
+          </Collapsible>
+          <Separator />
+        </>
+      )}
 
-      <Separator />
+      {/* Price Range Filter - Only show if there's a valid price range */}
+      {actualMinPrice < actualMaxPrice && (
+        <>
+          <Collapsible defaultOpen>
+            <CollapsibleTrigger className="flex w-full items-center justify-between py-2 text-sm font-medium [&[data-state=open]>svg]:rotate-180">
+              <span>Price Range</span>
+              <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200" />
+            </CollapsibleTrigger>
+            <CollapsibleContent className="space-y-4 pt-2">
+              <div className="space-y-2">
+                <Slider
+                  defaultValue={priceSliderValue}
+                  // onValueChange={handlePriceRangeChange}
+                  onValueCommit={handlePriceRangeCommit}
+                  min={actualMinPrice}
+                  max={actualMaxPrice}
+                  step={stepSize}
+                  className="w-full"
+                />
+                <div className="text-muted-foreground flex items-center justify-between text-xs">
+                  <span>${priceSliderValue[0]?.toLocaleString()}</span>
+                  <span>${priceSliderValue[1]?.toLocaleString()}</span>
+                </div>
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
+          <Separator />
+        </>
+      )}
 
-      {/* Price Range Filter */}
-      <Collapsible defaultOpen>
-        <CollapsibleTrigger className="flex w-full items-center justify-between py-2 text-sm font-medium [&[data-state=open]>svg]:rotate-180">
-          <span>Price Range</span>
-          <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200" />
-        </CollapsibleTrigger>
-        <CollapsibleContent className="space-y-4 pt-2">
-          <div className="space-y-2">
-            <Slider
-              value={priceSliderValue}
-              onValueChange={handlePriceRangeChange}
-              onValueCommit={handlePriceRangeCommit}
-              min={PRICE_MIN}
-              max={PRICE_MAX}
-              step={100}
-              className="w-full"
-            />
-            <div className="text-muted-foreground flex items-center justify-between text-xs">
-              <span>${priceSliderValue[0]?.toLocaleString()}</span>
-              <span>${priceSliderValue[1]?.toLocaleString()}</span>
-            </div>
-          </div>
-        </CollapsibleContent>
-      </Collapsible>
-
-      <Separator />
-
-      {/* Specs Filter */}
-      <Collapsible defaultOpen>
-        <CollapsibleTrigger className="flex w-full items-center justify-between py-2 text-sm font-medium [&[data-state=open]>svg]:rotate-180">
-          <span>Specs</span>
-          <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200" />
-        </CollapsibleTrigger>
-        <CollapsibleContent className="pt-2">
-          <ScrollArea className="h-64">
-            <div className="space-y-3 pr-4">
-              {SPECS.map((spec) => {
-                const isChecked = specs.includes(spec);
-                return (
-                  <div key={spec} className="flex items-center space-x-2">
-                    <Checkbox
-                      id={`spec-${spec}`}
-                      checked={isChecked}
-                      onCheckedChange={(checked) =>
-                        handleSpecChange(spec, checked === true)
-                      }
-                    />
-                    <Label
-                      htmlFor={`spec-${spec}`}
-                      className="cursor-pointer text-sm font-normal"
-                    >
-                      {spec}
-                    </Label>
-                  </div>
-                );
-              })}
-            </div>
-          </ScrollArea>
-        </CollapsibleContent>
-      </Collapsible>
+      {/* Specs Filter - Only show if specs are available */}
+      {availableSpecs.length > 0 && (
+        <Collapsible defaultOpen>
+          <CollapsibleTrigger className="flex w-full items-center justify-between py-2 text-sm font-medium [&[data-state=open]>svg]:rotate-180">
+            <span>Specs</span>
+            <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200" />
+          </CollapsibleTrigger>
+          <CollapsibleContent className="pt-2">
+            <ScrollArea className="h-64">
+              <div className="space-y-3 pr-4">
+                {availableSpecs.map((spec) => {
+                  const isChecked = specs.includes(spec);
+                  return (
+                    <div key={spec} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={`spec-${spec}`}
+                        checked={isChecked}
+                        onCheckedChange={(checked) =>
+                          handleSpecChange(spec, checked === true)
+                        }
+                      />
+                      <Label
+                        htmlFor={`spec-${spec}`}
+                        className="cursor-pointer text-sm font-normal"
+                      >
+                        {spec}
+                      </Label>
+                    </div>
+                  );
+                })}
+              </div>
+            </ScrollArea>
+          </CollapsibleContent>
+        </Collapsible>
+      )}
     </div>
   );
 };

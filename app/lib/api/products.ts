@@ -121,3 +121,46 @@ export const getProductsFromMeilisearch = async (input: {
     query: input.query || "",
   };
 };
+
+/**
+ * Get filterable attributes from Meilisearch index
+ * Returns the list of attributes that can be used for filtering
+ */
+export const getFilterableAttributes = async (): Promise<string[]> => {
+  const index = meilisearch.index("products");
+  const attributes = await index.getFilterableAttributes();
+  if (!attributes) {
+    return [];
+  }
+  // Convert to string array, handling both string and GranularFilterableAttribute types
+  return attributes.map((attr) =>
+    typeof attr === "string" ? attr : String(attr),
+  );
+};
+
+/**
+ * Get facet distributions for all filterable attributes
+ * Returns the range of values and their counts for each filterable attribute
+ */
+export const getFacetDistributions = async (): Promise<
+  Record<string, Record<string, number>>
+> => {
+  const index = meilisearch.index("products");
+
+  // Get all filterable attributes
+  const filterableAttributes = await getFilterableAttributes();
+
+  // Perform a search with facets for all filterable attributes
+  // Empty query means we get facets for all documents
+  const searchParams: { facets?: string[]; limit: number } = {
+    limit: 0, // We don't need hits, just facets
+  };
+
+  if (filterableAttributes.length > 0) {
+    searchParams.facets = filterableAttributes;
+  }
+
+  const result = await index.search("", searchParams);
+
+  return result.facetDistribution || {};
+};

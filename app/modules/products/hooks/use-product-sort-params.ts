@@ -12,12 +12,16 @@ export const SORT_OPTIONS = [
 export type SortOption = (typeof SORT_OPTIONS)[number];
 
 export const useProductSortParams = () => {
-  return useQueryStates({
-    sort: parseAsStringEnum([...SORT_OPTIONS])
-      .withDefault("newest")
-      .withOptions({
-        clearOnDefault: true,
-      }),
-  });
+  return useQueryStates(
+    {
+      sort: parseAsStringEnum([...SORT_OPTIONS])
+        .withDefault("newest")
+        .withOptions({
+          clearOnDefault: true,
+        }),
+    },
+    {
+      shallow: true,
+    },
+  );
 };
-

@@ -1,6 +1,8 @@
 "use client";
 
 import {
+  getFacetDistributions,
+  getFilterableAttributes,
   getProduct,
   getProductHits,
   getProductsFromMeilisearch,
@@ -101,6 +103,37 @@ export const useSuspenseGetProductsFromMeilisearch = (
 ) => {
   return useSuspenseQuery(
     productQueries.getProductsFromMeilisearch.queryOptions(input, options),
+  );
+};
+
+/**
+ * Hook to get filterable attributes from Meilisearch index
+ * @param options - React Query options
+ */
+export const useSuspenseGetFilterableAttributes = (
+  options?: Omit<
+    UseSuspenseQueryOptions<Awaited<ReturnType<typeof getFilterableAttributes>>, Error>,
+    "queryKey" | "queryFn"
+  >,
+) => {
+  return useSuspenseQuery(
+    productQueries.getFilterableAttributes.queryOptions(undefined, options),
+  );
+};
+
+/**
+ * Hook to get facet distributions for all filterable attributes
+ * Returns the range of values and their counts for each filterable attribute
+ * @param options - React Query options
+ */
+export const useSuspenseGetFacetDistributions = (
+  options?: Omit<
+    UseSuspenseQueryOptions<Awaited<ReturnType<typeof getFacetDistributions>>, Error>,
+    "queryKey" | "queryFn"
+  >,
+) => {
+  return useSuspenseQuery(
+    productQueries.getFacetDistributions.queryOptions(undefined, options),
   );
 };
 

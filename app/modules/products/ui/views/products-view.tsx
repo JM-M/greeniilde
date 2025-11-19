@@ -1,38 +1,40 @@
-"use client";
+import { getQueryClient } from "@/app/lib/query/get-query-client";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import { Suspense } from "react";
+import { loadProductFilterParams, loadProductSortParams } from "../../params";
+import { productQueries } from "../../queries";
+import { convertFiltersToMeilisearch } from "../../utils/filter";
+import { convertSortToMeilisearch } from "../../utils/sort";
+import { ProductsViewClient } from "../components/products-view-client";
 
-import { useState } from "react";
-import { FilterDialog } from "../components/filter-dialog";
-import { ProductFilter } from "../components/product-filter";
-import { ProductGrid } from "../components/product-grid";
-import { ProductViewHeader } from "../components/product-view-header";
-import { SortDialog } from "../components/sort-dialog";
+interface ProductsViewProps {
+  productFilterParams: Awaited<ReturnType<typeof loadProductFilterParams>>;
+  productSortParams: Awaited<ReturnType<typeof loadProductSortParams>>;
+}
 
-export const ProductsView = () => {
-  const [filterOpen, setFilterOpen] = useState(false);
-  const [sortOpen, setSortOpen] = useState(false);
+export const ProductsView = async ({
+  productFilterParams,
+  productSortParams,
+}: ProductsViewProps) => {
+  const queryClient = getQueryClient();
+
+  // Investigate: Cannot update a component (`Router`) while rendering a different component (`ProductsViewClient`). To locate the bad setState() call inside `ProductsViewClient`
+  queryClient.prefetchQuery(
+    productQueries.getProductsFromMeilisearch.queryOptions({
+      sort: convertSortToMeilisearch(productSortParams.sort),
+      filter: convertFiltersToMeilisearch(productFilterParams),
+    }),
+  );
+
+  queryClient.prefetchQuery(
+    productQueries.getFacetDistributions.queryOptions(),
+  );
 
   return (
-    <>
-      <div className="lg:hidden">
-        <FilterDialog open={filterOpen} onOpenChange={setFilterOpen} />
-      </div>
-      <SortDialog open={sortOpen} onOpenChange={setSortOpen} />
-      <div className="view-container">
-        <ProductViewHeader
-          filterOpen={filterOpen}
-          onFilterOpenChange={setFilterOpen}
-          sortOpen={sortOpen}
-          onSortOpenChange={setSortOpen}
-        />
-        <div className="flex gap-6">
-          <div className="flex-1">
-            <ProductGrid />
-          </div>
-          <div className="sticky top-20 hidden h-fit w-80 shrink-0 lg:block">
-            <ProductFilter />
-          </div>
-        </div>
-      </div>
-    </>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <Suspense fallback={<div>Loading...</div>}>
+        <ProductsViewClient />
+      </Suspense>
+    </HydrationBoundary>
   );
 };

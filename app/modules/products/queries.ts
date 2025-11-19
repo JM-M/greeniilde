@@ -1,4 +1,6 @@
 import {
+  getFacetDistributions,
+  getFilterableAttributes,
   getProduct,
   getProductHits,
   getProductsFromMeilisearch,
@@ -28,10 +30,20 @@ const getProductHitsQuery = createSuspenseQueryAction(getProductHits, [
   "getProductHits",
 ]);
 
-const getProductsFromMeilisearchQuery = createSuspenseQueryAction(getProductsFromMeilisearch, [
-  "products",
-  "getProductsFromMeilisearch",
-]);
+const getProductsFromMeilisearchQuery = createSuspenseQueryAction(
+  getProductsFromMeilisearch,
+  ["products", "getProductsFromMeilisearch"],
+);
+
+const getFilterableAttributesQuery = createSuspenseQueryAction(
+  getFilterableAttributes,
+  ["products", "getFilterableAttributes"],
+);
+
+const getFacetDistributionsQuery = createSuspenseQueryAction(
+  getFacetDistributions,
+  ["products", "getFacetDistributions"],
+);
 
 // Export query utilities for easy access to query keys
 // Usage: productQueries.listProducts.queryKey(query)
@@ -41,4 +53,6 @@ export const productQueries = {
   searchProducts: searchProductsQuery,
   getProductHits: getProductHitsQuery,
   getProductsFromMeilisearch: getProductsFromMeilisearchQuery,
+  getFilterableAttributes: getFilterableAttributesQuery,
+  getFacetDistributions: getFacetDistributionsQuery,
 } as const;

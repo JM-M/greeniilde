@@ -1,5 +1,4 @@
 import { getQueryClient } from "@/app/lib/query/get-query-client";
-import { categoryQueries } from "@/app/modules/categories/queries";
 import { productQueries } from "@/app/modules/products/queries";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { Suspense } from "react";
@@ -20,8 +19,6 @@ export const LandingView = async ({
   landingProductsParams,
 }: LandingViewProps) => {
   const queryClient = getQueryClient();
-
-  queryClient.prefetchQuery(categoryQueries.listCategories.queryOptions({}));
 
   queryClient.prefetchQuery(
     productQueries.getProductsFromMeilisearch.queryOptions({

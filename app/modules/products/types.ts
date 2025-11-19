@@ -12,6 +12,9 @@ export interface ProductIndexDocument {
     options: { name: string; value: string }[];
     prices: number[];
   }[];
+  created_at?: string;
+  min_price: number;
+  max_price: number;
 }
 
 export interface MeilisearchHitsResponse {

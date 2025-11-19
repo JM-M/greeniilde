@@ -6,10 +6,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/app/components/ui/tabs";
 import { useSuspenseListCategories } from "@/app/modules/categories/hooks/use-category-queries";
 import { useSuspenseGetProductsFromMeilisearch } from "@/app/modules/products/hooks/use-product-queries";
 import { ProductCarousel } from "@/app/modules/products/ui/components/product-carousel";
-import {
-  formatPriceRange,
-  getProductPriceRange,
-} from "@/app/modules/products/utils";
+import { formatPriceRange } from "@/app/modules/products/utils/price";
 import Link from "next/link";
 import { useLandingProductsParams } from "../../hooks/use-landing-products-params";
 import { getMeilisearchFilterFromLandingProductsParams } from "../../utils";
@@ -30,11 +27,13 @@ export const Products = () => {
 
   const products =
     productsData?.hits.map((hit) => {
-      const priceRange = getProductPriceRange(hit);
       return {
         id: hit.id,
         name: hit.title || "",
-        price: formatPriceRange(priceRange),
+        price: formatPriceRange({
+          min: hit.min_price,
+          max: hit.max_price,
+        }),
         specs: hit.tags?.map((tag) => tag.value) || [],
         image: hit.thumbnail || "",
       };
