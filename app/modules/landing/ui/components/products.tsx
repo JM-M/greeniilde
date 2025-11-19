@@ -1,13 +1,17 @@
+"use client";
+
 import { SectionHeader } from "@/app/components/shared/section-header";
 import { Button } from "@/app/components/ui/button";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/app/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/app/components/ui/tabs";
+import { useSuspenseListCategories } from "@/app/modules/categories/hooks/use-category-queries";
+import { useSuspenseGetProductsFromMeilisearch } from "@/app/modules/products/hooks/use-product-queries";
 import { ProductCarousel } from "@/app/modules/products/ui/components/product-carousel";
+import {
+  formatPriceRange,
+  getProductPriceRange,
+} from "@/app/modules/products/utils";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 const productTabs = [
   {
@@ -40,40 +44,63 @@ const productTabs = [
   },
 ];
 
-const featuredProduct = {
-  name: "Helios Max Panel Kit",
-  price: "$6,499",
-  specs: ["6.5 kW output", "25-year warranty", "Wi-Fi monitoring"],
-};
-
 export const Products = () => {
+  const { data: categoriesData } = useSuspenseListCategories({});
+  const categories = categoriesData.product_categories;
+
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null); // TODO: Move to query params with nuqs
+
+  // Set initial selected category to first category when categories load
+  useEffect(() => {
+    if (categories.length > 0 && !selectedCategory) {
+      setSelectedCategory(categories[0].id);
+    }
+  }, [categories, selectedCategory]);
+
+  const { data: productsData } = useSuspenseGetProductsFromMeilisearch({
+    filter: selectedCategory
+      ? `categories.id = "${selectedCategory}"`
+      : undefined,
+  });
+  console.log("productsData: ", productsData);
+
+  const products =
+    productsData?.hits.map((hit) => {
+      const priceRange = getProductPriceRange(hit);
+      return {
+        id: hit.id,
+        name: hit.title || "",
+        price: formatPriceRange(priceRange),
+        specs: hit.tags?.map((tag) => tag.value) || [],
+        image: hit.thumbnail || "",
+      };
+    }) || [];
+
   return (
     <section id="products" className="container mx-auto space-y-6 px-4 py-16">
       <SectionHeader
         title="Products"
         description="We offer a wide range of products to suit your needs."
       />
-      <Tabs defaultValue={productTabs[0].value}>
+      <Tabs
+        value={selectedCategory || undefined}
+        onValueChange={setSelectedCategory}
+      >
         <TabsList className="mx-auto flex h-fit flex-wrap justify-center gap-2 bg-transparent">
-          {productTabs.map((tab) => (
+          {categories.map((category) => (
             <TabsTrigger
-              key={tab.value}
-              value={tab.value}
+              key={category.id}
+              value={category.id}
               className="hover:bg-primary/10 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground flex-[unset] cursor-pointer"
             >
-              {tab.label}
+              {category.name}
             </TabsTrigger>
           ))}
         </TabsList>
-
-        <div className="mt-2 space-y-4">
-          {productTabs.map((tab) => (
-            <TabsContent key={tab.value} value={tab.value}>
-              <ProductCarousel />
-            </TabsContent>
-          ))}
-        </div>
       </Tabs>
+      <div className="mt-2 space-y-4">
+        <ProductCarousel products={products} />
+      </div>
       <div>
         <Button
           variant="link"

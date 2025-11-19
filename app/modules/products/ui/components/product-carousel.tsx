@@ -1,46 +1,23 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useEffect, useState } from "react";
 
+import { Button } from "@/app/components/ui/button";
 import {
   type CarouselApi,
   Carousel,
   CarouselContent,
   CarouselItem,
 } from "@/app/components/ui/carousel";
-import { Button } from "@/app/components/ui/button";
 import { ProductCard } from "@/app/modules/products/ui/components/product-card";
+import { Product } from "../../types";
 
-const featuredProducts = [
-  {
-    name: "Helios Max Panel Kit",
-    price: "$6,499",
-    specs: ["6.5 kW output", "25-year warranty", "Wi-Fi monitoring"],
-  },
-  {
-    name: "Aurora Smart Inverter",
-    price: "$2,199",
-    specs: ["Hybrid ready", "98% efficiency", "Mobile app"],
-  },
-  {
-    name: "Lumen Battery Stack",
-    price: "$7,899",
-    specs: ["18 kWh storage", "Stackable modules", "Indoor/outdoor"],
-  },
-  {
-    name: "Irriga Solar Pump",
-    price: "$3,250",
-    specs: ["45m head", "Brushless motor", "Remote monitoring"],
-  },
-  {
-    name: "SolGuard Maintenance Plan",
-    price: "$99/mo",
-    specs: ["Quarterly checks", "Priority support", "Performance reports"],
-  },
-];
+interface ProductCarouselProps {
+  products: Product[];
+}
 
-export const ProductCarousel = () => {
+export const ProductCarousel = ({ products }: ProductCarouselProps) => {
   const [api, setApi] = useState<CarouselApi>();
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
@@ -73,10 +50,10 @@ export const ProductCarousel = () => {
         setApi={setApi}
       >
         <CarouselContent className="-ml-3 md:-ml-4">
-          {featuredProducts.map((product) => (
+          {products.map((product) => (
             <CarouselItem
               key={product.name}
-              className="pl-3 md:pl-4 md:basis-1/2 lg:basis-1/3 xl:basis-1/4"
+              className="py-2 pl-3 md:basis-1/2 md:pl-4 lg:basis-1/3 xl:basis-1/4"
             >
               <ProductCard {...product} className="h-full" />
             </CarouselItem>
