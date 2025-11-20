@@ -75,14 +75,11 @@ export const getCities = async ({
 export const getTerminalRates = async (cartId: string) => {
   const headers = await getAuthHeaders();
 
-  return sdk.client.fetch<{ rates: TerminalRate[] }>(
-    `/store/fulfillment/rates`,
-    {
-      method: "POST",
-      body: {
-        cart_id: cartId,
-      },
-      headers,
+  return sdk.client.fetch<{ rates: TerminalRate[] }>(`/store/terminal/rates`, {
+    method: "POST",
+    body: {
+      cart_id: cartId,
     },
-  );
+    headers,
+  });
 };
