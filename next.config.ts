@@ -5,6 +5,9 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       new URL("https://medusa-public-images.s3.eu-west-1.amazonaws.com/**"),
       new URL("https://space-36-dev.s3.us-east-1.amazonaws.com/**"),
+      new URL(
+        "https://ucarecdn.com/c2d4dcb2-1483-47a5-ab14-447a990f5827/60dc7947195c0078fabff349_1200pxUnited_Parcel_Service_logo_2014svg.png",
+      ),
     ],
   },
 };

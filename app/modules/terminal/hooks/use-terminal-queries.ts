@@ -4,6 +4,7 @@ import {
   getCities,
   getCountries,
   getStates,
+  getTerminalRates,
   type GetCitiesParams,
 } from "@/app/lib/api/terminal";
 import {
@@ -77,6 +78,23 @@ export const useGetCities = (
 ) => {
   return useQuery(
     terminalQueries.getCitiesNonSuspense.queryOptions(params, options),
+  );
+};
+
+/**
+ * Hook to get terminal rates for a cart
+ * @param cartId - Cart ID
+ * @param options - React Query options
+ */
+export const useTerminalRates = (
+  cartId: string,
+  options?: Omit<
+    UseQueryOptions<Awaited<ReturnType<typeof getTerminalRates>>, Error>,
+    "queryKey" | "queryFn"
+  >,
+) => {
+  return useQuery(
+    terminalQueries.getTerminalRates.queryOptions(cartId, options),
   );
 };
 

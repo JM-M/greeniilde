@@ -374,3 +374,19 @@ export async function createBuyNowCart({
 
   return cartResp.cart;
 }
+
+export async function listCartShippingOptions(cartId: string) {
+  const headers = await getAuthHeaders();
+
+  return sdk.store.fulfillment
+    .listCartOptions(
+      {
+        cart_id: cartId,
+      },
+      headers,
+    )
+    .then(({ shipping_options }) => shipping_options)
+    .catch((error) => {
+      throw new Error(`Failed to list cart shipping options: ${error.message}`);
+    });
+}

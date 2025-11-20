@@ -1,3 +1,5 @@
+import "server-only";
+
 import axios, { AxiosInstance } from "axios";
 
 // Create axios instance for Terminal API

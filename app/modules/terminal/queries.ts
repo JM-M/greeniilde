@@ -1,4 +1,9 @@
-import { getCities, getCountries, getStates } from "@/app/lib/api/terminal";
+import {
+  getCities,
+  getCountries,
+  getStates,
+  getTerminalRates,
+} from "@/app/lib/api/terminal";
 import {
   createQueryAction,
   createSuspenseQueryAction,
@@ -25,6 +30,11 @@ const getCitiesQueryNonSuspense = createQueryAction(getCities, [
   "getCities",
 ]);
 
+const getTerminalRatesQuery = createQueryAction(getTerminalRates, [
+  "terminal",
+  "getTerminalRates",
+]);
+
 // Export query utilities for easy access to query keys
 // Usage: terminalQueries.getCountries.queryKey()
 export const terminalQueries = {
@@ -32,4 +42,5 @@ export const terminalQueries = {
   getStates: getStatesQuery,
   getCities: getCitiesQuery,
   getCitiesNonSuspense: getCitiesQueryNonSuspense,
+  getTerminalRates: getTerminalRatesQuery,
 } as const;

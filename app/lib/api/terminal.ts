@@ -4,8 +4,11 @@ import {
   TerminalGetCitiesResponse,
   TerminalGetCountriesResponse,
   TerminalGetStatesResponse,
+  TerminalRate,
 } from "@/app/modules/terminal/types";
+import { sdk } from "../medusa/config";
 import { makeTerminalRequest, terminalClient } from "../terminal/config";
+import { getAuthHeaders } from "./auth";
 
 /**
  * Get all countries from Terminal API
@@ -63,5 +66,23 @@ export const getCities = async ({
 
   return makeTerminalRequest<TerminalGetCitiesResponse>(() =>
     terminalClient.get(url),
+  );
+};
+
+/**
+ * Get terminal rates for a cart
+ */
+export const getTerminalRates = async (cartId: string) => {
+  const headers = await getAuthHeaders();
+
+  return sdk.client.fetch<{ rates: TerminalRate[] }>(
+    `/store/fulfillment/rates`,
+    {
+      method: "POST",
+      body: {
+        cart_id: cartId,
+      },
+      headers,
+    },
   );
 };

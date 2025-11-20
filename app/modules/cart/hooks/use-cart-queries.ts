@@ -1,8 +1,8 @@
 "use client";
 
 import { retrieveCart, type RetrieveCartParams } from "@/app/lib/api/cart";
-import { HttpTypes } from "@medusajs/types";
 import {
+  useQuery,
   useSuspenseQuery,
   type UseSuspenseQueryOptions,
 } from "@tanstack/react-query";
@@ -16,10 +16,7 @@ import { cartQueries } from "../queries";
 export const useSuspenseRetrieveCart = (
   params?: RetrieveCartParams,
   options?: Omit<
-    UseSuspenseQueryOptions<
-      Awaited<ReturnType<typeof retrieveCart>>,
-      Error
-    >,
+    UseSuspenseQueryOptions<Awaited<ReturnType<typeof retrieveCart>>, Error>,
     "queryKey" | "queryFn"
   >,
 ) => {
@@ -38,10 +35,21 @@ export const useSuspenseRetrieveCart = (
     numCartItems,
     items: cart?.items || [],
     subtotal: cart?.subtotal || 0,
-    total: cart?.total || 0,
+    total: cart?.total || 0, // TODO: Total should not exist if shipping method is not selected
     tax_total: cart?.tax_total || 0,
     shipping_total: cart?.shipping_total || 0,
     discount_total: cart?.discount_total || 0,
+    ...rest,
+  };
+};
+
+export const useListCartShippingMethodsQuery = (cartId: string) => {
+  const { data, ...rest } = useQuery(
+    cartQueries.listCartShippingOptions.queryOptions(cartId),
+  );
+
+  return {
+    data,
     ...rest,
   };
 };

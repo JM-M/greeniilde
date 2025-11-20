@@ -14,3 +14,18 @@ export function buildQueryString(params: Record<string, unknown>): string {
   });
   return searchParams.toString();
 }
+
+export const convertToLocale = ({
+  amount,
+  currency_code,
+  locale = "en-NG",
+}: {
+  amount: number;
+  currency_code: string;
+  locale?: string;
+}) => {
+  return new Intl.NumberFormat(locale, {
+    style: "currency",
+    currency: currency_code,
+  }).format(amount);
+};
