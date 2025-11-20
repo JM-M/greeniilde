@@ -1,14 +1,14 @@
 "use client";
 
 import { Button } from "@/app/components/ui/button";
-import { OrderSummary } from "./order-summary";
 import { CompactPaymentSummary } from "./compact-payment-summary";
 import { DeliveryMethodSelected } from "./delivery-method-selected";
+import { OrderSummary } from "./order-summary";
 
 const ReviewAndPaymentStep = () => {
   return (
     <div className="mx-auto w-full max-w-5xl">
-      <div className="mx-auto w-full max-w-xl rounded-lg border p-4">
+      <div className="mx-auto w-full max-w-2xl rounded-lg border p-4">
         <OrderSummary />
         <div className="mt-4">
           <DeliveryMethodSelected method="standard" />

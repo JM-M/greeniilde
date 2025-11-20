@@ -11,6 +11,7 @@ import {
   CarouselItem,
 } from "@/app/components/ui/carousel";
 import { ProductCard } from "@/app/modules/products/ui/components/product-card";
+import Link from "next/link";
 import { Product } from "../../types";
 
 interface ProductCarouselProps {
@@ -55,7 +56,9 @@ export const ProductCarousel = ({ products }: ProductCarouselProps) => {
               key={product.name}
               className="py-2 pl-3 md:basis-1/2 md:pl-4 lg:basis-1/3 xl:basis-1/4"
             >
-              <ProductCard {...product} className="h-full" />
+              <Link href={`/products/${product.id}`}>
+                <ProductCard {...product} className="h-full" />
+              </Link>
             </CarouselItem>
           ))}
         </CarouselContent>

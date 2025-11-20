@@ -7,7 +7,7 @@ import {
 } from "@/app/modules/products/types";
 import { HttpTypes } from "@medusajs/types";
 import { sdk } from "../medusa/config";
-import { meilisearch } from "../meilisearch/config";
+import { getMeilisearchClient } from "../meilisearch/config";
 import { buildQueryString } from "../utils";
 
 export interface SearchProductsInput extends Record<string, unknown> {
@@ -88,7 +88,8 @@ export const getProductsFromMeilisearch = async (input: {
   processingTimeMs: number;
   query: string;
 }> => {
-  const index = meilisearch.index("products");
+  const client = await getMeilisearchClient();
+  const index = client.index("products");
 
   const searchParams: any = {
     limit: input.limit || 20,
@@ -127,7 +128,8 @@ export const getProductsFromMeilisearch = async (input: {
  * Returns the list of attributes that can be used for filtering
  */
 export const getFilterableAttributes = async (): Promise<string[]> => {
-  const index = meilisearch.index("products");
+  const client = await getMeilisearchClient();
+  const index = client.index("products");
   const attributes = await index.getFilterableAttributes();
   if (!attributes) {
     return [];
@@ -145,7 +147,8 @@ export const getFilterableAttributes = async (): Promise<string[]> => {
 export const getFacetDistributions = async (): Promise<
   Record<string, Record<string, number>>
 > => {
-  const index = meilisearch.index("products");
+  const client = await getMeilisearchClient();
+  const index = client.index("products");
 
   // Get all filterable attributes
   const filterableAttributes = await getFilterableAttributes();

@@ -8,5 +8,9 @@ export const sdk = new Medusa({
   auth: {
     type: "session",
   },
+  globalHeaders: {
+    // TODO: Do this properly
+    "x-store-id": "store_01KAFSF2GM7R7H5NZQ3H3GPEEK", // Anduril
+    // "x-store-id": "store_01KADKZS0QBA87039ZT3J073ND", // Lern
+  },
 });
-

@@ -7,7 +7,7 @@ import { DeliveryMethods } from "./delivery-methods";
 const DeliveryMethodStep = () => {
   return (
     <div className="mx-auto w-full max-w-5xl">
-      <div className="mx-auto w-full max-w-xl rounded-lg border p-4">
+      <div className="mx-auto w-full max-w-2xl rounded-lg border p-4">
         <DeliveryMethods />
         <div className="mt-4">
           <CompactPaymentSummary />

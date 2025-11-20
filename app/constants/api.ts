@@ -1,3 +1,4 @@
-export const CURRENCY_CODE = "eur";
-export const REGION_ID = "reg_01KAD9ZXS745MH16203RN4604T";
+// TODO: Make this proper
 
+export const CURRENCY_CODE = "ngn";
+export const REGION_ID = "reg_01KAFN4D9W714MCSTYG2772D96";

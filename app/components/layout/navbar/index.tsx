@@ -45,26 +45,6 @@ export const Navbar = () => {
 
   const shouldDarkenBg = isScrolled || pathname !== "/";
 
-  // Dummy cart data (replace with real cart state later)
-  const demoItems = [
-    {
-      id: "sku-1",
-      title: "Solar Window Film",
-      price: "$39.00",
-      quantity: 1,
-      imageUrl: "/images/hero.jpg",
-    },
-    {
-      id: "sku-2",
-      title: "Insulation Kit",
-      price: "$20.00",
-      quantity: 2,
-      imageUrl: "/images/hero.jpg",
-    },
-  ];
-  const demoCount = demoItems.reduce((sum, i) => sum + i.quantity, 0);
-  const demoSubtotal = "$79.00";
-
   return (
     <CartSheetProvider>
       {/* TODO: Add a fallback for the cart sheet */}

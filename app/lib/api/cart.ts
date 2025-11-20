@@ -1,6 +1,7 @@
 "use server";
 
 import { REGION_ID } from "@/app/constants/api";
+import { TerminalRate } from "@/app/modules/terminal/types";
 import { HttpTypes } from "@medusajs/types";
 import { sdk } from "../medusa/config";
 import { getAuthHeaders } from "./auth";
@@ -201,7 +202,7 @@ export type SetShippingMethodParams = {
   shippingMethodId: string;
   data: {
     terminal_rate_id: string;
-    terminal_rate: any; // Using any for now, should be TerminalRate type
+    terminal_rate: TerminalRate;
   };
 };
 
