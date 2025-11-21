@@ -7,13 +7,17 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "../../ui/button";
+import { AuthButton } from "./auth-button";
 import { CartButton } from "./cart-button";
 import { CartSheet } from "./cart-sheet";
 import { CartSheetProvider } from "./cart-sheet-context";
 import { useActiveIndicator } from "./use-active-indicator";
 
 export const Navbar = () => {
+  const [isScrolled, setIsScrolled] = useState(false);
+
   const pathname = usePathname();
+
   const activeIndex = useMemo(() => {
     const index = siteConfig.nav.findIndex((item) => {
       if (pathname === "/") return item.href === "/";
@@ -26,7 +30,6 @@ export const Navbar = () => {
   const { itemRefs, styles } = useActiveIndicator(activeIndex);
 
   const sentinelRef = useRef<HTMLDivElement | null>(null);
-  const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
     const sentinel = sentinelRef.current;
@@ -95,10 +98,13 @@ export const Navbar = () => {
               }}
             />
           </div>
-          <div className="md:ml-0">
+          <div className="flex items-center gap-4 md:ml-0">
             {/* TODO: Add a fallback for the cart button */}
             <Suspense fallback={<></>}>
               <CartButton className="text-background" />
+            </Suspense>
+            <Suspense fallback={<></>}>
+              <AuthButton />
             </Suspense>
           </div>
         </nav>
