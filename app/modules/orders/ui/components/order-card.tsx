@@ -16,7 +16,12 @@ export type OrderCardProps = {
   orderId: string;
   status: OrderStatus;
   orderDate: string;
-  thumbnailUrls: string[];
+  items: {
+    title: string;
+    thumbnail?: string;
+    quantity: number;
+    variant?: string;
+  }[];
   totalFormatted: string;
   deliverySummary: string;
   className?: string;
@@ -37,13 +42,13 @@ export function OrderCard({
   orderId,
   status,
   orderDate,
-  thumbnailUrls,
+  items,
   totalFormatted,
   deliverySummary,
   className,
 }: OrderCardProps) {
-  const visibleThumbnails = thumbnailUrls.slice(0, 2);
-  const overflowCount = Math.max(0, thumbnailUrls.length - visibleThumbnails.length);
+  const visibleItems = items.slice(0, 2);
+  const overflowCount = Math.max(0, items.length - visibleItems.length);
 
   return (
     <Card className={cn("p-4 md:p-5", className)}>
@@ -65,27 +70,49 @@ export function OrderCard({
           <div className="text-muted-foreground text-sm">{orderDate}</div>
         </div>
       </CardHeader>
-      <CardContent className="px-0">
-        <div className="flex items-center gap-2">
-          {visibleThumbnails.map((src, idx) => (
-            <img
-              key={idx}
-              src={src}
-              alt=""
-              className="h-10 w-10 rounded-md object-cover border"
-            />
+      <CardContent className="px-0 py-4">
+        <div className="flex flex-col gap-3">
+          {visibleItems.map((item, idx) => (
+            <div key={idx} className="flex items-start gap-3">
+              <div className="bg-secondary size-12 shrink-0 overflow-hidden rounded-md border">
+                {item.thumbnail ? (
+                  <img
+                    src={item.thumbnail}
+                    alt={item.title}
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <div className="bg-muted flex h-full w-full items-center justify-center">
+                    <span className="text-muted-foreground text-xs">Img</span>
+                  </div>
+                )}
+              </div>
+              <div className="flex flex-col gap-0.5 text-sm">
+                <span className="line-clamp-1 font-medium">{item.title}</span>
+                <div className="text-muted-foreground flex items-center gap-2 text-xs">
+                  <span>Qty: {item.quantity}</span>
+                  {item.variant && (
+                    <>
+                      <span>•</span>
+                      <span>{item.variant}</span>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
           ))}
-          {overflowCount > 0 ? (
-            <span className="inline-flex h-10 min-w-10 items-center justify-center rounded-md bg-muted px-2 text-xs font-medium text-muted-foreground border">
-              +{overflowCount}
-            </span>
-          ) : null}
-          <div className="ml-2 text-sm text-muted-foreground">
-            {deliverySummary}
-          </div>
+          {overflowCount > 0 && (
+            <div className="text-muted-foreground pl-15 text-xs">
+              + {overflowCount} more item{overflowCount > 1 ? "s" : ""}
+            </div>
+          )}
+        </div>
+        <div className="text-muted-foreground mt-4 border-t pt-3 text-sm">
+          <span className="text-foreground font-medium">Delivery:</span>{" "}
+          {deliverySummary}
         </div>
       </CardContent>
-      <CardFooter className="px-0">
+      <CardFooter className="px-0 pt-0">
         <div className="flex w-full items-center justify-between">
           <div className="text-sm font-semibold">{totalFormatted}</div>
           <div className="flex items-center gap-1.5">
@@ -104,5 +131,3 @@ export function OrderCard({
     </Card>
   );
 }
-
-

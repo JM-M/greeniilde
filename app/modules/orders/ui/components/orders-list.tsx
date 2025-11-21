@@ -18,7 +18,14 @@ export function OrdersList({ orders }: { orders: StoreOrder[] }) {
             day: "2-digit",
             year: "numeric",
           })}
-          thumbnailUrls={order.items?.map((item) => item.thumbnail || "") || []}
+          items={
+            order.items?.map((item) => ({
+              title: item.title,
+              thumbnail: item.thumbnail || "",
+              quantity: item.quantity,
+              variant: item.variant?.title || "",
+            })) || []
+          }
           totalFormatted={convertToLocale({
             amount: order.total,
             currency_code: order.currency_code,
