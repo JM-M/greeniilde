@@ -23,10 +23,14 @@ type DeliveryFormValues = {
 
 export const DeliveryMethods = () => {
   const { cart } = useSuspenseRetrieveCart();
+  console.log(cart);
 
-  const { data: terminalRates, isLoading } = useTerminalRates(cart?.id || "", {
-    enabled: !!cart?.id && !!cart?.shipping_address,
-  });
+  const { data: terminalRatesData, isLoading } = useTerminalRates(
+    cart?.id || "",
+    {
+      enabled: !!cart?.id && !!cart?.shipping_address,
+    },
+  );
 
   const { data: shippingOptions } = useListCartShippingMethodsQuery(
     cart?.id || "",
@@ -48,30 +52,25 @@ export const DeliveryMethods = () => {
     );
   }
 
-  const rates = terminalRates?.rates || [];
+  const rates = terminalRatesData?.rates || [];
 
   const handleRateChange = (rateId: string) => {
     const rate = rates.find((r) => r.rate_id === rateId);
     if (!rate || !cart?.id) return;
 
     // Find the corresponding shipping option
-    // We assume there's a mapping or we pick the first available option that matches the carrier
-    // For now, we'll try to find a shipping option that matches the carrier reference or just pick the first one
-    // In a real scenario, you might have specific shipping options for different carriers
-    const shippingOption = shippingOptions?.find(
-      (so) => so.data?.carrier_id === rate.carrier_reference,
+    // We strictly look for the option belonging to the 'fulfillment-terminal' provider
+    const targetShippingOption = shippingOptions?.find(
+      (so) => so.provider_id === "fulfillment-terminal_fulfillment-terminal",
     );
 
-    // If no specific match, fallback to the first available option (e.g., "Standard Delivery")
-    // This depends on how your backend is set up.
-    const targetShippingOption = shippingOption || shippingOptions?.[0];
-
-    if (targetShippingOption) {
+    if (targetShippingOption && terminalRatesData?.shipment?.shipment_id) {
       setCartShippingMethod({
         cartId: cart.id,
         shippingMethodId: targetShippingOption.id,
         data: {
           terminal_rate_id: rate.rate_id,
+          terminal_shipment_id: terminalRatesData.shipment.shipment_id,
           terminal_rate: rate,
         },
       });

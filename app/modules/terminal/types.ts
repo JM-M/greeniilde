@@ -230,3 +230,25 @@ export interface DefaultSenderAddress extends BaseAddress {
 
 export type TerminalGetDefaultSenderResponse =
   ApiResponse<DefaultSenderAddress>;
+
+export interface TerminalShipmentEvent {
+  created_at: string;
+  description: string;
+  location: string;
+  status: string;
+}
+
+export interface TerminalShipment {
+  address_from: TerminalAddress;
+  address_return?: TerminalAddress;
+  address_to: TerminalAddress;
+  events: TerminalShipmentEvent[];
+  id: string;
+  metadata?: Metadata;
+  parcel: TerminalParcel;
+  rate?: string | null;
+  shipment_id: string;
+  status: string;
+  created_at: string;
+  updated_at: string;
+}

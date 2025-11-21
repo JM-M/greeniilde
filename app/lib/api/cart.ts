@@ -24,7 +24,7 @@ export async function retrieveCart({
 }: RetrieveCartParams = {}) {
   const id = cartId || (await getCartIdCookie());
   fields ??=
-    "*items, *region, *items.product, *items.variant, *items.thumbnail, *items.metadata, +items.total, *promotions, +shipping_methods.name";
+    "*items, *region, *items.product, *items.variant, *items.thumbnail, *items.metadata, +items.total, *promotions, +shipping_methods.name, +shipping_methods.data";
 
   if (!id) {
     return null;
@@ -202,6 +202,7 @@ export type SetShippingMethodParams = {
   shippingMethodId: string;
   data: {
     terminal_rate_id: string;
+    terminal_shipment_id: string;
     terminal_rate: TerminalRate;
   };
 };
