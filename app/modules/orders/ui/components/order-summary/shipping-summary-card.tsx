@@ -4,28 +4,33 @@ import {
   CardHeader,
   CardTitle,
 } from "@/app/components/ui/card";
+import { HttpTypes } from "@medusajs/types";
 
-export function ShippingSummaryCard() {
-  // static mock content for UI only
-  const recipient = "Alex Johnson";
-  const line1 = "123 Market Street";
-  const city = "San Francisco, CA";
-  const contact = "alex@example.com";
+type ShippingSummaryCardProps = {
+  order: HttpTypes.StoreOrder;
+};
+
+export function ShippingSummaryCard({ order }: ShippingSummaryCardProps) {
+  const shippingAddress = order.shipping_address;
 
   return (
     <Card className="p-4 md:p-5">
-  <CardHeader className="px-0 py-0 grid-rows-1 gap-0 items-center">
+      <CardHeader className="grid-rows-1 items-center gap-0 px-0 py-0">
         <CardTitle className="text-muted-foreground text-sm font-medium">
           Shipping to
         </CardTitle>
       </CardHeader>
       <CardContent className="px-0">
         <div className="mt-2 text-sm">
-          <div className="font-semibold">{recipient}</div>
-          <div className="text-muted-foreground mt-1 truncate">
-            {line1}, {city}
+          <div className="font-semibold">
+            {shippingAddress?.first_name} {shippingAddress?.last_name}
           </div>
-          <div className="text-muted-foreground mt-1 truncate">{contact}</div>
+          <div className="text-muted-foreground mt-1 truncate">
+            {shippingAddress?.address_1}, {shippingAddress?.city}
+          </div>
+          <div className="text-muted-foreground mt-1 truncate">
+            {order.email}
+          </div>
         </div>
       </CardContent>
     </Card>

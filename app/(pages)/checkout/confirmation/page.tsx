@@ -14,4 +14,3 @@ const CheckoutConfirmationPage = async ({
 };
 
 export default CheckoutConfirmationPage;
-

@@ -65,8 +65,11 @@ const ReviewAndPaymentStep = () => {
 
   const onSuccess = async () => {
     try {
-      await placeOrder(cart?.id);
-      router.push(`/order/confirmed/${cart?.id}`);
+      const data = await placeOrder(cart?.id);
+      if (data.type === "order" && data.order) {
+        const orderId = data.order.id;
+        router.push(`/checkout/confirmation?orderId=${orderId}`);
+      }
     } catch (error) {
       console.error("Error placing order:", error);
     }

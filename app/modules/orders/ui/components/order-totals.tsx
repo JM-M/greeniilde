@@ -1,24 +1,38 @@
-import { cn } from "@/app/lib/utils";
+import { cn, convertToLocale } from "@/app/lib/utils";
+import { HttpTypes } from "@medusajs/types";
 
 interface OrderTotalsProps {
+  order: HttpTypes.StoreOrder;
   className?: string;
 }
 
-export function OrderTotals({ className }: OrderTotalsProps) {
-  // Static mock values for UI only
-  const subtotal = "$148.00";
-  const discount = "-$10.00";
-  const shipping = "$8.00";
-  const tax = "$12.40";
-  const fees = "$0.00";
-  const total = "$158.40";
+export function OrderTotals({ order, className }: OrderTotalsProps) {
+  const {
+    currency_code,
+    total,
+    subtotal,
+    tax_total,
+    shipping_total,
+    discount_total,
+  } = order;
 
   const rows: Array<{ label: string; value: string; emphasis?: boolean }> = [
-    { label: "Subtotal", value: subtotal },
-    { label: "Discounts", value: discount },
-    { label: "Shipping", value: shipping },
-    { label: "Tax", value: tax },
-    { label: "Fees", value: fees },
+    {
+      label: "Subtotal",
+      value: convertToLocale({ amount: subtotal, currency_code }),
+    },
+    {
+      label: "Discounts",
+      value: convertToLocale({ amount: discount_total, currency_code }),
+    },
+    {
+      label: "Shipping",
+      value: convertToLocale({ amount: shipping_total, currency_code }),
+    },
+    {
+      label: "Tax",
+      value: convertToLocale({ amount: tax_total, currency_code }),
+    },
   ];
 
   return (
@@ -39,7 +53,9 @@ export function OrderTotals({ className }: OrderTotalsProps) {
         <div className="mt-2 border-t pt-3">
           <div className="flex items-center justify-between">
             <span className="text-sm font-semibold">Total</span>
-            <span className="text-base font-semibold">{total}</span>
+            <span className="text-base font-semibold">
+              {convertToLocale({ amount: total, currency_code })}
+            </span>
           </div>
         </div>
       </div>

@@ -1,42 +1,17 @@
-import { cn } from "@/app/lib/utils";
-
-type OrderItem = {
-  id: string;
-  name: string;
-  variant?: string;
-  quantity: number;
-  unitPriceFormatted: string;
-  lineTotalFormatted: string;
-  imageUrl: string;
-};
+import { cn, convertToLocale } from "@/app/lib/utils";
+import { HttpTypes } from "@medusajs/types";
 
 interface OrderItemsListProps {
+  items: HttpTypes.StoreOrderLineItem[];
+  currencyCode: string;
   className?: string;
 }
 
-export function OrderItemsList({ className }: OrderItemsListProps) {
-  // Static mock data for pure UI
-  const items: OrderItem[] = [
-    {
-      id: "i1",
-      name: "Window Frame - Oak 120cm",
-      variant: "Oak / 120cm",
-      quantity: 1,
-      unitPriceFormatted: "$120.00",
-      lineTotalFormatted: "$120.00",
-      imageUrl: "/images/hero.jpg",
-    },
-    {
-      id: "i2",
-      name: "Handle Set - Matte Black",
-      variant: "Standard",
-      quantity: 2,
-      unitPriceFormatted: "$14.00",
-      lineTotalFormatted: "$28.00",
-      imageUrl: "/next.svg",
-    },
-  ];
-
+export function OrderItemsList({
+  items,
+  currencyCode,
+  className,
+}: OrderItemsListProps) {
   return (
     <div className={cn("rounded-xl border p-4 md:p-5", className)}>
       <div className="text-muted-foreground mb-3 text-sm font-medium">
@@ -49,25 +24,35 @@ export function OrderItemsList({ className }: OrderItemsListProps) {
             className="flex items-center justify-between gap-3"
           >
             <div className="flex min-w-0 items-center gap-3">
-              <img
-                src={item.imageUrl}
-                alt=""
-                className="h-12 w-12 shrink-0 rounded-md border object-cover"
-              />
+              <div className="bg-secondary size-12 rounded-md">
+                {item.thumbnail && (
+                  <img
+                    src={item.thumbnail ?? ""}
+                    alt={item.title}
+                    className="size-12 shrink-0 rounded-md border object-cover"
+                  />
+                )}
+              </div>
               <div className="min-w-0">
-                <div className="truncate text-sm font-medium">{item.name}</div>
+                <div className="truncate text-sm font-medium">{item.title}</div>
                 <div className="text-muted-foreground text-xs">
-                  {item.variant ? `${item.variant} • ` : null}Qty{" "}
+                  {item.variant?.title ? `${item.variant.title} • ` : null}Qty{" "}
                   {item.quantity}
                 </div>
               </div>
             </div>
             <div className="text-right">
               <div className="text-muted-foreground text-sm">
-                {item.unitPriceFormatted}
+                {convertToLocale({
+                  amount: item.unit_price,
+                  currency_code: currencyCode,
+                })}
               </div>
               <div className="text-sm font-semibold">
-                {item.lineTotalFormatted}
+                {convertToLocale({
+                  amount: item.total,
+                  currency_code: currencyCode,
+                })}
               </div>
             </div>
           </div>
