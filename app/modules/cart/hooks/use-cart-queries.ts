@@ -34,7 +34,7 @@ export const useSuspenseRetrieveCart = (
     cart,
     numCartItems,
     items: cart?.items || [],
-    subtotal: cart?.subtotal || 0,
+    subtotal: cart?.item_subtotal || 0,
     total: cart?.total || 0, // TODO: Total should not exist if shipping method is not selected
     tax_total: cart?.tax_total || 0,
     shipping_total: cart?.shipping_total || 0,

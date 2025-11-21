@@ -21,9 +21,10 @@ type DeliveryFormValues = {
   rateId: string;
 };
 
+// TODO: Sync selected method with cart.shipping_methods[0]. Note that a free rate is always generated.
+
 export const DeliveryMethods = () => {
   const { cart } = useSuspenseRetrieveCart();
-  console.log(cart);
 
   const { data: terminalRatesData, isLoading } = useTerminalRates(
     cart?.id || "",
