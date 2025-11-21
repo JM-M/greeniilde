@@ -6,10 +6,13 @@ import type { CheckoutStep } from "@/app/modules/checkout/types";
 import * as React from "react";
 import { Suspense } from "react";
 
+import dynamic from "next/dynamic";
+
 const ShippingStep = React.lazy(() => import("./shipping-step"));
 const DeliveryMethodStep = React.lazy(() => import("./delivery-method-step"));
-const ReviewAndPaymentStep = React.lazy(
+const ReviewAndPaymentStep = dynamic(
   () => import("./review-and-payment-step"),
+  { ssr: false },
 );
 
 const STEP_COMPONENTS: Record<CheckoutStep, React.ComponentType> = {

@@ -24,7 +24,7 @@ export async function retrieveCart({
 }: RetrieveCartParams = {}) {
   const id = cartId || (await getCartIdCookie());
   fields ??=
-    "*items, *region, *items.product, *items.variant, *items.thumbnail, *items.metadata, +items.total, *promotions, +shipping_methods.name, +shipping_methods.data";
+    "*items, *region, *items.product, *items.variant, *items.thumbnail, *items.metadata, +items.total, *promotions, +shipping_methods.name, +shipping_methods.data, *payment_collection, *payment_collection.payment_sessions";
 
   if (!id) {
     return null;
