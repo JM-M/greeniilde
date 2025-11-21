@@ -5,7 +5,7 @@ import { cn } from "@/app/lib/utils";
 import { useLogout } from "@/app/modules/auth/hooks/use-auth-mutations";
 import { useSuspenseCustomer } from "@/app/modules/auth/hooks/use-customer-queries";
 import { useAuthModal } from "@/app/providers/auth-modal-provider";
-import { UserCircleIcon } from "lucide-react";
+import { LogOutIcon, UserCircleIcon } from "lucide-react";
 import { Button } from "../../ui/button";
 import { Spinner } from "../../ui/spinner";
 
@@ -22,17 +22,15 @@ export const AuthButton = () => {
     return (
       <Button
         variant="ghost"
-        size={isMobile ? "icon" : "sm"}
+        size="icon"
         onClick={() => logout()}
         disabled={isLoggingOut}
-        className={cn({ "text-primary bg-background": !isMobile })}
+        className="text-background"
       >
-        {isMobile ? (
-          <UserCircleIcon className="size-5" strokeWidth={1.4} />
-        ) : isLoggingOut ? (
+        {isLoggingOut ? (
           <Spinner />
         ) : (
-          "Logout"
+          <LogOutIcon className="size-5" strokeWidth={1.4} />
         )}
       </Button>
     );
