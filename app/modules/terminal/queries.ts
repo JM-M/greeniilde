@@ -4,33 +4,30 @@ import {
   getStates,
   getTerminalRates,
 } from "@/app/lib/api/terminal";
-import {
-  createQueryAction,
-  createSuspenseQueryAction,
-} from "@/app/lib/query/create-query-action";
+import { createQuery, createSuspenseQuery } from "@/app/lib/query/create-query";
 
 // Create query utilities
-const getCountriesQuery = createSuspenseQueryAction(getCountries, [
+const getCountriesQuery = createSuspenseQuery(getCountries, [
   "terminal",
   "getCountries",
 ]);
 
-const getStatesQuery = createSuspenseQueryAction(getStates, [
+const getStatesQuery = createSuspenseQuery(getStates, [
   "terminal",
   "getStates",
 ]);
 
-const getCitiesQuery = createSuspenseQueryAction(getCities, [
+const getCitiesQuery = createSuspenseQuery(getCities, [
   "terminal",
   "getCities",
 ]);
 
-const getCitiesQueryNonSuspense = createQueryAction(getCities, [
+const getCitiesQueryNonSuspense = createQuery(getCities, [
   "terminal",
   "getCities",
 ]);
 
-const getTerminalRatesQuery = createQueryAction(getTerminalRates, [
+const getTerminalRatesQuery = createQuery(getTerminalRates, [
   "terminal",
   "getTerminalRates",
 ]);

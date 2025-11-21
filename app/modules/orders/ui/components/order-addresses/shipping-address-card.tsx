@@ -5,34 +5,46 @@ import {
   CardTitle,
 } from "@/app/components/ui/card";
 
-export function ShippingAddressCard() {
-  // Static mock content for UI only
-  const name = "Alex Johnson";
-  const line1 = "123 Market Street";
-  const line2 = "Apt 4B";
-  const cityStateZip = "San Francisco, CA 94103";
-  const country = "United States";
-  const contact = "alex@example.com";
+import { StoreOrder } from "@medusajs/types";
+
+export function ShippingAddressCard({ order }: { order: StoreOrder }) {
+  const { shipping_address } = order;
+
+  if (!shipping_address) {
+    return null;
+  }
+
+  const {
+    first_name,
+    last_name,
+    address_1,
+    address_2,
+    city,
+    province,
+    postal_code,
+    country_code,
+    phone,
+  } = shipping_address;
 
   return (
     <Card className="p-4 md:p-5" aria-label="Shipping address">
-      <CardHeader className="px-0 py-0 grid-rows-1 gap-0">
+      <CardHeader className="grid-rows-1 gap-0 px-0 py-0">
         <CardTitle className="text-muted-foreground text-sm font-medium">
           Shipping address
         </CardTitle>
       </CardHeader>
       <CardContent className="px-0">
         <div className="mt-2 text-sm">
-          <div className="font-semibold">{name}</div>
-          <div className="mt-1">{line1}</div>
-          <div>{line2}</div>
-          <div>{cityStateZip}</div>
-          <div className="text-muted-foreground">{country}</div>
-          <div className="text-muted-foreground mt-2 truncate">{contact}</div>
+          <div className="font-semibold">{`${first_name} ${last_name}`}</div>
+          <div className="mt-1">{address_1}</div>
+          {address_2 && <div>{address_2}</div>}
+          <div>{`${city}, ${province ? `${province} ` : ""}${postal_code}`}</div>
+          <div className="text-muted-foreground uppercase">{country_code}</div>
+          {phone && (
+            <div className="text-muted-foreground mt-2 truncate">{phone}</div>
+          )}
         </div>
       </CardContent>
     </Card>
   );
 }
-
-

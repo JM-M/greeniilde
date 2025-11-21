@@ -7,34 +7,45 @@ type TimelineStep = {
   state: StepState;
 };
 
-export function OrderStatusTimeline() {
-  // Mock, static steps purely for UI
+import { StoreOrder } from "@medusajs/types";
+
+export function OrderStatusTimeline({ order }: { order: StoreOrder }) {
+  const createdDate = new Date(order.created_at).toLocaleString("en-US", {
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+  });
+
+  const isShipped =
+    order.fulfillment_status === "shipped" ||
+    order.fulfillment_status === "fulfilled" ||
+    order.fulfillment_status === "partially_shipped";
+
+  // Mock, static steps purely for UI but updated with some real data logic
   const steps: TimelineStep[] = [
     {
       key: "placed",
       label: "Placed",
-      at: "Nov 08, 9:15 AM",
+      at: createdDate,
       state: "completed",
     },
     {
       key: "processed",
       label: "Processed",
-      at: "Nov 08, 11:42 AM",
-      state: "completed",
+      at: isShipped ? "Completed" : "In Progress", // Simplified logic
+      state: isShipped ? "completed" : "current",
     },
     {
       key: "shipped",
       label: "Shipped",
-      at: "Nov 09, 3:10 PM",
-      state: "completed",
+      state: isShipped ? "completed" : "upcoming",
     },
     {
-      key: "out-for-delivery",
-      label: "Out for delivery",
-      at: "Nov 12, 8:05 AM",
-      state: "current",
+      key: "delivered",
+      label: "Delivered",
+      state: "upcoming", // We don't have delivery status in standard order object yet
     },
-    { key: "delivered", label: "Delivered", state: "upcoming" },
   ];
 
   return (

@@ -1,16 +1,13 @@
-import {
-  getCategory,
-  listCategories,
-} from "@/app/lib/api/categories";
-import { createSuspenseQueryAction } from "@/app/lib/query/create-query-action";
+import { getCategory, listCategories } from "@/app/lib/api/categories";
+import { createSuspenseQuery } from "@/app/lib/query/create-query";
 
 // Create query utilities
-const listCategoriesQuery = createSuspenseQueryAction(listCategories, [
+const listCategoriesQuery = createSuspenseQuery(listCategories, [
   "categories",
   "listCategories",
 ]);
 
-const getCategoryQuery = createSuspenseQueryAction(getCategory, [
+const getCategoryQuery = createSuspenseQuery(getCategory, [
   "categories",
   "getCategory",
 ]);

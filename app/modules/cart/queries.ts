@@ -1,13 +1,13 @@
 import { listCartShippingOptions, retrieveCart } from "@/app/lib/api/cart";
-import { createSuspenseQueryAction } from "@/app/lib/query/create-query-action";
+import { createSuspenseQuery } from "@/app/lib/query/create-query";
 
 // Create query utilities
-const retrieveCartQuery = createSuspenseQueryAction(retrieveCart, [
+const retrieveCartQuery = createSuspenseQuery(retrieveCart, [
   "cart",
   "retrieveCart",
 ]);
 
-const listCartShippingOptionsQuery = createSuspenseQueryAction(
+const listCartShippingOptionsQuery = createSuspenseQuery(
   listCartShippingOptions,
   ["cart", "listCartShippingOptions"],
 );

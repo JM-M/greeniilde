@@ -1,44 +1,47 @@
-import { FulfillmentGroupCard, type FulfillmentGroup } from "@/app/modules/orders/ui/components/fulfillment-groups/fulfillment-group-card";
+import {
+  FulfillmentGroupCard,
+  type FulfillmentGroup,
+} from "@/app/modules/orders/ui/components/fulfillment-groups/fulfillment-group-card";
+import { StoreOrder } from "@medusajs/types";
 
-const MOCK_ITEMS = [
-  { id: "i1", name: "Window Frame - Oak 120cm", qty: 1, imageUrl: "/images/hero.jpg" },
-  { id: "i2", name: "Handle Set - Matte Black", qty: 2, imageUrl: "/next.svg" },
-  { id: "i3", name: "Weather Strip Kit", qty: 1, imageUrl: "/vercel.svg" },
-];
+export function FulfillmentGroupsList({ order }: { order: StoreOrder }) {
+  const fulfillments = order.fulfillments || [];
 
-const MOCK_GROUPS_SINGLE: FulfillmentGroup[] = [
-  {
-    id: "g1",
-    status: "shipped",
-    carrier: "UPS",
-    trackingId: "1Z 999 AA1 01 2345 6784",
-    etaOrDelivered: "Arrives Tue, Nov 18",
-    items: MOCK_ITEMS,
-  },
-];
+  if (fulfillments.length === 0) {
+    return (
+      <div className="h-full rounded-xl border p-4 md:p-5">
+        <div className="text-muted-foreground mb-3 text-sm font-medium">
+          Items
+        </div>
+        <div className="text-muted-foreground text-sm">
+          No shipments created yet.
+        </div>
+      </div>
+    );
+  }
 
-const MOCK_GROUPS_MULTI: FulfillmentGroup[] = [
-  {
-    id: "g1",
-    status: "delivered",
-    carrier: "UPS",
-    trackingId: "1Z 999 AA1 01 1111 1111",
-    etaOrDelivered: "Delivered Nov 10",
-    items: [MOCK_ITEMS[0]],
-  },
-  {
-    id: "g2",
-    status: "out-for-delivery",
-    carrier: "FedEx",
-    trackingId: "7845 3321 9911",
-    etaOrDelivered: "Out for delivery",
-    items: [MOCK_ITEMS[1], MOCK_ITEMS[2]],
-  },
-];
+  const groups: FulfillmentGroup[] = fulfillments.map((fulfillment: any) => {
+    const items = (fulfillment.items || []).map((item: any) => {
+      // Find the line item in the order to get details like name and thumbnail
+      const lineItem = (order.items || []).find((i) => i.id === item.item_id);
+      return {
+        id: item.item_id,
+        name: lineItem?.title || "Unknown Item",
+        qty: item.quantity,
+        imageUrl: lineItem?.thumbnail || "",
+      };
+    });
 
-export function FulfillmentGroupsList() {
-  // Toggle between SINGLE or MULTI to eyeball layouts
-  const groups: FulfillmentGroup[] = MOCK_GROUPS_SINGLE;
+    return {
+      id: fulfillment.id,
+      status: "shipped", // Default to shipped as Medusa fulfillment usually implies shipped/fulfilled
+      carrier: fulfillment.provider_id, // Or map from metadata if available
+      trackingId: (fulfillment.tracking_numbers?.[0] as string) || undefined,
+      etaOrDelivered: new Date(fulfillment.created_at).toLocaleDateString(), // Using created_at as a proxy for date
+      items,
+    };
+  });
+
   const total = groups.length;
 
   if (total === 1) {
@@ -58,9 +61,7 @@ export function FulfillmentGroupsList() {
   // Multiple fulfillments: render heading and indexed cards
   return (
     <div aria-label="Shipments" className="flex flex-col gap-4">
-      <div className="text-sm font-medium text-muted-foreground">
-        Shipments
-      </div>
+      <div className="text-muted-foreground text-sm font-medium">Shipments</div>
       <div className="flex flex-col gap-4">
         {groups.map((group, idx) => (
           <FulfillmentGroupCard
@@ -75,5 +76,3 @@ export function FulfillmentGroupsList() {
     </div>
   );
 }
-
-

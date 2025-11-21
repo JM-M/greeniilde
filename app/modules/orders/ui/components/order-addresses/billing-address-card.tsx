@@ -5,32 +5,42 @@ import {
   CardTitle,
 } from "@/app/components/ui/card";
 
-export function BillingAddressCard() {
-  // Static mock content for UI only
-  const name = "Alex Johnson";
-  const line1 = "123 Market Street";
-  const line2 = "Apt 4B";
-  const cityStateZip = "San Francisco, CA 94103";
-  const country = "United States";
+import { StoreOrder } from "@medusajs/types";
+
+export function BillingAddressCard({ order }: { order: StoreOrder }) {
+  const { billing_address } = order;
+
+  if (!billing_address) {
+    return null;
+  }
+
+  const {
+    first_name,
+    last_name,
+    address_1,
+    address_2,
+    city,
+    province,
+    postal_code,
+    country_code,
+  } = billing_address;
 
   return (
     <Card className="p-4 md:p-5" aria-label="Billing address">
-      <CardHeader className="px-0 py-0 grid-rows-1 gap-0">
+      <CardHeader className="grid-rows-1 gap-0 px-0 py-0">
         <CardTitle className="text-muted-foreground text-sm font-medium">
           Billing address
         </CardTitle>
       </CardHeader>
       <CardContent className="px-0">
         <div className="mt-2 text-sm">
-          <div className="font-semibold">{name}</div>
-          <div className="mt-1">{line1}</div>
-          <div>{line2}</div>
-          <div>{cityStateZip}</div>
-          <div className="text-muted-foreground">{country}</div>
+          <div className="font-semibold">{`${first_name} ${last_name}`}</div>
+          <div className="mt-1">{address_1}</div>
+          {address_2 && <div>{address_2}</div>}
+          <div>{`${city}, ${province ? `${province} ` : ""}${postal_code}`}</div>
+          <div className="text-muted-foreground uppercase">{country_code}</div>
         </div>
       </CardContent>
     </Card>
   );
 }
-
-

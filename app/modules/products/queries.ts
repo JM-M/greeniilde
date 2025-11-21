@@ -11,61 +11,58 @@ import {
   listProducts,
   searchProducts,
 } from "@/app/lib/api/products";
-import {
-  createQueryAction,
-  createSuspenseQueryAction,
-} from "@/app/lib/query/create-query-action";
+import { createQuery, createSuspenseQuery } from "@/app/lib/query/create-query";
 
 // Create query utilities
-const listProductsQuery = createSuspenseQueryAction(listProducts, [
+const listProductsQuery = createSuspenseQuery(listProducts, [
   "products",
   "listProducts",
 ]);
 
-const getProductQuery = createSuspenseQueryAction(getProduct, [
+const getProductQuery = createSuspenseQuery(getProduct, [
   "products",
   "getProduct",
 ]);
 
-const searchProductsQuery = createSuspenseQueryAction(searchProducts, [
+const searchProductsQuery = createSuspenseQuery(searchProducts, [
   "products",
   "searchProducts",
 ]);
 
-const getProductHitsQuery = createSuspenseQueryAction(getProductHits, [
+const getProductHitsQuery = createSuspenseQuery(getProductHits, [
   "products",
   "getProductHits",
 ]);
 
-const getProductsFromMeilisearchQuery = createSuspenseQueryAction(
+const getProductsFromMeilisearchQuery = createSuspenseQuery(
   getProductsFromMeilisearch,
   ["products", "getProductsFromMeilisearch"],
 );
 
-const getProductsFromMeilisearchQueryNonSuspense = createQueryAction(
+const getProductsFromMeilisearchQueryNonSuspense = createQuery(
   getProductsFromMeilisearch,
   ["products", "getProductsFromMeilisearch"],
 );
 
-const getFilterableAttributesQuery = createSuspenseQueryAction(
+const getFilterableAttributesQuery = createSuspenseQuery(
   getFilterableAttributes,
   ["products", "getFilterableAttributes"],
 );
 
-const getFacetDistributionsQuery = createSuspenseQueryAction(
-  getFacetDistributions,
-  ["products", "getFacetDistributions"],
-);
+const getFacetDistributionsQuery = createSuspenseQuery(getFacetDistributions, [
+  "products",
+  "getFacetDistributions",
+]);
 
-const getProductReviewsQuery = createSuspenseQueryAction(getProductReviews, [
+const getProductReviewsQuery = createSuspenseQuery(getProductReviews, [
   "products",
   "getProductReviews",
 ]);
 
-const getProductReviewStatsQuery = createSuspenseQueryAction(
-  getProductReviewStats,
-  ["products", "getProductReviewStats"],
-);
+const getProductReviewStatsQuery = createSuspenseQuery(getProductReviewStats, [
+  "products",
+  "getProductReviewStats",
+]);
 
 // Export query utilities for easy access to query keys
 // Usage: productQueries.listProducts.queryKey(query)
