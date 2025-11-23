@@ -202,7 +202,9 @@ export type SetShippingMethodParams = {
   shippingMethodId: string;
   data: {
     terminal_rate_id: string;
-    terminal_shipment_id: string;
+    terminal_pickup_address_id: string;
+    terminal_delivery_address_id: string;
+    terminal_parcel_id: string;
     terminal_rate: TerminalRate;
   };
 };

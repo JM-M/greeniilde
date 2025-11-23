@@ -5,7 +5,6 @@ import {
   TerminalGetCountriesResponse,
   TerminalGetStatesResponse,
   TerminalRate,
-  TerminalShipment,
 } from "@/app/modules/terminal/types";
 import { sdk } from "../medusa/config";
 import { makeTerminalRequest, terminalClient } from "../terminal/config";
@@ -78,7 +77,9 @@ export const getTerminalRates = async (cartId: string) => {
 
   return sdk.client.fetch<{
     rates: TerminalRate[];
-    shipment: TerminalShipment;
+    pickup_address_id: string;
+    delivery_address_id: string;
+    parcel_id: string;
   }>(`/store/terminal/rates`, {
     method: "POST",
     body: {

@@ -65,13 +65,20 @@ export const DeliveryMethods = () => {
       (so) => so.provider_id === "fulfillment-terminal_fulfillment-terminal",
     );
 
-    if (targetShippingOption && terminalRatesData?.shipment?.shipment_id) {
+    if (
+      targetShippingOption &&
+      terminalRatesData?.pickup_address_id &&
+      terminalRatesData?.delivery_address_id &&
+      terminalRatesData?.parcel_id
+    ) {
       setCartShippingMethod({
         cartId: cart.id,
         shippingMethodId: targetShippingOption.id,
         data: {
           terminal_rate_id: rate.rate_id,
-          terminal_shipment_id: terminalRatesData.shipment.shipment_id,
+          terminal_pickup_address_id: terminalRatesData.pickup_address_id,
+          terminal_delivery_address_id: terminalRatesData.delivery_address_id,
+          terminal_parcel_id: terminalRatesData.parcel_id,
           terminal_rate: rate,
         },
       });
