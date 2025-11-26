@@ -1,3 +1,5 @@
+// No longer in use. Replaced by single-page-checkout.tsx
+
 "use client";
 
 import { CHECKOUT_STEPS } from "@/app/modules/checkout/constants";

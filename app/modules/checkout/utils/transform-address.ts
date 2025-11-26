@@ -1,6 +1,6 @@
 import { SetAddressesParams } from "@/app/lib/api/cart";
-import { AddressFormValues } from "@/app/modules/checkout/ui/components/shipping-address-form/address-fields";
-import type { ShippingFormValues } from "../ui/components/shipping-address-form";
+import { AddressFormValues } from "@/app/modules/checkout/ui/components/addresses-form/address-fields";
+import type { ShippingFormValues } from "../ui/components/addresses-form";
 
 /**
  * Transforms shipping form values into the format expected by setCartAddresses

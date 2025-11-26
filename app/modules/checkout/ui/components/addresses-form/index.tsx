@@ -9,70 +9,80 @@ import {
   FormItem,
   FormLabel,
 } from "@/app/components/ui/form";
-import { DEFAULT_COUNTRY_CODE } from "@/app/constants/terminal";
 import { useSetCartAddresses } from "@/app/modules/cart/hooks/use-cart-mutations";
 import { useSuspenseRetrieveCart } from "@/app/modules/cart/hooks/use-cart-queries";
-import {
-  AddressFields,
-  addressSchema,
-} from "@/app/modules/checkout/ui/components/shipping-address-form/address-fields";
+import { AddressFields } from "@/app/modules/checkout/ui/components/addresses-form/address-fields";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRightIcon } from "lucide-react";
+import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { z } from "zod";
+import { useDebouncedCallback } from "use-debounce";
 import { CHECKOUT_STEPS } from "../../../constants";
 import { useCheckoutStepParams } from "../../../hooks/use-checkout-step-param";
 import { transformFormValuesToAddresses } from "../../../utils/transform-address";
+import { addressesFormSchema, ShippingFormValues } from "./schemas";
+import { getDefaultValues, initialAddress } from "./utils";
 
-const shippingFormSchema = z
-  .object({
-    shipping: addressSchema,
-    sameAsShipping: z.boolean(),
-    billing: addressSchema.nullable(),
-  })
-  .superRefine((data, ctx) => {
-    if (!data.sameAsShipping && !data.billing) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "Billing address is required",
-        path: ["billing"],
-      });
-    }
-  });
-
-const initialAddress = {
-  firstName: "",
-  lastName: "",
-  email: "",
-  phone: "",
-  addressLine1: "",
-  addressLine2: "",
-  company: "",
-  postalCode: "",
-  city: "",
-  countryCode: DEFAULT_COUNTRY_CODE,
-  state: "",
-};
-
-export type ShippingFormValues = z.infer<typeof shippingFormSchema>;
-
-export const ShippingAddressForm = () => {
+export const AddressesForm = ({
+  onSuccess,
+  submitButtonLabel = "Proceed to delivery method",
+  autoSubmit = false,
+}: {
+  onSuccess?: () => void;
+  submitButtonLabel?: string;
+  autoSubmit?: boolean;
+}) => {
   const [_, setCheckoutStepParams] = useCheckoutStepParams();
   const { cart } = useSuspenseRetrieveCart();
   const { mutate: setCartAddresses, isPending: isSettingCartAddresses } =
     useSetCartAddresses();
 
+  const defaultValues = useMemo(
+    () => getDefaultValues(cart || undefined),
+    [cart],
+  );
+
   const form = useForm<ShippingFormValues>({
-    resolver: zodResolver(shippingFormSchema),
-    defaultValues: {
-      shipping: initialAddress,
-      sameAsShipping: true,
-      billing: null,
-    },
+    resolver: zodResolver(addressesFormSchema),
+    defaultValues,
+    mode: "onChange",
   });
 
+  // Update form values when cart changes (e.g. initial load)
+  useEffect(() => {
+    if (form.formState.isDirty) return;
+    form.reset(defaultValues);
+  }, [defaultValues, form]);
+
   const sameAsShipping = form.watch("sameAsShipping");
+  const values = form.watch();
+
+  const debouncedSubmit = useDebouncedCallback(() => {
+    console.log("auto updating");
+    form.handleSubmit(onSubmit)();
+  }, 500);
+
+  useEffect(() => {
+    const validation = addressesFormSchema.safeParse(values);
+    const isValid = validation.success;
+
+    // console.log({
+    //   isDirty: form.formState.isDirty,
+    //   notIsSubmitted: !form.formState.isSubmitted,
+    //   autoSubmit,
+    //   isValid,
+    //   notIsSettingCartAddresses: !isSettingCartAddresses,
+    // });
+    if (
+      form.formState.isDirty &&
+      autoSubmit &&
+      isValid &&
+      !isSettingCartAddresses
+    ) {
+      debouncedSubmit();
+    }
+  }, [autoSubmit, isSettingCartAddresses, form, values, debouncedSubmit]);
 
   const onSubmit = (values: ShippingFormValues) => {
     if (!cart?.id) {
@@ -83,13 +93,19 @@ export const ShippingAddressForm = () => {
     const addressesData = transformFormValuesToAddresses(values, cart.id);
     setCartAddresses(addressesData, {
       onSuccess: () => {
-        setCheckoutStepParams({
-          step: CHECKOUT_STEPS[1],
-        });
+        if (onSuccess) {
+          onSuccess();
+        } else {
+          setCheckoutStepParams({
+            step: CHECKOUT_STEPS[1],
+          });
+        }
         toast.success("Shipping address set successfully");
+        form.reset(values);
       },
       onError: () => {
         toast.error("Failed to set shipping address");
+        form.reset(values);
       },
     });
   };
@@ -109,7 +125,7 @@ export const ShippingAddressForm = () => {
               control={form.control}
               name="sameAsShipping"
               render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-y-0 space-x-3 rounded-md border p-4">
+                <FormItem className="flex flex-row items-center space-y-0 space-x-3 rounded-md border p-4">
                   <FormControl>
                     <Checkbox
                       checked={field.value}
@@ -117,8 +133,11 @@ export const ShippingAddressForm = () => {
                         field.onChange(checked);
                         if (!checked) {
                           form.setValue("billing", initialAddress);
+                        } else {
+                          form.setValue("billing", null);
                         }
                       }}
+                      className="mr-1"
                     />
                   </FormControl>
                   <div className="space-y-1 leading-none">
@@ -138,14 +157,18 @@ export const ShippingAddressForm = () => {
             )}
           </div>
 
-          <Button
-            type="submit"
-            className="w-full"
-            disabled={isSettingCartAddresses}
-          >
-            Proceed to delivery method
-            <ArrowRightIcon className="ml-2 h-4 w-4" />
-          </Button>
+          {!autoSubmit && (
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={isSettingCartAddresses}
+            >
+              {submitButtonLabel}
+              {submitButtonLabel === "Proceed to delivery method" && (
+                <ArrowRightIcon className="ml-2 h-4 w-4" />
+              )}
+            </Button>
+          )}
         </form>
       </Form>
     </div>

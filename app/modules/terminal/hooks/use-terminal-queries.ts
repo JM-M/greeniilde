@@ -88,13 +88,20 @@ export const useGetCities = (
  */
 export const useTerminalRates = (
   cartId: string,
+  dependencies: {
+    items?: unknown[];
+    shipping_address?: unknown;
+  },
   options?: Omit<
     UseQueryOptions<Awaited<ReturnType<typeof getTerminalRates>>, Error>,
     "queryKey" | "queryFn"
   >,
 ) => {
   return useQuery(
-    terminalQueries.getTerminalRates.queryOptions(cartId, options),
+    terminalQueries.getTerminalRates.queryOptions(
+      { cartId, ...dependencies },
+      options,
+    ),
   );
 };
 

@@ -6,15 +6,18 @@ import {
   FormLabel,
 } from "@/app/components/ui/form";
 import { RadioGroup, RadioGroupItem } from "@/app/components/ui/radio-group";
+import { Spinner } from "@/app/components/ui/spinner";
 import { cn, convertToLocale } from "@/app/lib/utils";
 import { useSetCartShippingMethod } from "@/app/modules/cart/hooks/use-cart-mutations";
 import {
   useListCartShippingMethodsQuery,
   useSuspenseRetrieveCart,
 } from "@/app/modules/cart/hooks/use-cart-queries";
+import { cartMutations } from "@/app/modules/cart/mutations";
 import { useTerminalRates } from "@/app/modules/terminal/hooks/use-terminal-queries";
-import { Loader2 } from "lucide-react";
+import { useIsMutating } from "@tanstack/react-query";
 import Image from "next/image";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 type DeliveryFormValues = {
@@ -26,12 +29,24 @@ type DeliveryFormValues = {
 export const DeliveryMethods = () => {
   const { cart } = useSuspenseRetrieveCart();
 
-  const { data: terminalRatesData, isLoading } = useTerminalRates(
+  const {
+    data: terminalRatesData,
+    isLoading,
+    isFetching,
+  } = useTerminalRates(
     cart?.id || "",
+    {
+      items: cart?.items,
+      shipping_address: cart?.shipping_address,
+    },
     {
       enabled: !!cart?.id && !!cart?.shipping_address,
     },
   );
+
+  const isUpdatingAddress = useIsMutating({
+    mutationKey: cartMutations.setCartAddresses.mutationKey(),
+  });
 
   const { data: shippingOptions } = useListCartShippingMethodsQuery(
     cart?.id || "",
@@ -45,10 +60,18 @@ export const DeliveryMethods = () => {
     mode: "onSubmit",
   });
 
-  if (isLoading) {
+  // console.log(cart?.shipping_address);
+
+  // Clear selected rate when shipping address changes
+  useEffect(() => {
+    // console.log(cart?.shipping_address);
+    form.setValue("rateId", "");
+  }, [cart?.shipping_address, form]);
+
+  if (isLoading || isFetching || isUpdatingAddress > 0) {
     return (
       <div className="flex items-center justify-center py-4">
-        <Loader2 className="text-muted-foreground size-6 animate-spin" />
+        <Spinner className="size-6" />
       </div>
     );
   }

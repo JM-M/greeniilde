@@ -27,10 +27,10 @@ const getCitiesQueryNonSuspense = createQuery(getCities, [
   "getCities",
 ]);
 
-const getTerminalRatesQuery = createQuery(getTerminalRates, [
-  "terminal",
-  "getTerminalRates",
-]);
+const getTerminalRatesQuery = createQuery<
+  Awaited<ReturnType<typeof getTerminalRates>>,
+  { cartId: string; items?: unknown[]; shipping_address?: unknown }
+>(({ cartId }) => getTerminalRates(cartId), ["terminal", "getTerminalRates"]);
 
 // Export query utilities for easy access to query keys
 // Usage: terminalQueries.getCountries.queryKey()

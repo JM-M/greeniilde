@@ -6,18 +6,17 @@ import {
   deleteLineItem,
   initiatePaymentSession,
   placeOrder,
-  setAddresses,
   setShippingMethod,
   updateCart,
   updateLineItem,
   type AddToCartParams,
   type CreateBuyNowCartParams,
   type DeleteLineItemParams,
-  type SetAddressesParams,
   type SetShippingMethodParams,
   type UpdateCartParams,
   type UpdateLineItemParams,
 } from "@/app/lib/api/cart";
+import { cartMutations } from "@/app/modules/cart/mutations";
 import { cartQueries } from "@/app/modules/cart/queries";
 import { HttpTypes, StoreCart } from "@medusajs/types";
 import {
@@ -221,17 +220,18 @@ export const useUpdateCart = () => {
 export const useSetCartAddresses = () => {
   const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: (params: SetAddressesParams) => setAddresses(params),
-    onSuccess: () => {
-      invalidateCart(queryClient);
-      toast.success("Addresses updated successfully");
-    },
-    onError: (error) => {
-      console.error("Failed to set addresses:", error);
-      toast.error("Failed to update addresses");
-    },
-  });
+  return useMutation(
+    cartMutations.setCartAddresses.mutationOptions({
+      onSuccess: () => {
+        invalidateCart(queryClient);
+        toast.success("Addresses updated successfully");
+      },
+      onError: (error) => {
+        console.error("Failed to set addresses:", error);
+        toast.error("Failed to update addresses");
+      },
+    }),
+  );
 };
 
 export const useSetCartShippingMethod = () => {

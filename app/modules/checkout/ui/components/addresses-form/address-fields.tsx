@@ -31,7 +31,10 @@ export const addressSchema = z.object({
   lastName: z.string().min(1, "Last name is required"),
   email: z.email("Enter a valid email"),
   phone: z.string().optional(),
-  addressLine1: z.string().min(1, "Address line 1 is required"),
+  addressLine1: z
+    .string()
+    .min(1, "Address line 1 is required")
+    .max(45, "Address line 1 should not be more than 45 characters."),
   addressLine2: z.string().optional(),
   company: z.string().optional(),
   postalCode: z.string().min(1, "Postal code is required"),
@@ -212,7 +215,15 @@ export const AddressFields = ({ prefix = "" }: AddressFieldsProps) => {
               <FormControl>
                 <CountriesSelect
                   value={field.value}
-                  onValueChange={field.onChange}
+                  onValueChange={(value) => {
+                    field.onChange(value);
+                    form.setValue(fieldName("state"), "", {
+                      shouldValidate: false,
+                    });
+                    form.setValue(fieldName("city"), "", {
+                      shouldValidate: false,
+                    });
+                  }}
                   placeholder="Select country..."
                 />
               </FormControl>
@@ -229,7 +240,12 @@ export const AddressFields = ({ prefix = "" }: AddressFieldsProps) => {
               <FormControl>
                 <StatesSelect
                   value={field.value}
-                  onValueChange={field.onChange}
+                  onValueChange={(value) => {
+                    field.onChange(value);
+                    form.setValue(fieldName("city"), "", {
+                      shouldValidate: false,
+                    });
+                  }}
                   countryCode={countryCode}
                   placeholder="Select state..."
                 />
