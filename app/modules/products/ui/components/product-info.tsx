@@ -1,5 +1,5 @@
 import { Badge } from "@/app/components/ui/badge";
-import { cn } from "@/app/lib/utils";
+import { cn, convertToLocale } from "@/app/lib/utils";
 import { HttpTypes } from "@medusajs/types";
 import { useProductDetailsContext } from "../contexts/product-details-context";
 
@@ -23,12 +23,15 @@ export const ProductInfo = ({ name, tags, className }: ProductInfoProps) => {
   return (
     <div className={cn("space-y-3", className)}>
       <div className="space-y-1">
-        <h1 className="text-2xl leading-tight font-semibold">{name}</h1>
+        <h1 className="text-2xl leading-tight">{name}</h1>
         {/* <p className="text-muted-foreground text-sm">SKU: {sku}</p> */}
       </div>
 
       <div className="text-xl font-semibold uppercase">
-        {currencyCode} {price}
+        {convertToLocale({
+          amount: price || 0,
+          currency_code: currencyCode || "NGN",
+        })}
       </div>
 
       <div className="flex flex-wrap gap-2">

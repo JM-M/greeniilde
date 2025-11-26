@@ -54,7 +54,10 @@ export const ProductConfigurations = ({
     setConfiguration(configId, value);
   };
 
-  if (!configurations.length) {
+  const hasOneConfigWithOneOption =
+    configurations.length === 1 && configurations[0].options.length === 1;
+
+  if (!configurations.length || hasOneConfigWithOneOption) {
     return null;
   }
 

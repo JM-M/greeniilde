@@ -29,7 +29,7 @@ export const ProductCard = ({
       )}
     >
       <CardHeader className="gap-4">
-        <div className="bg-secondary relative aspect-square w-full rounded-2xl">
+        <div className="bg-secondary relative aspect-square w-full overflow-hidden rounded-lg">
           {image && (
             <Image src={image} alt={name} fill className="object-cover" />
           )}

@@ -71,7 +71,7 @@ export const ProductQuantityControls = ({
         <MinusIcon />
       </Button>
       <Input
-        className={cn("w-16 text-center md:w-20", inputClassName)}
+        className={cn("w-12 text-center md:w-16", inputClassName)}
         type="numeric"
         min={inputMin ?? min}
         value={value}

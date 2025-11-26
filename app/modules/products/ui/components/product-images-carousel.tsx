@@ -72,7 +72,7 @@ export const ProductImagesCarousel = ({
                   : "border-border hover:border-primary/40",
               )}
             >
-              <div className="bg-secondary absolute inset-1 rounded-md">
+              <div className="bg-secondary absolute inset-1 overflow-hidden rounded-md">
                 <Image
                   src={image}
                   alt={`Product image ${index + 1}`}

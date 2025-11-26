@@ -16,6 +16,8 @@ import { ProductInfo } from "./product-info";
 import { ProductPurchaseControls } from "./product-purchase-controls";
 import { SimilarProducts } from "./similar-products";
 
+import { ProductCategoryBreadcrumb } from "./product-category-breadcrumb";
+
 export const ProductDetailsViewClient = () => {
   const { id: productId } = useParams<{ id: string }>();
 
@@ -47,6 +49,9 @@ export const ProductDetailsViewClient = () => {
   return (
     <ProductDetailsProvider product={product}>
       <div className="view-container">
+        <ProductCategoryBreadcrumb
+          categories={product.categories || undefined}
+        />
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-10">
           <div>
             <ProductImagesCarousel
