@@ -2,17 +2,20 @@
 
 import { CURRENCY_CODE } from "@/app/constants/api";
 import { convertToLocale } from "@/app/lib/utils";
-import { useSuspenseRetrieveCart } from "@/app/modules/cart/hooks/use-cart-queries";
+import { useRetrieveCart } from "@/app/modules/cart/hooks/use-cart-queries";
 
 export const CompactPaymentSummary = ({
   isShippingAddressValid = true,
   isShippingMethodSelected = false,
+  cartId,
 }: {
   isShippingAddressValid?: boolean;
   isShippingMethodSelected?: boolean;
+  cartId?: string;
 }) => {
-  const { subtotal, shipping_total, total, tax_total, cart } =
-    useSuspenseRetrieveCart();
+  const { subtotal, shipping_total, total, tax_total, cart } = useRetrieveCart({
+    cartId,
+  });
 
   const currencyCode = cart?.currency_code || CURRENCY_CODE;
 

@@ -4,7 +4,10 @@ import { useState } from "react";
 
 import { Button } from "@/app/components/ui/button";
 import { cn } from "@/app/lib/utils";
-import { useAddToCart } from "@/app/modules/cart/hooks/use-cart-mutations";
+import {
+  useAddToCart,
+  useCreateBuyNowCart,
+} from "@/app/modules/cart/hooks/use-cart-mutations";
 import { BuyNowModal } from "@/app/modules/checkout/ui/components/buy-now-modal";
 import { ShoppingBagIcon } from "lucide-react";
 import { LiaTelegram } from "react-icons/lia";
@@ -21,8 +24,11 @@ export const ProductPurchaseControls = ({
 }: ProductPurchaseControlsProps) => {
   const [quantity, setQuantity] = useState<number>(1);
   const [isBuyNowOpen, setIsBuyNowOpen] = useState(false);
+  const [buyNowCartId, setBuyNowCartId] = useState<string | null>(null);
   const addToCartMutation = useAddToCart();
-  const { selectedVariant } = useProductDetailsContext();
+  const { mutateAsync: createBuyNowCart, isPending: isCreatingBuyNowCart } =
+    useCreateBuyNowCart();
+  const { selectedVariant, product } = useProductDetailsContext();
 
   const handleAddToCart = () => {
     if (!selectedVariant?.id) {
@@ -33,6 +39,26 @@ export const ProductPurchaseControls = ({
       variantId: selectedVariant.id,
       quantity,
     });
+  };
+
+  const handleBuyNow = async () => {
+    if (!selectedVariant?.id || !product?.id) {
+      return;
+    }
+
+    try {
+      const cart = await createBuyNowCart({
+        product_id: product.id,
+        variant_id: selectedVariant.id,
+      });
+
+      if (cart?.id) {
+        setBuyNowCartId(cart.id);
+        setIsBuyNowOpen(true);
+      }
+    } catch (error) {
+      console.error("Failed to create buy now cart:", error);
+    }
   };
 
   return (
@@ -56,9 +82,10 @@ export const ProductPurchaseControls = ({
       <Button
         variant="outline"
         className="w-full border"
-        onClick={() => setIsBuyNowOpen(true)}
+        onClick={handleBuyNow}
+        disabled={isCreatingBuyNowCart || !selectedVariant?.id}
       >
-        Buy now
+        {isCreatingBuyNowCart ? "Preparing..." : "Buy now"}
       </Button>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <Button variant="outline">
@@ -70,7 +97,11 @@ export const ProductPurchaseControls = ({
           Buy on Telegram
         </Button>
       </div>
-      <BuyNowModal open={isBuyNowOpen} onOpenChange={setIsBuyNowOpen} />
+      <BuyNowModal
+        open={isBuyNowOpen}
+        onOpenChange={setIsBuyNowOpen}
+        cartId={buyNowCartId}
+      />
     </div>
   );
 };

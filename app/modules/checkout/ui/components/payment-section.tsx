@@ -5,14 +5,14 @@ import {
   useInitiatePaymentSession,
   usePlaceOrder,
 } from "@/app/modules/cart/hooks/use-cart-mutations";
-import { useSuspenseRetrieveCart } from "@/app/modules/cart/hooks/use-cart-queries";
+import { useRetrieveCart } from "@/app/modules/cart/hooks/use-cart-queries";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { usePaystackPayment } from "react-paystack";
 import { toast } from "sonner";
 
-export const PaymentSection = () => {
-  const { cart } = useSuspenseRetrieveCart();
+export const PaymentSection = ({ cartId }: { cartId?: string }) => {
+  const { cart } = useRetrieveCart({ cartId });
   const { mutateAsync: placeOrder, isPending: isPlacingOrder } =
     usePlaceOrder();
   const {

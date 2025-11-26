@@ -11,7 +11,7 @@ import { cn, convertToLocale } from "@/app/lib/utils";
 import { useSetCartShippingMethod } from "@/app/modules/cart/hooks/use-cart-mutations";
 import {
   useListCartShippingMethodsQuery,
-  useSuspenseRetrieveCart,
+  useRetrieveCart,
 } from "@/app/modules/cart/hooks/use-cart-queries";
 import { cartMutations } from "@/app/modules/cart/mutations";
 import { useTerminalRates } from "@/app/modules/terminal/hooks/use-terminal-queries";
@@ -29,11 +29,13 @@ type DeliveryFormValues = {
 export const DeliveryMethods = ({
   isShippingAddressValid = true,
   onMethodSelected,
+  cartId,
 }: {
   isShippingAddressValid?: boolean;
   onMethodSelected?: (isSelected: boolean) => void;
+  cartId?: string;
 }) => {
-  const { cart } = useSuspenseRetrieveCart();
+  const { cart } = useRetrieveCart({ cartId });
 
   const {
     data: terminalRatesData,

@@ -43,6 +43,36 @@ export const useSuspenseRetrieveCart = (
   };
 };
 
+export const useRetrieveCart = (
+  params?: RetrieveCartParams,
+  options?: Omit<
+    UseSuspenseQueryOptions<Awaited<ReturnType<typeof retrieveCart>>, Error>,
+    "queryKey" | "queryFn"
+  >,
+) => {
+  const { data: cart, ...rest } = useQuery(
+    cartQueries.retrieveCart.queryOptions(params, options),
+  );
+
+  // Calculate derived values
+  const numCartItems =
+    cart?.items?.reduce((acc, item) => {
+      return acc + item.quantity;
+    }, 0) || 0;
+
+  return {
+    cart,
+    numCartItems,
+    items: cart?.items || [],
+    subtotal: cart?.item_subtotal || 0,
+    total: cart?.total || 0, // TODO: Total should not exist if shipping method is not selected
+    tax_total: cart?.tax_total || 0,
+    shipping_total: cart?.shipping_total || 0,
+    discount_total: cart?.discount_total || 0,
+    ...rest,
+  };
+};
+
 export const useListCartShippingMethodsQuery = (cartId: string) => {
   const { data, ...rest } = useQuery(
     cartQueries.listCartShippingOptions.queryOptions(cartId),

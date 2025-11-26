@@ -18,7 +18,7 @@ const PaymentSection = dynamic(
   { ssr: false },
 );
 
-export const SinglePageCheckout = () => {
+export const SinglePageCheckout = ({ cartId }: { cartId?: string }) => {
   const [isShippingAddressValid, setShippingAddressValid] = useState(true);
   const [isShippingMethodSelected, setIsShippingMethodSelected] =
     useState(false);
@@ -33,6 +33,7 @@ export const SinglePageCheckout = () => {
               submitButtonLabel="Save Address"
               autoSubmit={true}
               onValidityChange={setShippingAddressValid}
+              cartId={cartId}
             />
           </div>
 
@@ -43,6 +44,7 @@ export const SinglePageCheckout = () => {
             <DeliveryMethods
               isShippingAddressValid={isShippingAddressValid}
               onMethodSelected={setIsShippingMethodSelected}
+              cartId={cartId}
             />
           </div>
         </div>
@@ -51,16 +53,17 @@ export const SinglePageCheckout = () => {
       <div className="lg:col-span-5">
         <div className="sticky top-20 space-y-4">
           <div className="space-y-6 rounded-lg border p-4">
-            <OrderSummary />
+            <OrderSummary cartId={cartId} />
             <Separator />
             <CompactPaymentSummary
               isShippingAddressValid={isShippingAddressValid}
               isShippingMethodSelected={isShippingMethodSelected}
+              cartId={cartId}
             />
           </div>
 
           <div className="mt-4">
-            <PaymentSection />
+            <PaymentSection cartId={cartId} />
           </div>
         </div>
       </div>

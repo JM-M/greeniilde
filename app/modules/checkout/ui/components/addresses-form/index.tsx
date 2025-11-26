@@ -10,7 +10,7 @@ import {
   FormLabel,
 } from "@/app/components/ui/form";
 import { useSetCartAddresses } from "@/app/modules/cart/hooks/use-cart-mutations";
-import { useSuspenseRetrieveCart } from "@/app/modules/cart/hooks/use-cart-queries";
+import { useRetrieveCart } from "@/app/modules/cart/hooks/use-cart-queries";
 import { AddressFields } from "@/app/modules/checkout/ui/components/addresses-form/address-fields";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRightIcon } from "lucide-react";
@@ -29,14 +29,16 @@ export const AddressesForm = ({
   onValidityChange,
   submitButtonLabel = "Proceed to delivery method",
   autoSubmit = false,
+  cartId,
 }: {
   onSuccess?: () => void;
   onValidityChange?: (isValid: boolean) => void;
   submitButtonLabel?: string;
   autoSubmit?: boolean;
+  cartId?: string;
 }) => {
   const [_, setCheckoutStepParams] = useCheckoutStepParams();
-  const { cart } = useSuspenseRetrieveCart();
+  const { cart } = useRetrieveCart({ cartId });
   const { mutate: setCartAddresses, isPending: isSettingCartAddresses } =
     useSetCartAddresses();
 

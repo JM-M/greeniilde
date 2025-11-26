@@ -9,10 +9,10 @@ import {
   ItemTitle,
 } from "@/app/components/ui/item";
 import { convertToLocale } from "@/app/lib/utils";
-import { useSuspenseRetrieveCart } from "@/app/modules/cart/hooks/use-cart-queries";
+import { useRetrieveCart } from "@/app/modules/cart/hooks/use-cart-queries";
 
-export const OrderSummary = () => {
-  const { cart } = useSuspenseRetrieveCart();
+export const OrderSummary = ({ cartId }: { cartId?: string }) => {
+  const { cart } = useRetrieveCart({ cartId });
 
   return (
     <div>
