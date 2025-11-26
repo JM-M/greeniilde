@@ -6,6 +6,7 @@ import { CompactPaymentSummary } from "@/app/modules/checkout/ui/components/comp
 import { DeliveryMethods } from "@/app/modules/checkout/ui/components/delivery-methods";
 import { OrderSummary } from "@/app/modules/checkout/ui/components/order-summary";
 import dynamic from "next/dynamic";
+import { useState } from "react";
 
 // TODO: Make this work so that all components work in close sync with each other. E.g. a single endpoint to update cart addresses and get the rates.
 
@@ -18,20 +19,31 @@ const PaymentSection = dynamic(
 );
 
 export const SinglePageCheckout = () => {
+  const [isShippingAddressValid, setShippingAddressValid] = useState(true);
+  const [isShippingMethodSelected, setIsShippingMethodSelected] =
+    useState(false);
+
   return (
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
       <div className="lg:col-span-7">
         <div className="space-y-8">
           {/* Shipping Address Section */}
           <div>
-            <AddressesForm submitButtonLabel="Save Address" autoSubmit={true} />
+            <AddressesForm
+              submitButtonLabel="Save Address"
+              autoSubmit={true}
+              onValidityChange={setShippingAddressValid}
+            />
           </div>
 
           <Separator />
 
           {/* Delivery Methods Section */}
           <div>
-            <DeliveryMethods />
+            <DeliveryMethods
+              isShippingAddressValid={isShippingAddressValid}
+              onMethodSelected={setIsShippingMethodSelected}
+            />
           </div>
         </div>
       </div>
@@ -41,7 +53,10 @@ export const SinglePageCheckout = () => {
           <div className="space-y-6 rounded-lg border p-4">
             <OrderSummary />
             <Separator />
-            <CompactPaymentSummary />
+            <CompactPaymentSummary
+              isShippingAddressValid={isShippingAddressValid}
+              isShippingMethodSelected={isShippingMethodSelected}
+            />
           </div>
 
           <div className="mt-4">

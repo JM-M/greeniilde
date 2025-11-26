@@ -26,7 +26,13 @@ type DeliveryFormValues = {
 
 // TODO: Sync selected method with cart.shipping_methods[0]. Note that a free rate is always generated.
 
-export const DeliveryMethods = () => {
+export const DeliveryMethods = ({
+  isShippingAddressValid = true,
+  onMethodSelected,
+}: {
+  isShippingAddressValid?: boolean;
+  onMethodSelected?: (isSelected: boolean) => void;
+}) => {
   const { cart } = useSuspenseRetrieveCart();
 
   const {
@@ -66,7 +72,18 @@ export const DeliveryMethods = () => {
   useEffect(() => {
     // console.log(cart?.shipping_address);
     form.setValue("rateId", "");
-  }, [cart?.shipping_address, form]);
+    if (onMethodSelected) {
+      onMethodSelected(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(cart?.shipping_address), form, onMethodSelected]);
+
+  // Initialize selection state
+  useEffect(() => {
+    if (onMethodSelected && form.getValues("rateId")) {
+      onMethodSelected(true);
+    }
+  }, [form, onMethodSelected]);
 
   if (isLoading || isFetching || isUpdatingAddress > 0) {
     return (
@@ -108,74 +125,89 @@ export const DeliveryMethods = () => {
     }
 
     form.setValue("rateId", rateId);
+    if (onMethodSelected) {
+      onMethodSelected(true);
+    }
   };
+
+  let content = (
+    <div className="text-muted-foreground text-sm">
+      No delivery methods available for this address.
+    </div>
+  );
+
+  if (!isShippingAddressValid) {
+    content = (
+      <div className="text-muted-foreground text-sm">
+        Complete delivery address form to get delivery rates.
+      </div>
+    );
+  } else if (rates.length) {
+    content = (
+      <FormField
+        control={form.control}
+        name="rateId"
+        render={({ field }) => (
+          <FormItem>
+            <FormControl>
+              <RadioGroup
+                onValueChange={(val) => {
+                  handleRateChange(val);
+                }}
+                defaultValue={field.value}
+                className="flex flex-col gap-2"
+                disabled={isSettingMethod}
+              >
+                {rates.map((rate) => (
+                  <FormItem
+                    key={rate.rate_id}
+                    className={cn(
+                      "flex items-center space-y-0 space-x-3 rounded-lg border p-3",
+                      { "border-primary": field.value === rate.rate_id },
+                    )}
+                  >
+                    <FormControl>
+                      <RadioGroupItem value={rate.rate_id} />
+                    </FormControl>
+                    <FormLabel className="flex flex-1 cursor-pointer items-center gap-3 font-normal">
+                      <Image
+                        src={rate.carrier_logo}
+                        alt={rate.carrier_name}
+                        className="size-16 rounded-md"
+                        height={64}
+                        width={64}
+                      />
+                      <div className="flex-1">
+                        <div className="text-base font-medium">
+                          {rate.carrier_name}
+                        </div>
+                        <div className="text-muted-foreground flex items-center justify-between text-sm">
+                          <span>{rate.delivery_time}</span>
+                          <span>
+                            {convertToLocale({
+                              amount: rate.amount,
+                              currency_code: rate.currency,
+                            })}
+                          </span>
+                        </div>
+                      </div>
+                    </FormLabel>
+                  </FormItem>
+                ))}
+              </RadioGroup>
+            </FormControl>
+          </FormItem>
+        )}
+      />
+    );
+  }
 
   return (
     <Form {...form}>
       <div className="flex flex-col gap-3">
         <div className="text-base font-semibold">Delivery method</div>
 
-        {rates.length === 0 ? (
-          <div className="text-muted-foreground text-sm">
-            No delivery methods available for this address.
-          </div>
-        ) : (
-          <FormField
-            control={form.control}
-            name="rateId"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <RadioGroup
-                    onValueChange={(val) => {
-                      handleRateChange(val);
-                    }}
-                    defaultValue={field.value}
-                    className="flex flex-col gap-2"
-                    disabled={isSettingMethod}
-                  >
-                    {rates.map((rate) => (
-                      <FormItem
-                        key={rate.rate_id}
-                        className={cn(
-                          "flex items-center space-y-0 space-x-3 rounded-lg border p-3",
-                          { "border-primary": field.value === rate.rate_id },
-                        )}
-                      >
-                        <FormControl>
-                          <RadioGroupItem value={rate.rate_id} />
-                        </FormControl>
-                        <FormLabel className="flex flex-1 cursor-pointer items-center gap-3 font-normal">
-                          <Image
-                            src={rate.carrier_logo}
-                            alt={rate.carrier_name}
-                            className="size-16 rounded-md"
-                            height={64}
-                            width={64}
-                          />
-                          <div className="flex-1">
-                            <div className="text-base font-medium">
-                              {rate.carrier_name}
-                            </div>
-                            <div className="text-muted-foreground flex items-center justify-between text-sm">
-                              <span>{rate.delivery_time}</span>
-                              <span>
-                                {convertToLocale({
-                                  amount: rate.amount,
-                                  currency_code: rate.currency,
-                                })}
-                              </span>
-                            </div>
-                          </div>
-                        </FormLabel>
-                      </FormItem>
-                    ))}
-                  </RadioGroup>
-                </FormControl>
-              </FormItem>
-            )}
-          />
-        )}
+        {content}
       </div>
     </Form>
   );

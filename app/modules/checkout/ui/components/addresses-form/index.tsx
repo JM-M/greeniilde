@@ -26,10 +26,12 @@ import { getDefaultValues, initialAddress } from "./utils";
 
 export const AddressesForm = ({
   onSuccess,
+  onValidityChange,
   submitButtonLabel = "Proceed to delivery method",
   autoSubmit = false,
 }: {
   onSuccess?: () => void;
+  onValidityChange?: (isValid: boolean) => void;
   submitButtonLabel?: string;
   autoSubmit?: boolean;
 }) => {
@@ -67,6 +69,10 @@ export const AddressesForm = ({
     const validation = addressesFormSchema.safeParse(values);
     const isValid = validation.success;
 
+    if (onValidityChange) {
+      onValidityChange(isValid);
+    }
+
     // console.log({
     //   isDirty: form.formState.isDirty,
     //   notIsSubmitted: !form.formState.isSubmitted,
@@ -82,7 +88,14 @@ export const AddressesForm = ({
     ) {
       debouncedSubmit();
     }
-  }, [autoSubmit, isSettingCartAddresses, form, values, debouncedSubmit]);
+  }, [
+    autoSubmit,
+    isSettingCartAddresses,
+    form,
+    values,
+    debouncedSubmit,
+    onValidityChange,
+  ]);
 
   const onSubmit = (values: ShippingFormValues) => {
     if (!cart?.id) {

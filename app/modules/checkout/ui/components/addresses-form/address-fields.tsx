@@ -217,12 +217,8 @@ export const AddressFields = ({ prefix = "" }: AddressFieldsProps) => {
                   value={field.value}
                   onValueChange={(value) => {
                     field.onChange(value);
-                    form.setValue(fieldName("state"), "", {
-                      shouldValidate: false,
-                    });
-                    form.setValue(fieldName("city"), "", {
-                      shouldValidate: false,
-                    });
+                    form.setValue(fieldName("state"), "");
+                    form.setValue(fieldName("city"), "");
                   }}
                   placeholder="Select country..."
                 />
@@ -242,9 +238,7 @@ export const AddressFields = ({ prefix = "" }: AddressFieldsProps) => {
                   value={field.value}
                   onValueChange={(value) => {
                     field.onChange(value);
-                    form.setValue(fieldName("city"), "", {
-                      shouldValidate: false,
-                    });
+                    form.setValue(fieldName("city"), "");
                   }}
                   countryCode={countryCode}
                   placeholder="Select state..."
