@@ -1,5 +1,5 @@
 import { listCartShippingOptions, retrieveCart } from "@/app/lib/api/cart";
-import { createSuspenseQuery } from "@/app/lib/query/create-query";
+import { createQuery, createSuspenseQuery } from "@/app/lib/query/create-query";
 
 // Create query utilities
 const retrieveCartQuery = createSuspenseQuery(retrieveCart, [
@@ -7,10 +7,10 @@ const retrieveCartQuery = createSuspenseQuery(retrieveCart, [
   "retrieveCart",
 ]);
 
-const listCartShippingOptionsQuery = createSuspenseQuery(
-  listCartShippingOptions,
-  ["cart", "listCartShippingOptions"],
-);
+const listCartShippingOptionsQuery = createQuery(listCartShippingOptions, [
+  "cart",
+  "listCartShippingOptions",
+]);
 
 // Export query utilities for easy access to query keys
 // Usage: cartQueries.retrieveCart.queryKey(params)

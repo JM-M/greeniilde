@@ -9,7 +9,8 @@ import {
   ItemMedia,
   ItemTitle,
 } from "@/app/components/ui/item";
-import { cn } from "@/app/lib/utils";
+import { CURRENCY_CODE } from "@/app/constants/api";
+import { cn, convertToLocale } from "@/app/lib/utils";
 import {
   useRemoveCartItem,
   useUpdateCartItem,
@@ -78,7 +79,12 @@ export function CartItem({
       <ItemContent className="min-w-0 gap-2">
         <ItemHeader>
           <ItemTitle className="truncate">{title}</ItemTitle>
-          <span className="text-sm font-medium">{price}</span>
+          <span className="text-sm font-medium">
+            {convertToLocale({
+              amount: Number(price),
+              currency_code: cart?.currency_code || CURRENCY_CODE,
+            })}
+          </span>
         </ItemHeader>
         <ItemFooter>
           <ProductQuantityControls
@@ -96,7 +102,7 @@ export function CartItem({
 
           <ItemActions className="basis-full gap-2 sm:basis-auto">
             <Button
-              variant="outline"
+              variant="secondary"
               size="icon-sm"
               onClick={() => {
                 handleRemove();
@@ -105,7 +111,7 @@ export function CartItem({
               aria-label="Remove from cart"
               title="Remove"
             >
-              <Trash2Icon className="text-muted-foreground" />
+              <Trash2Icon className="text-muted-foreground size-4" />
             </Button>
           </ItemActions>
         </ItemFooter>

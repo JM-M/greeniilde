@@ -3,8 +3,8 @@
 import { cn } from "@/app/lib/utils";
 import { useSuspenseRetrieveCart } from "@/app/modules/cart/hooks/use-cart-queries";
 import { ShoppingCart } from "lucide-react";
+import { useCartSheet } from "../../../contexts/cart-sheet";
 import { Button } from "../../ui/button";
-import { useCartSheet } from "./cart-sheet-context";
 
 type CartButtonProps = {
   count?: number;

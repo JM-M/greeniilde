@@ -6,20 +6,42 @@ import {
   usePlaceOrder,
 } from "@/app/modules/cart/hooks/use-cart-mutations";
 import { useRetrieveCart } from "@/app/modules/cart/hooks/use-cart-queries";
+import { cartMutations } from "@/app/modules/cart/mutations";
+import { useIsMutating } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { usePaystackPayment } from "react-paystack";
 import { toast } from "sonner";
 
-export const PaymentSection = ({ cartId }: { cartId?: string }) => {
+export const PaymentSection = ({
+  cartId,
+  isShippingAddressValid,
+  isShippingMethodSelected,
+}: {
+  cartId?: string;
+  isShippingAddressValid: boolean;
+  isShippingMethodSelected: boolean;
+}) => {
   const { cart } = useRetrieveCart({ cartId });
   const { mutate: placeOrder, isPending: isPlacingOrder } = usePlaceOrder();
   const { mutate: initiatePaymentSession, isPending: isInitiatingPayment } =
     useInitiatePaymentSession();
   const router = useRouter();
 
+  const isUpdatingAddress = useIsMutating({
+    mutationKey: cartMutations.setCartAddresses.mutationKey(),
+  });
+
+  const isSettingShippingMethod = useIsMutating({
+    mutationKey: cartMutations.setCartShippingMethod.mutationKey(),
+  });
+
   useEffect(() => {
-    if (cart?.id && !cart?.payment_collection?.payment_sessions?.length) {
+    if (
+      cart?.id &&
+      !cart?.payment_collection?.payment_sessions?.length &&
+      cart.email
+    ) {
       initiatePaymentSession(
         {
           cart,
@@ -82,13 +104,22 @@ export const PaymentSection = ({ cartId }: { cartId?: string }) => {
   };
 
   const isLoading = isPlacingOrder || isInitiatingPayment;
+  const isPaymentDisabled =
+    !paystackSession ||
+    isLoading ||
+    !isShippingAddressValid ||
+    !isShippingMethodSelected;
 
   return (
     <div className="mt-4">
       <Button
         className="h-12 w-full"
         onClick={handlePayment}
-        disabled={!paystackSession || isLoading}
+        disabled={
+          isPaymentDisabled ||
+          isUpdatingAddress > 0 ||
+          isSettingShippingMethod > 0
+        }
       >
         {isLoading ? "Processing..." : "Pay with Paystack"}
       </Button>

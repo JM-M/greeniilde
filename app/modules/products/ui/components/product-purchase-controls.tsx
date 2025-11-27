@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { Button } from "@/app/components/ui/button";
+import { useCartSheet } from "@/app/contexts/cart-sheet";
 import { cn } from "@/app/lib/utils";
 import {
   useAddToCart,
@@ -26,6 +27,8 @@ export const ProductPurchaseControls = ({
   const [isBuyNowOpen, setIsBuyNowOpen] = useState(false);
   const [buyNowCartId, setBuyNowCartId] = useState<string | null>(null);
 
+  const { setOpen: setCartSheetOpen } = useCartSheet();
+
   const addToCartMutation = useAddToCart();
   const { mutate: createBuyNowCart, isPending: isCreatingBuyNowCart } =
     useCreateBuyNowCart();
@@ -36,10 +39,17 @@ export const ProductPurchaseControls = ({
       return; // No variant selected
     }
 
-    addToCartMutation.mutate({
-      variantId: selectedVariant.id,
-      quantity,
-    });
+    addToCartMutation.mutate(
+      {
+        variantId: selectedVariant.id,
+        quantity,
+      },
+      {
+        onSuccess: () => {
+          setCartSheetOpen(true);
+        },
+      },
+    );
   };
 
   const handleBuyNow = () => {

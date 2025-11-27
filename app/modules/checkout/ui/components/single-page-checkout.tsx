@@ -63,7 +63,11 @@ export const SinglePageCheckout = ({ cartId }: { cartId?: string }) => {
           </div>
 
           <div className="mt-4">
-            <PaymentSection cartId={cartId} />
+            <PaymentSection
+              cartId={cartId}
+              isShippingAddressValid={isShippingAddressValid}
+              isShippingMethodSelected={isShippingMethodSelected}
+            />
           </div>
         </div>
       </div>

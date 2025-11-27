@@ -10,12 +10,14 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/app/components/ui/sheet";
+import { CURRENCY_CODE } from "@/app/constants/api";
+import { convertToLocale } from "@/app/lib/utils";
 import { useSuspenseRetrieveCart } from "@/app/modules/cart/hooks/use-cart-queries";
 import { ArrowRightIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useCartSheet } from "../../../contexts/cart-sheet";
 import { CartItem } from "./cart-item";
-import { useCartSheet } from "./cart-sheet-context";
 
 type CartSheetProps = {
   className?: string;
@@ -63,10 +65,15 @@ export function CartSheet({ className }: CartSheetProps) {
 
         <SheetFooter className="gap-3 p-4">
           <div className="flex items-center justify-between">
-            <span className="text-muted-foreground text-sm">Subtotal</span>
-            <span className="text-base font-semibold">{subtotal}</span>
+            <span className="font-medium">Subtotal</span>
+            <span className="text-lg font-semibold">
+              {convertToLocale({
+                amount: subtotal,
+                currency_code: cart?.currency_code || CURRENCY_CODE,
+              })}
+            </span>
           </div>
-          <Button className="w-full" asChild>
+          <Button className="h-12 w-full" asChild>
             <Link
               href="/checkout"
               onClick={() => {

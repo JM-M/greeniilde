@@ -10,7 +10,6 @@ import { Button } from "../../ui/button";
 import { AuthButton } from "./auth-button";
 import { CartButton } from "./cart-button";
 import { CartSheet } from "./cart-sheet";
-import { CartSheetProvider } from "./cart-sheet-context";
 import { useActiveIndicator } from "./use-active-indicator";
 
 export const Navbar = () => {
@@ -49,7 +48,7 @@ export const Navbar = () => {
   const shouldDarkenBg = isScrolled || pathname !== "/";
 
   return (
-    <CartSheetProvider>
+    <>
       {/* TODO: Add a fallback for the cart sheet */}
       <Suspense fallback={<></>}>
         <CartSheet className="text-background ml-auto md:ml-0" />
@@ -110,6 +109,6 @@ export const Navbar = () => {
         </nav>
       </div>
       <div ref={sentinelRef} className="h-px" aria-hidden />
-    </CartSheetProvider>
+    </>
   );
 };

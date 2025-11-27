@@ -4,6 +4,7 @@ import { retrieveCart, type RetrieveCartParams } from "@/app/lib/api/cart";
 import {
   useQuery,
   useSuspenseQuery,
+  type UseQueryOptions,
   type UseSuspenseQueryOptions,
 } from "@tanstack/react-query";
 import { cartQueries } from "../queries";
@@ -73,9 +74,20 @@ export const useRetrieveCart = (
   };
 };
 
-export const useListCartShippingMethodsQuery = (cartId: string) => {
+export const useListCartShippingMethodsQuery = (
+  cartId: string,
+  options?: Omit<
+    UseQueryOptions<
+      Awaited<
+        ReturnType<typeof import("@/app/lib/api/cart").listCartShippingOptions>
+      >,
+      Error
+    >,
+    "queryKey" | "queryFn"
+  >,
+) => {
   const { data, ...rest } = useQuery(
-    cartQueries.listCartShippingOptions.queryOptions(cartId),
+    cartQueries.listCartShippingOptions.queryOptions(cartId, options),
   );
 
   return {
