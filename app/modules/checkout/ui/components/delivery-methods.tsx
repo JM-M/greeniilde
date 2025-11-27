@@ -13,9 +13,7 @@ import {
   useListCartShippingMethodsQuery,
   useRetrieveCart,
 } from "@/app/modules/cart/hooks/use-cart-queries";
-import { cartMutations } from "@/app/modules/cart/mutations";
 import { useTerminalRates } from "@/app/modules/terminal/hooks/use-terminal-queries";
-import { useIsMutating } from "@tanstack/react-query";
 import Image from "next/image";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -30,10 +28,16 @@ export const DeliveryMethods = ({
   isShippingAddressValid = true,
   onMethodSelected,
   cartId,
+  isUpdatingAddress,
+  isSettingShippingMethod,
+  setIsSettingShippingMethod,
 }: {
   isShippingAddressValid?: boolean;
   onMethodSelected?: (isSelected: boolean) => void;
   cartId?: string;
+  isUpdatingAddress?: boolean;
+  isSettingShippingMethod?: boolean;
+  setIsSettingShippingMethod?: (isSetting: boolean) => void;
 }) => {
   const { cart } = useRetrieveCart({ cartId });
 
@@ -52,10 +56,6 @@ export const DeliveryMethods = ({
     },
   );
   const rates = terminalRatesData?.rates || [];
-
-  const isUpdatingAddress = useIsMutating({
-    mutationKey: cartMutations.setCartAddresses.mutationKey(),
-  });
 
   const { data: shippingOptions } = useListCartShippingMethodsQuery(
     cart?.id || "",
@@ -97,7 +97,7 @@ export const DeliveryMethods = ({
     }
   }, [rates, selectedRateId]);
 
-  if (isLoading || isFetching || isUpdatingAddress > 0) {
+  if (isLoading || isFetching || isUpdatingAddress) {
     return (
       <div className="flex items-center justify-center py-4">
         <Spinner className="size-6" />
@@ -121,17 +121,32 @@ export const DeliveryMethods = ({
       terminalRatesData?.delivery_address_id &&
       terminalRatesData?.parcel_id
     ) {
-      setCartShippingMethod({
-        cartId: cart.id,
-        shippingMethodId: targetShippingOption.id,
-        data: {
-          terminal_rate_id: rate.rate_id,
-          terminal_pickup_address_id: terminalRatesData.pickup_address_id,
-          terminal_delivery_address_id: terminalRatesData.delivery_address_id,
-          terminal_parcel_id: terminalRatesData.parcel_id,
-          terminal_rate: rate,
+      // Set loading state BEFORE mutation
+      if (setIsSettingShippingMethod) {
+        setIsSettingShippingMethod(true);
+      }
+
+      setCartShippingMethod(
+        {
+          cartId: cart.id,
+          shippingMethodId: targetShippingOption.id,
+          data: {
+            terminal_rate_id: rate.rate_id,
+            terminal_pickup_address_id: terminalRatesData.pickup_address_id,
+            terminal_delivery_address_id: terminalRatesData.delivery_address_id,
+            terminal_parcel_id: terminalRatesData.parcel_id,
+            terminal_rate: rate,
+          },
         },
-      });
+        {
+          onSettled: () => {
+            // Reset loading state when mutation completes
+            if (setIsSettingShippingMethod) {
+              setIsSettingShippingMethod(false);
+            }
+          },
+        },
+      );
     }
 
     form.setValue("rateId", rateId);

@@ -30,12 +30,16 @@ export const AddressesForm = ({
   submitButtonLabel = "Proceed to delivery method",
   autoSubmit = false,
   cartId,
+  isUpdatingAddress,
+  setIsUpdatingAddress,
 }: {
   onSuccess?: () => void;
   onValidityChange?: (isValid: boolean) => void;
   submitButtonLabel?: string;
   autoSubmit?: boolean;
   cartId?: string;
+  isUpdatingAddress?: boolean;
+  setIsUpdatingAddress?: (isUpdating: boolean) => void;
 }) => {
   const [_, setCheckoutStepParams] = useCheckoutStepParams();
   const { cart } = useRetrieveCart({ cartId });
@@ -106,6 +110,12 @@ export const AddressesForm = ({
     }
 
     const addressesData = transformFormValuesToAddresses(values, cart.id);
+
+    // Set loading state BEFORE mutation
+    if (setIsUpdatingAddress) {
+      setIsUpdatingAddress(true);
+    }
+
     setCartAddresses(addressesData, {
       onSuccess: () => {
         if (onSuccess) {
@@ -121,6 +131,12 @@ export const AddressesForm = ({
       onError: () => {
         toast.error("Failed to set shipping address");
         form.reset(values);
+      },
+      onSettled: () => {
+        // Reset loading state when mutation completes (success or error)
+        if (setIsUpdatingAddress) {
+          setIsUpdatingAddress(false);
+        }
       },
     });
   };

@@ -22,6 +22,8 @@ export const SinglePageCheckout = ({ cartId }: { cartId?: string }) => {
   const [isShippingAddressValid, setShippingAddressValid] = useState(true);
   const [isShippingMethodSelected, setIsShippingMethodSelected] =
     useState(false);
+  const [isUpdatingAddress, setIsUpdatingAddress] = useState(false);
+  const [isSettingShippingMethod, setIsSettingShippingMethod] = useState(false);
 
   return (
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
@@ -34,6 +36,8 @@ export const SinglePageCheckout = ({ cartId }: { cartId?: string }) => {
               autoSubmit={true}
               onValidityChange={setShippingAddressValid}
               cartId={cartId}
+              isUpdatingAddress={isUpdatingAddress}
+              setIsUpdatingAddress={setIsUpdatingAddress}
             />
           </div>
 
@@ -45,6 +49,9 @@ export const SinglePageCheckout = ({ cartId }: { cartId?: string }) => {
               isShippingAddressValid={isShippingAddressValid}
               onMethodSelected={setIsShippingMethodSelected}
               cartId={cartId}
+              isUpdatingAddress={isUpdatingAddress}
+              isSettingShippingMethod={isSettingShippingMethod}
+              setIsSettingShippingMethod={setIsSettingShippingMethod}
             />
           </div>
         </div>
@@ -67,6 +74,8 @@ export const SinglePageCheckout = ({ cartId }: { cartId?: string }) => {
               cartId={cartId}
               isShippingAddressValid={isShippingAddressValid}
               isShippingMethodSelected={isShippingMethodSelected}
+              isUpdatingAddress={isUpdatingAddress}
+              isSettingShippingMethod={isSettingShippingMethod}
             />
           </div>
         </div>

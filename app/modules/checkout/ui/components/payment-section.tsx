@@ -6,8 +6,6 @@ import {
   usePlaceOrder,
 } from "@/app/modules/cart/hooks/use-cart-mutations";
 import { useRetrieveCart } from "@/app/modules/cart/hooks/use-cart-queries";
-import { cartMutations } from "@/app/modules/cart/mutations";
-import { useIsMutating } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { usePaystackPayment } from "react-paystack";
@@ -17,24 +15,20 @@ export const PaymentSection = ({
   cartId,
   isShippingAddressValid,
   isShippingMethodSelected,
+  isUpdatingAddress,
+  isSettingShippingMethod,
 }: {
   cartId?: string;
   isShippingAddressValid: boolean;
   isShippingMethodSelected: boolean;
+  isUpdatingAddress: boolean;
+  isSettingShippingMethod: boolean;
 }) => {
   const { cart } = useRetrieveCart({ cartId });
   const { mutate: placeOrder, isPending: isPlacingOrder } = usePlaceOrder();
   const { mutate: initiatePaymentSession, isPending: isInitiatingPayment } =
     useInitiatePaymentSession();
   const router = useRouter();
-
-  const isUpdatingAddress = useIsMutating({
-    mutationKey: cartMutations.setCartAddresses.mutationKey(),
-  });
-
-  const isSettingShippingMethod = useIsMutating({
-    mutationKey: cartMutations.setCartShippingMethod.mutationKey(),
-  });
 
   useEffect(() => {
     if (
@@ -116,9 +110,7 @@ export const PaymentSection = ({
         className="h-12 w-full"
         onClick={handlePayment}
         disabled={
-          isPaymentDisabled ||
-          isUpdatingAddress > 0 ||
-          isSettingShippingMethod > 0
+          isPaymentDisabled || isUpdatingAddress || isSettingShippingMethod
         }
       >
         {isLoading ? "Processing..." : "Pay with Paystack"}
