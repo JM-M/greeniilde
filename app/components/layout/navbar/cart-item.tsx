@@ -82,7 +82,7 @@ export function CartItem({
           <span className="text-sm font-medium">
             {convertToLocale({
               amount: Number(price),
-              currency_code: cart?.currency_code || CURRENCY_CODE,
+              currencyCode: cart?.currency_code || CURRENCY_CODE,
             })}
           </span>
         </ItemHeader>

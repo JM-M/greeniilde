@@ -23,7 +23,7 @@ export const CheckoutSuccess = ({ order }: CheckoutSuccessProps) => {
 
   const totalFormatted = convertToLocale({
     amount: order.total,
-    currency_code: order.currency_code,
+    currencyCode: order.currency_code,
   });
 
   return (

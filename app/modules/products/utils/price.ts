@@ -1,4 +1,5 @@
 import { CURRENCY_CODE } from "@/app/constants/api";
+import { convertToLocale } from "@/app/lib/utils";
 import { ProductIndexDocument } from "../types";
 
 /**
@@ -68,7 +69,10 @@ export function formatPriceRange(
 
   if (min === max) {
     // Same price for all variants
-    return `${currency} ${formatPrice(min)}`;
+    return convertToLocale({
+      amount: min,
+      currencyCode: currency,
+    });
   } else {
     // Price range
     return `${currency} ${formatPrice(min)} - ${currency} ${formatPrice(max)}`;

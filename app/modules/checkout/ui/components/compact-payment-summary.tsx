@@ -42,7 +42,7 @@ export const CompactPaymentSummary = ({
         <span>
           {convertToLocale({
             amount: subtotal,
-            currency_code: currencyCode,
+            currencyCode: currencyCode,
           })}
         </span>
       </div>
@@ -54,7 +54,7 @@ export const CompactPaymentSummary = ({
           ) : showTotals ? (
             convertToLocale({
               amount: shipping_total,
-              currency_code: currencyCode,
+              currencyCode: currencyCode,
             })
           ) : (
             "-"
@@ -69,7 +69,7 @@ export const CompactPaymentSummary = ({
           ) : showTotals ? (
             convertToLocale({
               amount: tax_total,
-              currency_code: currencyCode,
+              currencyCode: currencyCode,
             })
           ) : (
             "-"
@@ -85,7 +85,7 @@ export const CompactPaymentSummary = ({
             ) : showTotals ? (
               convertToLocale({
                 amount: total,
-                currency_code: currencyCode,
+                currencyCode: currencyCode,
               })
             ) : (
               "-"

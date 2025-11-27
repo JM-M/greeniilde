@@ -63,7 +63,7 @@ export function PaymentSummaryCard({ order }: PaymentSummaryCardProps) {
             <span className="font-semibold">
               {convertToLocale({
                 amount,
-                currency_code: order.currency_code,
+                currencyCode: order.currency_code,
               })}
             </span>
           </div>

@@ -7,7 +7,10 @@ import {
 } from "@/app/modules/products/types";
 import { HttpTypes } from "@medusajs/types";
 import { sdk } from "../medusa/config";
-import { getMeilisearchClient } from "../meilisearch/config";
+import {
+  getMeilisearchClient,
+  getMeilisearchMasterClient,
+} from "../meilisearch/config";
 import { buildQueryString } from "../utils";
 
 export interface SearchProductsInput extends Record<string, unknown> {
@@ -128,7 +131,7 @@ export const getProductsFromMeilisearch = async (input: {
  * Returns the list of attributes that can be used for filtering
  */
 export const getFilterableAttributes = async (): Promise<string[]> => {
-  const client = await getMeilisearchClient();
+  const client = getMeilisearchMasterClient();
   const index = client.index("products");
   const attributes = await index.getFilterableAttributes();
   if (!attributes) {
@@ -144,10 +147,10 @@ export const getFilterableAttributes = async (): Promise<string[]> => {
  * Get facet distributions for all filterable attributes
  * Returns the range of values and their counts for each filterable attribute
  */
-export const getFacetDistributions = async (): Promise<
-  Record<string, Record<string, number>>
-> => {
-  const client = await getMeilisearchClient();
+export const getFacetDistributions = async (
+  filter?: string,
+): Promise<Record<string, Record<string, number>>> => {
+  const client = getMeilisearchMasterClient();
   const index = client.index("products");
 
   // Get all filterable attributes
@@ -155,12 +158,21 @@ export const getFacetDistributions = async (): Promise<
 
   // Perform a search with facets for all filterable attributes
   // Empty query means we get facets for all documents
-  const searchParams: { facets?: string[]; limit: number } = {
+  const searchParams: { facets?: string[]; limit: number; filter?: string } = {
     limit: 0, // We don't need hits, just facets
   };
 
   if (filterableAttributes.length > 0) {
     searchParams.facets = filterableAttributes;
+  }
+
+  const storeId = process.env.NEXT_PUBLIC_STORE_ID;
+  const storeFilter = `store_id = "${storeId}"`;
+
+  if (filter) {
+    searchParams.filter = `${storeFilter} AND (${filter})`;
+  } else {
+    searchParams.filter = storeFilter;
   }
 
   const result = await index.search("", searchParams);

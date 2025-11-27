@@ -29,7 +29,7 @@ export const DeliveryMethodSelected = ({
             {rate.delivery_time} ·{" "}
             {convertToLocale({
               amount: rate.amount,
-              currency_code: rate.currency_code,
+              currencyCode: rate.currency_code,
             })}
           </div>
         </div>

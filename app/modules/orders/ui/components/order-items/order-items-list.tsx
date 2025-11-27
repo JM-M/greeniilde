@@ -45,13 +45,13 @@ export function OrderItemsList({
               <div className="text-muted-foreground text-sm">
                 {convertToLocale({
                   amount: item.unit_price,
-                  currency_code: currencyCode,
+                  currencyCode: currencyCode,
                 })}
               </div>
               <div className="text-sm font-semibold">
                 {convertToLocale({
                   amount: item.total,
-                  currency_code: currencyCode,
+                  currencyCode: currencyCode,
                 })}
               </div>
             </div>

@@ -207,7 +207,7 @@ export const DeliveryMethods = ({
                             <span>
                               {convertToLocale({
                                 amount: rate.amount,
-                                currency_code: rate.currency,
+                                currencyCode: rate.currency,
                               })}
                             </span>
                           </div>

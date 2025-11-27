@@ -28,7 +28,7 @@ export function OrdersList({ orders }: { orders: StoreOrder[] }) {
           }
           totalFormatted={convertToLocale({
             amount: order.total,
-            currency_code: order.currency_code,
+            currencyCode: order.currency_code,
           })}
           deliverySummary={
             order.shipping_methods?.[0]?.name || "Standard Delivery"

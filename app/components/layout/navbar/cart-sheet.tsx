@@ -69,7 +69,7 @@ export function CartSheet({ className }: CartSheetProps) {
             <span className="text-lg font-semibold">
               {convertToLocale({
                 amount: subtotal,
-                currency_code: cart?.currency_code || CURRENCY_CODE,
+                currencyCode: cart?.currency_code || CURRENCY_CODE,
               })}
             </span>
           </div>

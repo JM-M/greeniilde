@@ -19,6 +19,8 @@ export const Products = () => {
     useLandingProductsParams();
   const selectedCategory = landingProductsParams.categoryId;
 
+  console.log(landingProductsParams);
+
   const { data: productsData } = useSuspenseGetProductsFromMeilisearch({
     filter: getMeilisearchFilterFromLandingProductsParams(
       landingProductsParams,

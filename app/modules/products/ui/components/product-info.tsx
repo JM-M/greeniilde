@@ -1,4 +1,5 @@
 import { Badge } from "@/app/components/ui/badge";
+import { CURRENCY_CODE } from "@/app/constants/api";
 import { cn, convertToLocale } from "@/app/lib/utils";
 import { HttpTypes } from "@medusajs/types";
 import { useProductDetailsContext } from "../contexts/product-details-context";
@@ -30,7 +31,7 @@ export const ProductInfo = ({ name, tags, className }: ProductInfoProps) => {
       <div className="text-xl font-semibold uppercase">
         {convertToLocale({
           amount: price || 0,
-          currency_code: currencyCode || "NGN",
+          currencyCode: currencyCode || CURRENCY_CODE,
         })}
       </div>
 
