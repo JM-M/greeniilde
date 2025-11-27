@@ -6,7 +6,6 @@ import {
   FormLabel,
 } from "@/app/components/ui/form";
 import { RadioGroup, RadioGroupItem } from "@/app/components/ui/radio-group";
-import { Spinner } from "@/app/components/ui/spinner";
 import { cn, convertToLocale } from "@/app/lib/utils";
 import { useSetCartShippingMethod } from "@/app/modules/cart/hooks/use-cart-mutations";
 import {
@@ -98,11 +97,7 @@ export const DeliveryMethods = ({
   }, [rates, selectedRateId]);
 
   if (isLoading || isFetching || isUpdatingAddress) {
-    return (
-      <div className="flex items-center justify-center py-4">
-        <Spinner className="size-6" />
-      </div>
-    );
+    return <DeliveryMethodsSkeleton />;
   }
 
   const handleRateChange = (rateId: string) => {
@@ -237,5 +232,32 @@ export const DeliveryMethods = ({
         {content}
       </div>
     </Form>
+  );
+};
+
+export const DeliveryMethodsSkeleton = () => {
+  return (
+    <div className="flex flex-col gap-3">
+      <div className="text-base font-semibold">Delivery method</div>
+
+      <div className="flex flex-col gap-2">
+        {[1, 2, 3].map((i) => (
+          <div
+            key={i}
+            className="flex items-center space-y-0 space-x-3 rounded-lg border p-3"
+          >
+            <div className="bg-accent size-4 animate-pulse rounded-full" />
+            <div className="bg-accent size-16 animate-pulse rounded-md" />
+            <div className="flex flex-1 flex-col gap-2">
+              <div className="bg-accent h-5 w-32 animate-pulse rounded" />
+              <div className="flex items-center justify-between">
+                <div className="bg-accent h-4 w-24 animate-pulse rounded" />
+                <div className="bg-accent h-4 w-16 animate-pulse rounded" />
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 };

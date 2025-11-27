@@ -119,3 +119,11 @@ export const PaymentSection = ({
     </div>
   );
 };
+
+export const PaymentSectionSkeleton = () => {
+  return (
+    <div className="mt-4">
+      <div className="bg-accent h-12 w-full animate-pulse rounded-md" />
+    </div>
+  );
+};

@@ -143,7 +143,7 @@ export const AddressesForm = ({
 
   return (
     <div>
-      <h3 className="mb-5 text-xl font-semibold">Shipping Address</h3>
+      <h3 className="mb-5 text-base font-semibold">Shipping Address</h3>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -182,7 +182,9 @@ export const AddressesForm = ({
 
             {!sameAsShipping && (
               <div className="animate-in fade-in slide-in-from-top-4 duration-300">
-                <h3 className="mb-5 text-xl font-semibold">Billing Address</h3>
+                <h3 className="mb-5 text-base font-semibold">
+                  Billing Address
+                </h3>
                 <AddressFields prefix="billing" />
               </div>
             )}
@@ -202,6 +204,31 @@ export const AddressesForm = ({
           )}
         </form>
       </Form>
+    </div>
+  );
+};
+
+export const AddressesFormSkeleton = () => {
+  return (
+    <div>
+      <h3 className="mb-5 text-base font-semibold">Shipping Address</h3>
+      <div className="flex flex-col gap-6">
+        {/* Form fields skeleton */}
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
+            <div key={i} className="flex flex-col gap-2">
+              <div className="bg-accent h-4 w-24 animate-pulse rounded" />
+              <div className="bg-accent h-10 w-full animate-pulse rounded-md" />
+            </div>
+          ))}
+        </div>
+
+        {/* Checkbox skeleton */}
+        <div className="flex flex-row items-center space-x-3 rounded-md border p-4">
+          <div className="bg-accent size-4 animate-pulse rounded" />
+          <div className="bg-accent h-4 w-64 animate-pulse rounded" />
+        </div>
+      </div>
     </div>
   );
 };

@@ -1,10 +1,23 @@
 "use client";
 
 import { Separator } from "@/app/components/ui/separator";
-import { AddressesForm } from "@/app/modules/checkout/ui/components/addresses-form";
-import { CompactPaymentSummary } from "@/app/modules/checkout/ui/components/compact-payment-summary";
-import { DeliveryMethods } from "@/app/modules/checkout/ui/components/delivery-methods";
-import { OrderSummary } from "@/app/modules/checkout/ui/components/order-summary";
+import {
+  AddressesForm,
+  AddressesFormSkeleton,
+} from "@/app/modules/checkout/ui/components/addresses-form";
+import {
+  CompactPaymentSummary,
+  CompactPaymentSummarySkeleton,
+} from "@/app/modules/checkout/ui/components/compact-payment-summary";
+import {
+  DeliveryMethods,
+  DeliveryMethodsSkeleton,
+} from "@/app/modules/checkout/ui/components/delivery-methods";
+import {
+  OrderSummary,
+  OrderSummarySkeleton,
+} from "@/app/modules/checkout/ui/components/order-summary";
+import { PaymentSectionSkeleton } from "@/app/modules/checkout/ui/components/payment-section";
 import dynamic from "next/dynamic";
 import { useState } from "react";
 
@@ -66,6 +79,8 @@ export const SinglePageCheckout = ({ cartId }: { cartId?: string }) => {
               isShippingAddressValid={isShippingAddressValid}
               isShippingMethodSelected={isShippingMethodSelected}
               cartId={cartId}
+              isUpdatingAddress={isUpdatingAddress}
+              isSettingShippingMethod={isSettingShippingMethod}
             />
           </div>
 
@@ -77,6 +92,42 @@ export const SinglePageCheckout = ({ cartId }: { cartId?: string }) => {
               isUpdatingAddress={isUpdatingAddress}
               isSettingShippingMethod={isSettingShippingMethod}
             />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export const SinglePageCheckoutSkeleton = () => {
+  return (
+    <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
+      <div className="lg:col-span-7">
+        <div className="space-y-8">
+          {/* Shipping Address Section */}
+          <div>
+            <AddressesFormSkeleton />
+          </div>
+
+          <Separator />
+
+          {/* Delivery Methods Section */}
+          <div>
+            <DeliveryMethodsSkeleton />
+          </div>
+        </div>
+      </div>
+
+      <div className="lg:col-span-5">
+        <div className="sticky top-17 space-y-4">
+          <div className="space-y-6 rounded-lg border p-4">
+            <OrderSummarySkeleton />
+            <Separator />
+            <CompactPaymentSummarySkeleton />
+          </div>
+
+          <div className="mt-4">
+            <PaymentSectionSkeleton />
           </div>
         </div>
       </div>
