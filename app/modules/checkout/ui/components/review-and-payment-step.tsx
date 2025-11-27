@@ -15,12 +15,9 @@ import { OrderSummary } from "./order-summary";
 
 const ReviewAndPaymentStep = () => {
   const { cart } = useSuspenseRetrieveCart();
-  const { mutateAsync: placeOrder, isPending: isPlacingOrder } =
-    usePlaceOrder();
-  const {
-    mutateAsync: initiatePaymentSession,
-    isPending: isInitiatingPayment,
-  } = useInitiatePaymentSession();
+  const { mutate: placeOrder, isPending: isPlacingOrder } = usePlaceOrder();
+  const { mutate: initiatePaymentSession, isPending: isInitiatingPayment } =
+    useInitiatePaymentSession();
   const router = useRouter();
 
   const terminalRate = cart?.shipping_methods?.[0]?.data?.terminal_rate as
@@ -34,17 +31,22 @@ const ReviewAndPaymentStep = () => {
 
   useEffect(() => {
     if (cart?.id && !cart?.payment_collection?.payment_sessions?.length) {
-      initiatePaymentSession({
-        cart,
-        data: {
-          provider_id: "pp_paystack_paystack",
+      initiatePaymentSession(
+        {
+          cart,
           data: {
-            email: cart.email,
+            provider_id: "pp_paystack_paystack",
+            data: {
+              email: cart.email,
+            },
           },
         },
-      }).catch((err) => {
-        console.error("Error initiating payment session:", err);
-      });
+        {
+          onError: (err) => {
+            console.error("Error initiating payment session:", err);
+          },
+        },
+      );
     }
   }, [cart?.id, cart?.payment_collection, initiatePaymentSession, cart]);
 
@@ -63,16 +65,18 @@ const ReviewAndPaymentStep = () => {
 
   const initializePayment = usePaystackPayment(config);
 
-  const onSuccess = async () => {
-    try {
-      const data = await placeOrder(cart?.id);
-      if (data.type === "order" && data.order) {
-        const orderId = data.order.id;
-        router.push(`/checkout/confirmation?orderId=${orderId}`);
-      }
-    } catch (error) {
-      console.error("Error placing order:", error);
-    }
+  const onSuccess = () => {
+    placeOrder(cart?.id, {
+      onSuccess: (data) => {
+        if (data.type === "order" && data.order) {
+          const orderId = data.order.id;
+          router.push(`/checkout/confirmation?orderId=${orderId}`);
+        }
+      },
+      onError: (error) => {
+        console.error("Error placing order:", error);
+      },
+    });
   };
 
   const onClose = () => {

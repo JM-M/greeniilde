@@ -25,8 +25,9 @@ export const ProductPurchaseControls = ({
   const [quantity, setQuantity] = useState<number>(1);
   const [isBuyNowOpen, setIsBuyNowOpen] = useState(false);
   const [buyNowCartId, setBuyNowCartId] = useState<string | null>(null);
+
   const addToCartMutation = useAddToCart();
-  const { mutateAsync: createBuyNowCart, isPending: isCreatingBuyNowCart } =
+  const { mutate: createBuyNowCart, isPending: isCreatingBuyNowCart } =
     useCreateBuyNowCart();
   const { selectedVariant, product } = useProductDetailsContext();
 
@@ -41,24 +42,28 @@ export const ProductPurchaseControls = ({
     });
   };
 
-  const handleBuyNow = async () => {
+  const handleBuyNow = () => {
     if (!selectedVariant?.id || !product?.id) {
       return;
     }
 
-    try {
-      const cart = await createBuyNowCart({
+    createBuyNowCart(
+      {
         product_id: product.id,
         variant_id: selectedVariant.id,
-      });
-
-      if (cart?.id) {
-        setBuyNowCartId(cart.id);
-        setIsBuyNowOpen(true);
-      }
-    } catch (error) {
-      console.error("Failed to create buy now cart:", error);
-    }
+      },
+      {
+        onSuccess: (cart) => {
+          if (cart?.id) {
+            setBuyNowCartId(cart.id);
+            setIsBuyNowOpen(true);
+          }
+        },
+        onError: (error) => {
+          console.error("Failed to create buy now cart:", error);
+        },
+      },
+    );
   };
 
   return (

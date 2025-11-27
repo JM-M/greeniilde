@@ -13,27 +13,29 @@ import { toast } from "sonner";
 
 export const PaymentSection = ({ cartId }: { cartId?: string }) => {
   const { cart } = useRetrieveCart({ cartId });
-  const { mutateAsync: placeOrder, isPending: isPlacingOrder } =
-    usePlaceOrder();
-  const {
-    mutateAsync: initiatePaymentSession,
-    isPending: isInitiatingPayment,
-  } = useInitiatePaymentSession();
+  const { mutate: placeOrder, isPending: isPlacingOrder } = usePlaceOrder();
+  const { mutate: initiatePaymentSession, isPending: isInitiatingPayment } =
+    useInitiatePaymentSession();
   const router = useRouter();
 
   useEffect(() => {
     if (cart?.id && !cart?.payment_collection?.payment_sessions?.length) {
-      initiatePaymentSession({
-        cart,
-        data: {
-          provider_id: "pp_paystack_paystack",
+      initiatePaymentSession(
+        {
+          cart,
           data: {
-            email: cart.email,
+            provider_id: "pp_paystack_paystack",
+            data: {
+              email: cart.email,
+            },
           },
         },
-      }).catch((err) => {
-        console.error("Error initiating payment session:", err);
-      });
+        {
+          onError: (err) => {
+            console.error("Error initiating payment session:", err);
+          },
+        },
+      );
     }
   }, [cart?.id, cart?.payment_collection, initiatePaymentSession, cart]);
 
@@ -52,17 +54,19 @@ export const PaymentSection = ({ cartId }: { cartId?: string }) => {
 
   const initializePayment = usePaystackPayment(config);
 
-  const onSuccess = async () => {
-    try {
-      const data = await placeOrder(cart?.id);
-      if (data.type === "order" && data.order) {
-        const orderId = data.order.id;
-        router.push(`/checkout/confirmation?orderId=${orderId}`);
-      }
-    } catch (error) {
-      console.error("Error placing order:", error);
-      toast.error("Failed to place order");
-    }
+  const onSuccess = () => {
+    placeOrder(cart?.id, {
+      onSuccess: (data) => {
+        if (data.type === "order" && data.order) {
+          const orderId = data.order.id;
+          router.push(`/checkout/confirmation?orderId=${orderId}`);
+        }
+      },
+      onError: (error) => {
+        console.error("Error placing order:", error);
+        toast.error("Failed to place order");
+      },
+    });
   };
 
   const onClose = () => {
