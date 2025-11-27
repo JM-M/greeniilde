@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { Button } from "@/app/components/ui/button";
+import { Skeleton } from "@/app/components/ui/skeleton";
 import { useCartSheet } from "@/app/contexts/cart-sheet";
 import { cn } from "@/app/lib/utils";
 import {
@@ -83,9 +84,12 @@ export const ProductPurchaseControls = ({
           value={quantity}
           onChange={setQuantity}
           min={1}
+          plusButtonProps={{ className: "h-10" }}
+          minusButtonProps={{ className: "h-10" }}
+          inputProps={{ className: "h-10" }}
         />
         <Button
-          className="flex-1"
+          className="h-10 flex-1"
           type="button"
           onClick={handleAddToCart}
           disabled={addToCartMutation.isPending || !selectedVariant?.id}
@@ -96,18 +100,18 @@ export const ProductPurchaseControls = ({
       </div>
       <Button
         variant="outline"
-        className="w-full border"
+        className="h-10 w-full border"
         onClick={handleBuyNow}
         disabled={isCreatingBuyNowCart || !selectedVariant?.id}
       >
         {isCreatingBuyNowCart ? "Preparing..." : "Buy now"}
       </Button>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-        <Button variant="outline">
+        <Button variant="outline" className="h-10">
           <SiWhatsapp />
           Buy on WhatsApp
         </Button>
-        <Button variant="outline">
+        <Button variant="outline" className="h-10">
           <LiaTelegram />
           Buy on Telegram
         </Button>
@@ -117,6 +121,34 @@ export const ProductPurchaseControls = ({
         onOpenChange={setIsBuyNowOpen}
         cartId={buyNowCartId}
       />
+    </div>
+  );
+};
+
+export const ProductPurchaseControlsSkeleton = ({
+  className,
+}: {
+  className?: string;
+}) => {
+  return (
+    <div className="space-y-3">
+      <div className={cn("flex gap-2", className)}>
+        {/* Quantity controls skeleton */}
+        <div className="flex items-center gap-2">
+          <Skeleton className="h-10 w-10" />
+          <Skeleton className="h-10 w-16" />
+          <Skeleton className="h-10 w-10" />
+        </div>
+        {/* Add to cart button skeleton */}
+        <Skeleton className="h-10 flex-1" />
+      </div>
+      {/* Buy now button skeleton */}
+      <Skeleton className="h-10 w-full" />
+      {/* Social buttons skeleton */}
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <Skeleton className="h-10 w-full" />
+        <Skeleton className="h-10 w-full" />
+      </div>
     </div>
   );
 };

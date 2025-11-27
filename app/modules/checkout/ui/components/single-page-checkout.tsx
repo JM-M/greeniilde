@@ -19,7 +19,6 @@ import {
   OrderSummary,
   OrderSummarySkeleton,
 } from "@/app/modules/checkout/ui/components/order-summary";
-import { PaymentSectionSkeleton } from "@/app/modules/checkout/ui/components/payment-section";
 import { ShoppingBag } from "lucide-react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
@@ -31,6 +30,14 @@ const PaymentSection = dynamic(
   () =>
     import("@/app/modules/checkout/ui/components/payment-section").then(
       (mod) => mod.PaymentSection,
+    ),
+  { ssr: false },
+);
+
+const PaymentSectionSkeleton = dynamic(
+  () =>
+    import("@/app/modules/checkout/ui/components/payment-section").then(
+      (mod) => mod.PaymentSectionSkeleton,
     ),
   { ssr: false },
 );

@@ -10,7 +10,11 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/app/components/ui/carousel";
-import { ProductCard } from "@/app/modules/products/ui/components/product-card";
+import { Skeleton } from "@/app/components/ui/skeleton";
+import {
+  ProductCard,
+  ProductCardSkeleton,
+} from "@/app/modules/products/ui/components/product-card";
 import Link from "next/link";
 import { Product } from "../../types";
 
@@ -83,6 +87,35 @@ export const ProductCarousel = ({ products }: ProductCarouselProps) => {
           <ChevronRight className="size-4" />
           <span className="sr-only">Next products</span>
         </Button>
+      </div>
+    </div>
+  );
+};
+
+export const ProductCarouselSkeleton = () => {
+  return (
+    <div className="space-y-4">
+      <Carousel
+        className="w-full"
+        opts={{
+          align: "start",
+        }}
+      >
+        <CarouselContent className="-ml-3 md:-ml-4">
+          {Array.from({ length: 4 }).map((_, index) => (
+            <CarouselItem
+              key={index}
+              className="py-2 pl-3 md:basis-1/2 md:pl-4 lg:basis-1/3 xl:basis-1/4"
+            >
+              <ProductCardSkeleton className="h-full" />
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+      </Carousel>
+
+      <div className="flex justify-end gap-2">
+        <Skeleton className="h-10 w-10 rounded-md" />
+        <Skeleton className="h-10 w-10 rounded-md" />
       </div>
     </div>
   );

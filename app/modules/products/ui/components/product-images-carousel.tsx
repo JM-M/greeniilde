@@ -9,10 +9,9 @@ import {
   type CarouselApi,
 } from "@/app/components/ui/carousel";
 import { ScrollArea, ScrollBar } from "@/app/components/ui/scroll-area";
+import { Skeleton } from "@/app/components/ui/skeleton";
 import { cn } from "@/app/lib/utils";
 import Image from "next/image";
-
-const placeholderSlides = Array.from({ length: 8 });
 
 interface ProductImagesCarouselProps {
   images: string[];
@@ -83,6 +82,23 @@ export const ProductImagesCarousel = ({
               <span className="sr-only">{`Go to slide ${index + 1}`}</span>
             </button>
           ))}
+        </div>
+        <ScrollBar orientation="horizontal" />
+      </ScrollArea>
+    </div>
+  );
+};
+
+export const ProductImagesCarouselSkeleton = () => {
+  return (
+    <div className="w-full space-y-4">
+      <Skeleton className="aspect-square w-full rounded-xl" />
+      <ScrollArea className="w-full" type="scroll">
+        <div className="flex items-center gap-2 pb-2">
+          <Skeleton className="h-16 w-16 rounded-lg" />
+          <Skeleton className="h-16 w-16 rounded-lg" />
+          <Skeleton className="h-16 w-16 rounded-lg" />
+          <Skeleton className="h-16 w-16 rounded-lg" />
         </div>
         <ScrollBar orientation="horizontal" />
       </ScrollArea>

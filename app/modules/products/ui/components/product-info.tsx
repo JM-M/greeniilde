@@ -1,4 +1,5 @@
 import { Badge } from "@/app/components/ui/badge";
+import { Skeleton } from "@/app/components/ui/skeleton";
 import { CURRENCY_CODE } from "@/app/constants/api";
 import { cn, convertToLocale } from "@/app/lib/utils";
 import { HttpTypes } from "@medusajs/types";
@@ -41,6 +42,24 @@ export const ProductInfo = ({ name, tags, className }: ProductInfoProps) => {
             {tag}
           </Badge>
         ))}
+      </div>
+    </div>
+  );
+};
+
+export const ProductInfoSkeleton = ({ className }: { className?: string }) => {
+  return (
+    <div className={cn("space-y-3", className)}>
+      <div className="space-y-1">
+        <Skeleton className="h-7 w-3/4" />
+      </div>
+
+      <Skeleton className="h-6 w-32" />
+
+      <div className="flex flex-wrap gap-2">
+        <Skeleton className="h-6 w-16" />
+        <Skeleton className="h-6 w-20" />
+        <Skeleton className="h-6 w-16" />
       </div>
     </div>
   );

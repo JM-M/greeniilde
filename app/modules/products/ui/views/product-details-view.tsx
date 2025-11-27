@@ -3,7 +3,10 @@ import { getQueryClient } from "@/app/lib/query/get-query-client";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { Suspense } from "react";
 import { productQueries } from "../../queries";
-import { ProductDetailsViewClient } from "../components/product-details-view-client";
+import {
+  ProductDetailsViewClient,
+  ProductDetailsViewClientSkeleton,
+} from "../components/product-details-view-client";
 
 interface ProductDetailsViewProps {
   productId: string;
@@ -35,7 +38,7 @@ export const ProductDetailsView = async ({
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<ProductDetailsViewClientSkeleton />}>
         <ProductDetailsViewClient />
       </Suspense>
     </HydrationBoundary>

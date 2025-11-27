@@ -26,4 +26,3 @@ export const useActiveIndicator = (activeIndex: number) => {
 
   return { itemRefs, styles };
 };
-

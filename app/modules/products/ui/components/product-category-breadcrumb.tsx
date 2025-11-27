@@ -8,6 +8,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/app/components/ui/breadcrumb";
+import { Skeleton } from "@/app/components/ui/skeleton";
 import { categoryQueries } from "@/app/modules/categories/queries";
 import {
   buildCategoryTree,
@@ -83,6 +84,20 @@ export const ProductCategoryBreadcrumb = ({
             </React.Fragment>
           );
         })}
+      </BreadcrumbList>
+    </Breadcrumb>
+  );
+};
+
+export const ProductCategoryBreadcrumbSkeleton = () => {
+  return (
+    <Breadcrumb>
+      <BreadcrumbList>
+        <Skeleton className="h-4 w-16" />
+        <Skeleton className="mx-2 h-4 w-1" />
+        <Skeleton className="h-4 w-24" />
+        <Skeleton className="mx-2 h-4 w-1" />
+        <Skeleton className="h-4 w-32" />
       </BreadcrumbList>
     </Breadcrumb>
   );

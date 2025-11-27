@@ -1,6 +1,10 @@
 "use client";
 
-import { ProductCarousel } from "@/app/modules/products/ui/components/product-carousel";
+import { Skeleton } from "@/app/components/ui/skeleton";
+import {
+  ProductCarousel,
+  ProductCarouselSkeleton,
+} from "@/app/modules/products/ui/components/product-carousel";
 import { useGetProductsFromMeilisearch } from "../../hooks/use-product-queries";
 import { formatPriceRange } from "../../utils/price";
 import { useProductDetailsContext } from "../contexts/product-details-context";
@@ -33,6 +37,15 @@ export const SimilarProducts = () => {
         Similar products
       </h3>
       <ProductCarousel products={products || []} />
+    </section>
+  );
+};
+
+export const SimilarProductsSkeleton = () => {
+  return (
+    <section aria-labelledby="similar-products-heading" className="space-y-4">
+      <Skeleton className="h-7 w-48" />
+      <ProductCarouselSkeleton />
     </section>
   );
 };
