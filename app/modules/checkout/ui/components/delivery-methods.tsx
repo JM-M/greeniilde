@@ -68,11 +68,8 @@ export const DeliveryMethods = ({
     mode: "onSubmit",
   });
 
-  // console.log(cart?.shipping_address);
-
   // Clear selected rate when shipping address changes
   useEffect(() => {
-    // console.log(cart?.shipping_address);
     form.setValue("rateId", "");
     if (onMethodSelected) {
       onMethodSelected(false);

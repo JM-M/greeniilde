@@ -8,10 +8,10 @@ import { useProductDetailsContext } from "../contexts/product-details-context";
 export const SimilarProducts = () => {
   const { product } = useProductDetailsContext();
 
-  const categoryId = product.categories?.[0].id;
+  const categoryId = product.categories?.[0]?.id;
 
   const { data } = useGetProductsFromMeilisearch({
-    filter: `categories.id = "${product.categories?.[0].id}"`,
+    filter: `categories.id = "${categoryId}"`,
   });
 
   const products = data?.hits.map((hit) => {

@@ -13,6 +13,7 @@ import { useRetrieveCart } from "@/app/modules/cart/hooks/use-cart-queries";
 
 export const OrderSummary = ({ cartId }: { cartId?: string }) => {
   const { cart } = useRetrieveCart({ cartId });
+  // console.log(cart);
 
   return (
     <div>
