@@ -24,7 +24,7 @@ export const PaymentSection = ({
   isUpdatingAddress: boolean;
   isSettingShippingMethod: boolean;
 }) => {
-  const { cart } = useRetrieveCart({ cartId });
+  const { cart, isLoading: isRetrievingCart } = useRetrieveCart({ cartId });
   const { mutate: placeOrder, isPending: isPlacingOrder } = usePlaceOrder();
   const { mutate: initiatePaymentSession, isPending: isInitiatingPayment } =
     useInitiatePaymentSession();
@@ -102,16 +102,17 @@ export const PaymentSection = ({
     !paystackSession ||
     isLoading ||
     !isShippingAddressValid ||
-    !isShippingMethodSelected;
+    !isShippingMethodSelected ||
+    isRetrievingCart ||
+    isUpdatingAddress ||
+    isSettingShippingMethod;
 
   return (
     <div className="mt-4">
       <Button
         className="h-12 w-full"
         onClick={handlePayment}
-        disabled={
-          isPaymentDisabled || isUpdatingAddress || isSettingShippingMethod
-        }
+        disabled={isPaymentDisabled}
       >
         {isLoading ? "Processing..." : "Pay with Paystack"}
       </Button>

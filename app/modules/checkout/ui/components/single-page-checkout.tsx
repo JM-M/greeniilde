@@ -58,7 +58,7 @@ export const SinglePageCheckout = ({ cartId }: { cartId?: string }) => {
       </div>
 
       <div className="lg:col-span-5">
-        <div className="sticky top-20 space-y-4">
+        <div className="sticky top-17 space-y-4">
           <div className="space-y-6 rounded-lg border p-4">
             <OrderSummary cartId={cartId} />
             <Separator />
