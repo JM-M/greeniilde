@@ -3,8 +3,8 @@
 import { Label } from "@/app/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/app/components/ui/radio-group";
 import {
-  useProductSortParams,
   SORT_OPTIONS,
+  useProductSortParams,
   type SortOption,
 } from "../../hooks/use-product-sort-params";
 
@@ -17,13 +17,20 @@ const SORT_LABELS: Record<SortOption, string> = {
   "name-desc": "Name (Z to A)",
 };
 
-export const ProductSort = () => {
+interface ProductSortProps {
+  onSelect?: () => void;
+}
+
+export const ProductSort = ({ onSelect }: ProductSortProps) => {
   const [{ sort }, setSort] = useProductSortParams();
 
   return (
     <RadioGroup
       value={sort ?? "newest"}
-      onValueChange={(value) => setSort({ sort: value as SortOption })}
+      onValueChange={(value) => {
+        setSort({ sort: value as SortOption });
+        onSelect?.();
+      }}
       className="space-y-3"
     >
       {SORT_OPTIONS.map((option) => (
@@ -40,4 +47,3 @@ export const ProductSort = () => {
     </RadioGroup>
   );
 };
-

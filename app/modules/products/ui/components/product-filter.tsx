@@ -9,7 +9,10 @@ import {
 import { Label } from "@/app/components/ui/label";
 import { ScrollArea } from "@/app/components/ui/scroll-area";
 import { Separator } from "@/app/components/ui/separator";
+import { Skeleton } from "@/app/components/ui/skeleton";
 import { Slider } from "@/app/components/ui/slider";
+import { CURRENCY_CODE } from "@/app/constants/api";
+import { convertToLocale } from "@/app/lib/utils";
 import { ChevronDown } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useSuspenseListCategories } from "../../../categories/hooks/use-category-queries";
@@ -65,6 +68,11 @@ export const ProductFilter = () => {
       // If all are unchecked, reset to empty array (show all)
       setFilters({ categories: newCategories });
     }
+  };
+
+  const handlePriceRangeChange = (values: number[]) => {
+    // Update local state for immediate visual feedback
+    setPriceSliderValue(values);
   };
 
   const handlePriceRangeCommit = (values: number[]) => {
@@ -134,8 +142,8 @@ export const ProductFilter = () => {
             <CollapsibleContent className="space-y-4 pt-2">
               <div className="space-y-2">
                 <Slider
-                  defaultValue={priceSliderValue}
-                  // onValueChange={handlePriceRangeChange}
+                  value={priceSliderValue}
+                  onValueChange={handlePriceRangeChange}
                   onValueCommit={handlePriceRangeCommit}
                   min={actualMinPrice}
                   max={actualMaxPrice}
@@ -143,8 +151,18 @@ export const ProductFilter = () => {
                   className="w-full"
                 />
                 <div className="text-muted-foreground flex items-center justify-between text-xs">
-                  <span>${priceSliderValue[0]?.toLocaleString()}</span>
-                  <span>${priceSliderValue[1]?.toLocaleString()}</span>
+                  <span>
+                    {convertToLocale({
+                      amount: priceSliderValue[0],
+                      currencyCode: CURRENCY_CODE,
+                    })}
+                  </span>
+                  <span>
+                    {convertToLocale({
+                      amount: priceSliderValue[1],
+                      currencyCode: CURRENCY_CODE,
+                    })}
+                  </span>
                 </div>
               </div>
             </CollapsibleContent>
@@ -188,6 +206,71 @@ export const ProductFilter = () => {
           </CollapsibleContent>
         </Collapsible>
       )}
+    </div>
+  );
+};
+
+export const ProductFilterSkeleton = () => {
+  return (
+    <div className="space-y-4">
+      {/* Categories Skeleton */}
+      <Collapsible defaultOpen>
+        <CollapsibleTrigger className="flex w-full items-center justify-between py-2 text-sm font-medium [&[data-state=open]>svg]:rotate-180">
+          <span>Categories</span>
+          <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200" />
+        </CollapsibleTrigger>
+        <CollapsibleContent className="pt-2">
+          <ScrollArea className="h-48">
+            <div className="space-y-3 pr-4">
+              {Array.from({ length: 5 }).map((_, index) => (
+                <div key={index} className="flex items-center space-x-2">
+                  <Skeleton className="h-4 w-4 rounded" />
+                  <Skeleton className="h-4 w-24" />
+                </div>
+              ))}
+            </div>
+          </ScrollArea>
+        </CollapsibleContent>
+      </Collapsible>
+      <Separator />
+
+      {/* Price Range Skeleton */}
+      <Collapsible defaultOpen>
+        <CollapsibleTrigger className="flex w-full items-center justify-between py-2 text-sm font-medium [&[data-state=open]>svg]:rotate-180">
+          <span>Price Range</span>
+          <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200" />
+        </CollapsibleTrigger>
+        <CollapsibleContent className="space-y-4 pt-2">
+          <div className="space-y-2">
+            <Skeleton className="h-2 w-full" />
+            <div className="flex items-center justify-between">
+              <Skeleton className="h-3 w-12" />
+              <Skeleton className="h-3 w-12" />
+            </div>
+          </div>
+        </CollapsibleContent>
+      </Collapsible>
+      <Separator />
+
+      {/* Specs Skeleton */}
+      <Collapsible defaultOpen>
+        <CollapsibleTrigger className="flex w-full items-center justify-between py-2 text-sm font-medium [&[data-state=open]>svg]:rotate-180">
+          <span>Specs</span>
+          <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200" />
+        </CollapsibleTrigger>
+        <CollapsibleContent className="pt-2">
+          <ScrollArea className="h-64">
+            <div className="space-y-3 pr-4">
+              {Array.from({ length: 8 }).map((_, index) => (
+                <div key={index} className="flex items-center space-x-2">
+                  <Skeleton className="h-4 w-4 rounded" />
+                  <Skeleton className="h-4 w-28" />
+                </div>
+              ))}
+            </div>
+          </ScrollArea>
+        </CollapsibleContent>
+      </Collapsible>
     </div>
   );
 };

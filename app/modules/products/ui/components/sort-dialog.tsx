@@ -16,7 +16,7 @@ export const SortDialog = ({ open, onOpenChange }: SortDialogProps) => {
       title="Sort Products"
       description="Choose how to sort products"
     >
-      <ProductSort />
+      <ProductSort onSelect={() => onOpenChange(false)} />
     </ResponsiveDialog>
   );
 };

@@ -6,6 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/app/components/ui/card";
+import { Skeleton } from "@/app/components/ui/skeleton";
 import { cn } from "@/app/lib/utils";
 import Image from "next/image";
 import { Product } from "../../types";
@@ -49,6 +50,28 @@ export const ProductCard = ({
               {spec}
             </Badge>
           ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
+export const ProductCardSkeleton = ({ className }: { className?: string }) => {
+  return (
+    <Card className={className}>
+      <CardHeader className="gap-4">
+        <Skeleton className="aspect-square w-full rounded-lg" />
+        <div className="space-y-2">
+          <Skeleton className="h-6 w-3/4" />
+          <Skeleton className="h-5 w-1/2" />
+        </div>
+      </CardHeader>
+
+      <CardContent>
+        <div className="flex flex-wrap gap-2">
+          <Skeleton className="h-6 w-16" />
+          <Skeleton className="h-6 w-20" />
+          <Skeleton className="h-6 w-16" />
         </div>
       </CardContent>
     </Card>

@@ -1,15 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useProductFilterParams } from "../../hooks/use-product-filter-params";
-import { useSuspenseGetProductsFromMeilisearch } from "../../hooks/use-product-queries";
 import { useProductSortParams } from "../../hooks/use-product-sort-params";
-import { convertFiltersToMeilisearch } from "../../utils/filter";
-import { formatPriceRange } from "../../utils/price";
-import { convertSortToMeilisearch } from "../../utils/sort";
 import { FilterDialog } from "./filter-dialog";
-import { ProductFilter } from "./product-filter";
-import { ProductGrid } from "./product-grid";
+import { ProductFilter, ProductFilterSkeleton } from "./product-filter";
+import {
+  ProductGridContainer,
+  ProductGridSkeleton,
+} from "./product-grid-container";
 import { ProductViewHeader } from "./product-view-header";
 import { SortDialog } from "./sort-dialog";
 
@@ -19,26 +18,6 @@ export const ProductsViewClient = () => {
 
   const [productSortParams] = useProductSortParams();
   const [productFilterParams] = useProductFilterParams();
-
-  // Investigate: Cannot update a component (`Router`) while rendering a different component (`ProductsViewClient`). To locate the bad setState() call inside `ProductsViewClient`
-  const { data: productsData } = useSuspenseGetProductsFromMeilisearch({
-    sort: convertSortToMeilisearch(productSortParams.sort),
-    filter: convertFiltersToMeilisearch(productFilterParams),
-  });
-
-  const products =
-    productsData?.hits.map((hit) => {
-      return {
-        id: hit.id,
-        name: hit.title || "",
-        price: formatPriceRange({
-          min: hit.min_price,
-          max: hit.max_price,
-        }),
-        specs: hit.tags?.map((tag) => tag.value) || [],
-        image: hit.thumbnail || "",
-      };
-    }) || [];
 
   return (
     <>
@@ -55,7 +34,12 @@ export const ProductsViewClient = () => {
         />
         <div className="flex gap-6">
           <div className="flex-1">
-            <ProductGrid products={products} />
+            <Suspense fallback={<ProductGridSkeleton />}>
+              <ProductGridContainer
+                sort={productSortParams.sort}
+                filter={productFilterParams}
+              />
+            </Suspense>
           </div>
           <div className="sticky top-20 hidden h-fit w-80 shrink-0 lg:block">
             <ProductFilter />
@@ -63,5 +47,26 @@ export const ProductsViewClient = () => {
         </div>
       </div>
     </>
+  );
+};
+
+export const ProductViewClientSkeleton = () => {
+  return (
+    <div className="view-container">
+      <ProductViewHeader
+        filterOpen={false}
+        onFilterOpenChange={() => {}}
+        sortOpen={false}
+        onSortOpenChange={() => {}}
+      />
+      <div className="flex gap-6">
+        <div className="flex-1">
+          <ProductGridSkeleton />
+        </div>
+        <div className="sticky top-20 hidden h-fit w-80 shrink-0 lg:block">
+          <ProductFilterSkeleton />
+        </div>
+      </div>
+    </div>
   );
 };

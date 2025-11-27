@@ -5,7 +5,10 @@ import { loadProductFilterParams, loadProductSortParams } from "../../params";
 import { productQueries } from "../../queries";
 import { convertFiltersToMeilisearch } from "../../utils/filter";
 import { convertSortToMeilisearch } from "../../utils/sort";
-import { ProductsViewClient } from "../components/products-view-client";
+import {
+  ProductsViewClient,
+  ProductViewClientSkeleton,
+} from "../components/products-view-client";
 
 interface ProductsViewProps {
   productFilterParams: Awaited<ReturnType<typeof loadProductFilterParams>>;
@@ -33,7 +36,7 @@ export const ProductsView = async ({
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<ProductViewClientSkeleton />}>
         <ProductsViewClient />
       </Suspense>
     </HydrationBoundary>
