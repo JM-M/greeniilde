@@ -52,7 +52,7 @@ export const OrderSummary = ({ cartId }: { cartId?: string }) => {
                   </ItemTitle>
                   <span className="text-sm font-medium">
                     {convertToLocale({
-                      amount: item.unit_price,
+                      amount: Number(item.total),
                       currency_code: cart.currency_code,
                     })}
                   </span>

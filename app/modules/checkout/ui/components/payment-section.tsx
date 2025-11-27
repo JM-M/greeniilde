@@ -73,9 +73,10 @@ export const PaymentSection = ({
   const onSuccess = () => {
     placeOrder(cart?.id, {
       onSuccess: (data) => {
+        console.log("success: ", data);
         if (data.type === "order" && data.order) {
           const orderId = data.order.id;
-          router.push(`/checkout/confirmation?orderId=${orderId}`);
+          window.location.href = `/checkout/confirmation?orderId=${orderId}`;
         }
       },
       onError: (error) => {
