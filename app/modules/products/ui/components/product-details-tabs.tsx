@@ -8,32 +8,30 @@ import {
   TabsTrigger,
 } from "@/app/components/ui/tabs";
 import { ProductDescription } from "./product-description";
-import { ProductFaqs } from "./product-faqs";
-import { ProductSpecifications } from "./product-specifications";
 import { ProductReviews } from "./reviews";
 
 export const ProductDetailsTabs = () => {
   return (
     <Tabs defaultValue="description" className="w-full">
-      <TabsList className="justify-start overflow-x-auto md:mx-auto md:w-fit">
+      <TabsList className="mx-auto w-fit justify-start overflow-x-auto">
         <TabsTrigger value="description">Description</TabsTrigger>
-        <TabsTrigger value="specs">Specifications</TabsTrigger>
+        {/* <TabsTrigger value="specs">Specifications</TabsTrigger> */}
         <TabsTrigger value="reviews">Ratings & Reviews</TabsTrigger>
-        <TabsTrigger value="faqs">FAQs</TabsTrigger>
+        {/* <TabsTrigger value="faqs">FAQs</TabsTrigger> */}
       </TabsList>
 
       <TabsContent value="description">
         <ProductDescription className="my-4 lg:mx-auto lg:max-w-prose" />
       </TabsContent>
-      <TabsContent value="specs">
+      {/* <TabsContent value="specs">
         <ProductSpecifications className="my-4 rounded-lg border lg:mx-auto lg:max-w-prose" />
-      </TabsContent>
+      </TabsContent> */}
       <TabsContent value="reviews">
         <ProductReviews />
       </TabsContent>
-      <TabsContent value="faqs">
+      {/* <TabsContent value="faqs">
         <ProductFaqs className="my-4 lg:mx-auto lg:max-w-prose" />
-      </TabsContent>
+      </TabsContent> */}
     </Tabs>
   );
 };

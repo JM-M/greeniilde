@@ -10,6 +10,6 @@ export const sdk = new Medusa({
   },
   globalHeaders: {
     // TODO: Do this properly
-    "x-store-id": process.env.NEXT_PUBLIC_STORE_ID!,
+    "x-store-id": process.env.STORE_ID!,
   },
 });

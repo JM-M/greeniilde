@@ -12,6 +12,7 @@ import {
   useCreateChannelCart,
 } from "@/app/modules/cart/hooks/use-cart-mutations";
 import { BuyNowModal } from "@/app/modules/products/ui/components/buy-now-modal";
+import { useSuspenseStoreConfig } from "@/app/modules/store/hooks/use-store-queries";
 import { ShoppingBagIcon } from "lucide-react";
 import { LiaTelegram } from "react-icons/lia";
 import { SiWhatsapp } from "react-icons/si";
@@ -35,9 +36,15 @@ export const ProductPurchaseControls = ({
   const { setOpen: setCartSheetOpen } = useCartSheet();
 
   const addToCartMutation = useAddToCart();
+
   const { mutate: createChannelCart, isPending: isCreatingCart } =
     useCreateChannelCart();
+
   const { selectedVariant, product } = useProductDetailsContext();
+
+  const { data: storeConfig } = useSuspenseStoreConfig();
+  const whatsAppNumber = storeConfig?.metadata?.whatsapp_number;
+  const telegramNumber = storeConfig?.metadata?.telegram_number;
 
   const handleAddToCart = () => {
     if (!selectedVariant?.id) {
@@ -83,7 +90,7 @@ export const ProductPurchaseControls = ({
   };
 
   const handleBuyOnWhatsApp = () => {
-    if (!selectedVariant?.id || !product?.id) {
+    if (!selectedVariant?.id || !product?.id || !whatsAppNumber) {
       return;
     }
 
@@ -99,7 +106,7 @@ export const ProductPurchaseControls = ({
           if (cart?.id) {
             const checkoutLink = `${window.location.origin}/checkout?cart_id=${cart.id}`;
             const message = `Hi, I would like to purchase ${product.title}. Link: ${checkoutLink}`;
-            window.location.href = `https://wa.me/2348115058726?text=${encodeURIComponent(
+            window.location.href = `https://wa.me/${whatsAppNumber}?text=${encodeURIComponent(
               message,
             )}`;
           }
@@ -115,7 +122,7 @@ export const ProductPurchaseControls = ({
   };
 
   const handleBuyOnTelegram = () => {
-    if (!selectedVariant?.id || !product?.id) {
+    if (!selectedVariant?.id || !product?.id || !telegramNumber) {
       return;
     }
 
@@ -129,7 +136,7 @@ export const ProductPurchaseControls = ({
       {
         onSuccess: (cart) => {
           if (cart?.id) {
-            window.location.href = "https://t.me/+2348115058726";
+            window.location.href = `https://t.me/+${telegramNumber}`;
           }
         },
         onError: (error) => {
@@ -179,24 +186,28 @@ export const ProductPurchaseControls = ({
           {isCreatingCart ? "Preparing..." : "Buy now"}
         </Button>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-          <Button
-            variant="outline"
-            className="h-10"
-            onClick={handleBuyOnWhatsApp}
-            disabled={isCreatingCart || !selectedVariant?.id}
-          >
-            {loadingChannel === "whatsapp" ? <Spinner /> : <SiWhatsapp />}
-            Buy on WhatsApp
-          </Button>
-          <Button
-            variant="outline"
-            className="h-10"
-            onClick={handleBuyOnTelegram}
-            disabled={isCreatingCart || !selectedVariant?.id}
-          >
-            {loadingChannel === "telegram" ? <Spinner /> : <LiaTelegram />}
-            Buy on Telegram
-          </Button>
+          {whatsAppNumber && (
+            <Button
+              variant="outline"
+              className="h-10"
+              onClick={handleBuyOnWhatsApp}
+              disabled={isCreatingCart || !selectedVariant?.id}
+            >
+              {loadingChannel === "whatsapp" ? <Spinner /> : <SiWhatsapp />}
+              Buy on WhatsApp
+            </Button>
+          )}
+          {telegramNumber && (
+            <Button
+              variant="outline"
+              className="h-10"
+              onClick={handleBuyOnTelegram}
+              disabled={isCreatingCart || !selectedVariant?.id}
+            >
+              {loadingChannel === "telegram" ? <Spinner /> : <LiaTelegram />}
+              Buy on Telegram
+            </Button>
+          )}
         </div>
       </div>
     </>

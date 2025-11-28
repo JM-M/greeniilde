@@ -166,7 +166,7 @@ export const getFacetDistributions = async (
     searchParams.facets = filterableAttributes;
   }
 
-  const storeId = process.env.NEXT_PUBLIC_STORE_ID;
+  const storeId = process.env.STORE_ID;
   const storeFilter = `store_id = "${storeId}"`;
 
   if (filter) {
