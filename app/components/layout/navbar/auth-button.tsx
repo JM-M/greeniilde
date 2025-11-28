@@ -1,11 +1,10 @@
 "use client";
 
 import { useIsMobile } from "@/app/hooks/use-mobile";
-import { cn } from "@/app/lib/utils";
 import { useLogout } from "@/app/modules/auth/hooks/use-auth-mutations";
 import { useSuspenseCustomer } from "@/app/modules/auth/hooks/use-customer-queries";
 import { useAuthModal } from "@/app/providers/auth-modal-provider";
-import { LogOutIcon, UserCircleIcon } from "lucide-react";
+import { LogOutIcon } from "lucide-react";
 import { Button } from "../../ui/button";
 import { Spinner } from "../../ui/spinner";
 
@@ -38,15 +37,11 @@ export const AuthButton = () => {
   return (
     <Button
       variant="ghost"
-      size={isMobile ? "icon" : "sm"}
+      size="sm"
       onClick={() => openAuthModal("login")}
-      className={cn({ "text-primary bg-background": !isMobile })}
+      className="text-primary bg-background"
     >
-      {isMobile ? (
-        <UserCircleIcon className="size-5" strokeWidth={1.4} />
-      ) : (
-        "Login"
-      )}
+      Login
     </Button>
   );
 };
