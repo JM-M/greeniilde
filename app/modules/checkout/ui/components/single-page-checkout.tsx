@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/app/components/ui/button";
+import { CartEmpty } from "@/app/components/shared/cart-empty";
 import { Separator } from "@/app/components/ui/separator";
 import { useRetrieveCart } from "@/app/modules/cart/hooks/use-cart-queries";
 import {
@@ -19,9 +19,7 @@ import {
   OrderSummary,
   OrderSummarySkeleton,
 } from "@/app/modules/checkout/ui/components/order-summary";
-import { ShoppingBag } from "lucide-react";
 import dynamic from "next/dynamic";
-import Link from "next/link";
 import { useState } from "react";
 
 // TODO: Make this work so that all components work in close sync with each other. E.g. a single endpoint to update cart addresses and get the rates.
@@ -64,24 +62,7 @@ export const SinglePageCheckout = ({
   if (isLoading) return <SinglePageCheckoutSkeleton />;
 
   if (!numCartItems) {
-    return (
-      <div className="flex min-h-[400px] flex-col items-center justify-center gap-y-4 text-center">
-        <div className="flex h-16 w-16 items-center justify-center rounded-full border">
-          <ShoppingBag className="text-muted-foreground h-8 w-8" />
-        </div>
-        <div className="space-y-2">
-          <h2 className="text-2xl font-semibold tracking-tight">
-            Your cart is empty
-          </h2>
-          <p className="text-muted-foreground">
-            Looks like you haven&apos;t added anything to your cart yet.
-          </p>
-        </div>
-        <Button asChild className="mt-4">
-          <Link href="/products">Continue Shopping</Link>
-        </Button>
-      </div>
-    );
+    return <CartEmpty />;
   }
 
   return (

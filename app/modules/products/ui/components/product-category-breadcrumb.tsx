@@ -73,9 +73,7 @@ export const ProductCategoryBreadcrumb = ({
                 {isLast ? (
                   <BreadcrumbPage>{category.name}</BreadcrumbPage>
                 ) : (
-                  <BreadcrumbLink
-                    href={`/products?categories=${category.handle}`}
-                  >
+                  <BreadcrumbLink href={`/products?categories=${category.id}`}>
                     {category.name}
                   </BreadcrumbLink>
                 )}
