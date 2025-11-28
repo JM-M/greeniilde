@@ -1,5 +1,6 @@
 "use client";
 import {
+  useGetUserProductReview,
   useSuspenseGetProductReviews,
   useSuspenseGetProductReviewStats,
 } from "../../../hooks/use-product-review-queries";
@@ -9,86 +10,78 @@ import { ReviewsDistribution } from "./summary/reviews-distribution";
 import { ReviewsSummary } from "./summary/reviews-summary";
 
 export function ProductReviews() {
-  // Static placeholder content only
-  const aggregate = { average: 4.6, total: 128 };
-  const dist = [
-    { star: 5, count: 92, pct: 72 },
-    { star: 4, count: 22, pct: 17 },
-    { star: 3, count: 8, pct: 6 },
-    { star: 2, count: 4, pct: 3 },
-    { star: 1, count: 2, pct: 2 },
-  ];
-  const reviews = [
-    {
-      id: "r1",
-      rating: 5,
-      title: "Great performance",
-      body: "Exceeded expectations.",
-      author: { name: "A. Patel", verified: true },
-      createdAt: "2025-01-08",
-      helpfulCount: 12,
-    },
-    {
-      id: "r2",
-      rating: 4,
-      title: "Solid choice",
-      body: "Install was smooth.",
-      author: { name: "M. Chen" },
-      createdAt: "2025-01-03",
-      helpfulCount: 5,
-    },
-    {
-      id: "r3",
-      rating: 5,
-      title: "Fantastic value",
-      body: "Great quality for the price.",
-      author: { name: "R. Gomez", verified: true },
-      createdAt: "2025-01-02",
-      helpfulCount: 8,
-    },
-    {
-      id: "r4",
-      rating: 3,
-      title: "Works as expected",
-      body: "Nothing fancy, but does the job.",
-      author: { name: "K. Singh" },
-      createdAt: "2024-12-28",
-      helpfulCount: 2,
-    },
-    {
-      id: "r5",
-      rating: 4,
-      title: "Good support",
-      body: "Customer service helped with setup quickly.",
-      author: { name: "E. Johnson", verified: true },
-      createdAt: "2024-12-21",
-      helpfulCount: 3,
-    },
-    {
-      id: "r6",
-      rating: 2,
-      title: "Had some issues",
-      body: "Needed replacement parts; resolved eventually.",
-      author: { name: "T. Okafor" },
-      createdAt: "2024-12-15",
-      helpfulCount: 1,
-    },
-  ];
-
   const { product } = useProductDetailsContext();
   const productId = product?.id;
 
   const { data: reviewsData } = useSuspenseGetProductReviews(productId);
   const { data: statsData } = useSuspenseGetProductReviewStats(productId);
 
-  console.log("product reviews: ", reviewsData);
-  console.log("product review stats: ", statsData);
+  const stats = statsData?.product_review_stats;
+  const totalReviews = stats?.review_count || 0;
+  const averageRating = stats?.average_rating || 0;
+
+  // Transform backend distribution object to UI format
+  // Backend returns { "5": 10, "4": 2 }
+  // UI expects [{ star: 5, count: 10, pct: 83 }, ...]
+  const dist = [5, 4, 3, 2, 1].map((star) => {
+    const count = stats?.rating_distribution?.[star.toString()] || 0;
+    const pct = totalReviews > 0 ? Math.round((count / totalReviews) * 100) : 0;
+    return { star, count, pct };
+  });
+
+  // Get the current user's review for this product (if they've purchased it)
+  const { data: userReviewData } = useGetUserProductReview(productId);
 
   if (!productId) return null;
 
+  // Get user's review ID if available
+  const userReviewId = userReviewData?.product_reviews?.[0]?.id;
+
+  // Extract user's review in ReviewItemData format for pre-filling form
+  const userReview = userReviewData?.product_reviews?.[0]
+    ? {
+        id: userReviewData.product_reviews[0].id,
+        rating: userReviewData.product_reviews[0].rating,
+        body: userReviewData.product_reviews[0].content,
+        author: {
+          name: userReviewData.product_reviews[0].name || "Anonymous",
+          verified: userReviewData.product_reviews[0].order_id ? true : false,
+        },
+        createdAt: userReviewData.product_reviews[0].created_at,
+        helpfulCount: 0,
+        isUserReview: true,
+      }
+    : undefined;
+
+  // Map backend reviews to ReviewItemData format
+  const reviews = (reviewsData?.product_reviews || [])
+    .map((review: any) => ({
+      id: review.id,
+      rating: review.rating,
+      body: review.content,
+      author: {
+        name: review.name || "Anonymous",
+        verified: review.order_id ? true : false, // Has order_id means verified purchase
+      },
+      createdAt: review.created_at,
+      helpfulCount: 0, // Backend doesn't track this yet
+      isUserReview: review.id === userReviewId,
+    }))
+    .sort((a, b) => {
+      // Sort user's review first
+      if (a.isUserReview) return -1;
+      if (b.isUserReview) return 1;
+      return 0;
+    });
+
   return (
     <div className="my-4 space-y-6">
-      <ReviewsSummary average={aggregate.average} total={aggregate.total}>
+      <ReviewsSummary
+        productId={productId}
+        userReview={userReview}
+        average={averageRating}
+        total={totalReviews}
+      >
         <ReviewsDistribution rows={dist} />
       </ReviewsSummary>
       <ReviewsList reviews={reviews} />

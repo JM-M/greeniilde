@@ -21,6 +21,11 @@ export const CheckoutSuccess = ({ order }: CheckoutSuccessProps) => {
     day: "numeric",
   });
 
+  console.log({
+    amount: order.total,
+    currencyCode: order.currency_code,
+  });
+
   const totalFormatted = convertToLocale({
     amount: order.total,
     currencyCode: order.currency_code,

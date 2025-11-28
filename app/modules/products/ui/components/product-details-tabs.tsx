@@ -15,7 +15,7 @@ import { ProductReviews } from "./reviews";
 export const ProductDetailsTabs = () => {
   return (
     <Tabs defaultValue="description" className="w-full">
-      <TabsList className="justify-start overflow-x-auto lg:mx-auto lg:w-fit">
+      <TabsList className="justify-start overflow-x-auto md:mx-auto md:w-fit">
         <TabsTrigger value="description">Description</TabsTrigger>
         <TabsTrigger value="specs">Specifications</TabsTrigger>
         <TabsTrigger value="reviews">Ratings & Reviews</TabsTrigger>

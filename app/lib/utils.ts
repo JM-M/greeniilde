@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { CURRENCY_CODE } from "../constants/api";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -26,6 +27,6 @@ export const convertToLocale = ({
 }) => {
   return new Intl.NumberFormat(locale, {
     style: "currency",
-    currency: currencyCode,
+    currency: currencyCode || CURRENCY_CODE,
   }).format(amount);
 };

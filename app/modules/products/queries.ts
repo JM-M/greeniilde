@@ -1,6 +1,7 @@
 import {
   getProductReviews,
   getProductReviewStats,
+  verifyUserPurchasedProduct,
 } from "@/app/lib/api/product-reviews";
 import {
   getFacetDistributions,
@@ -64,6 +65,11 @@ const getProductReviewStatsQuery = createSuspenseQuery(getProductReviewStats, [
   "getProductReviewStats",
 ]);
 
+const verifyUserPurchasedProductQuery = createQuery(
+  verifyUserPurchasedProduct,
+  ["products", "verifyUserPurchasedProduct"],
+);
+
 // Export query utilities for easy access to query keys
 // Usage: productQueries.listProducts.queryKey(query)
 export const productQueries = {
@@ -78,4 +84,5 @@ export const productQueries = {
   getFacetDistributions: getFacetDistributionsQuery,
   getProductReviews: getProductReviewsQuery,
   getProductReviewStats: getProductReviewStatsQuery,
+  verifyUserPurchasedProduct: verifyUserPurchasedProductQuery,
 } as const;
