@@ -10,7 +10,7 @@ import { Suspense, useState } from "react";
 import {
   SinglePageCheckout,
   SinglePageCheckoutSkeleton,
-} from "./single-page-checkout";
+} from "../../../checkout/ui/components/single-page-checkout";
 
 type BuyNowModalProps = {
   open: boolean;
