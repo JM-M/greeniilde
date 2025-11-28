@@ -11,12 +11,12 @@ import {
   SheetTitle,
 } from "@/app/components/ui/sheet";
 import { CURRENCY_CODE } from "@/app/constants/api";
+import { useCartSheet } from "@/app/contexts/cart-sheet-context";
 import { convertToLocale } from "@/app/lib/utils";
 import { useSuspenseRetrieveCart } from "@/app/modules/cart/hooks/use-cart-queries";
 import { ArrowRightIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useCartSheet } from "../../../contexts/cart-sheet";
 import { CartItem } from "./cart-item";
 
 type CartSheetProps = {

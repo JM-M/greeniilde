@@ -3,7 +3,7 @@
 import { cn } from "@/app/lib/utils";
 import { useSuspenseRetrieveCart } from "@/app/modules/cart/hooks/use-cart-queries";
 import { ShoppingCart } from "lucide-react";
-import { useCartSheet } from "../../../contexts/cart-sheet";
+import { useCartSheet } from "../../../contexts/cart-sheet-context";
 import { Button } from "../../ui/button";
 
 type CartButtonProps = {

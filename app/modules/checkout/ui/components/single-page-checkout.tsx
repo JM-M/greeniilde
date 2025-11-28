@@ -42,8 +42,18 @@ const PaymentSectionSkeleton = dynamic(
   { ssr: false },
 );
 
-export const SinglePageCheckout = ({ cartId }: { cartId?: string }) => {
-  const [isShippingAddressValid, setShippingAddressValid] = useState(true);
+interface SinglePageCheckoutProps {
+  cartId?: string;
+  onPaystackOpen?: () => void;
+  onPaystackSettled?: () => void;
+}
+
+export const SinglePageCheckout = ({
+  cartId,
+  onPaystackOpen,
+  onPaystackSettled,
+}: SinglePageCheckoutProps) => {
+  const [isShippingAddressValid, setShippingAddressValid] = useState(false);
   const [isShippingMethodSelected, setIsShippingMethodSelected] =
     useState(false);
   const [isUpdatingAddress, setIsUpdatingAddress] = useState(false);
@@ -99,7 +109,6 @@ export const SinglePageCheckout = ({ cartId }: { cartId?: string }) => {
               onMethodSelected={setIsShippingMethodSelected}
               cartId={cartId}
               isUpdatingAddress={isUpdatingAddress}
-              isSettingShippingMethod={isSettingShippingMethod}
               setIsSettingShippingMethod={setIsSettingShippingMethod}
             />
           </div>
@@ -127,6 +136,8 @@ export const SinglePageCheckout = ({ cartId }: { cartId?: string }) => {
               isShippingMethodSelected={isShippingMethodSelected}
               isUpdatingAddress={isUpdatingAddress}
               isSettingShippingMethod={isSettingShippingMethod}
+              onPaystackOpen={onPaystackOpen}
+              onPaystackSettled={onPaystackSettled}
             />
           </div>
         </div>

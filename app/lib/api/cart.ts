@@ -1,8 +1,11 @@
 "use server";
 
+import { z } from "zod";
+
 import { REGION_ID } from "@/app/constants/api";
 import { TerminalRate } from "@/app/modules/terminal/types";
 import { HttpTypes } from "@medusajs/types";
+import { redirect } from "next/navigation";
 import { sdk } from "../medusa/config";
 import { getAuthHeaders } from "./auth";
 import {
@@ -334,31 +337,38 @@ export async function placeOrder(cartId?: string) {
 
   if (cartRes?.type === "order") {
     removeCartIdCookie();
+    redirect(`/checkout/confirmation?orderId=${cartRes.order.id}`);
     return cartRes;
   }
 
   return cartRes;
 }
 
-export type CreateBuyNowCartParams = {
+const CartChannelSchema = z.enum(["buy_now", "whatsapp", "telegram"]);
+
+export type CreateCartWithChannelParams = {
   product_id: string;
   variant_id: string;
+  channel: z.infer<typeof CartChannelSchema>;
 };
 
 /**
- * Create a buy now cart
+ * Create a cart with a specific channel
  */
-export async function createBuyNowCart({
+export async function createCartWithChannel({
   product_id,
   variant_id,
-}: CreateBuyNowCartParams) {
+  channel,
+}: CreateCartWithChannelParams) {
   const headers = await getAuthHeaders();
+
+  const parsedChannel = CartChannelSchema.parse(channel);
 
   const cartResp = await sdk.store.cart.create(
     {
       region_id: REGION_ID,
       metadata: {
-        is_buy_now: true,
+        channel: parsedChannel,
       },
     },
     {},

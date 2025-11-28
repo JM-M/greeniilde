@@ -21,7 +21,7 @@ export function ReviewItem({ review }: { review: ReviewItemData }) {
       }`}
     >
       {review.isUserReview && (
-        <Badge className="absolute top-0 right-4 -translate-y-1/2 px-2">
+        <Badge className="absolute top-0 left-4 -translate-y-1/2 px-2">
           Your review
         </Badge>
       )}

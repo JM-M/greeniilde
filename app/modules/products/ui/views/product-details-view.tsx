@@ -29,7 +29,7 @@ export const ProductDetailsView = async ({
   );
 
   queryClient.prefetchQuery(
-    productQueries.getProductReviews.queryOptions(productId),
+    productQueries.getProductReviews.queryOptions({ productId }),
   );
 
   queryClient.prefetchQuery(

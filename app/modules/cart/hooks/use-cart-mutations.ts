@@ -2,7 +2,7 @@
 
 import {
   addToCart,
-  createBuyNowCart,
+  createCartWithChannel,
   deleteLineItem,
   initiatePaymentSession,
   placeOrder,
@@ -10,7 +10,7 @@ import {
   updateCart,
   updateLineItem,
   type AddToCartParams,
-  type CreateBuyNowCartParams,
+  type CreateCartWithChannelParams,
   type DeleteLineItemParams,
   type SetShippingMethodParams,
   type UpdateCartParams,
@@ -288,18 +288,19 @@ export const usePlaceOrder = () => {
   });
 };
 
-export const useCreateBuyNowCart = () => {
+export const useCreateChannelCart = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (params: CreateBuyNowCartParams) => createBuyNowCart(params),
+    mutationFn: (params: CreateCartWithChannelParams) =>
+      createCartWithChannel(params),
     onSuccess: () => {
       invalidateCart(queryClient);
-      toast.success("Buy now cart created successfully");
+      toast.success("Cart created successfully");
     },
     onError: (error) => {
-      console.error("Failed to create buy now cart:", error);
-      toast.error("Failed to create buy now cart");
+      console.error("Failed to create cart:", error);
+      toast.error("Failed to create cart");
     },
   });
 };

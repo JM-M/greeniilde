@@ -19,19 +19,28 @@ export function OrderTotals({ order, className }: OrderTotalsProps) {
   const rows: Array<{ label: string; value: string; emphasis?: boolean }> = [
     {
       label: "Subtotal",
-      value: convertToLocale({ amount: subtotal, currency_code }),
+      value: convertToLocale({ amount: subtotal, currencyCode: currency_code }),
     },
     {
       label: "Discounts",
-      value: convertToLocale({ amount: discount_total, currency_code }),
+      value: convertToLocale({
+        amount: discount_total,
+        currencyCode: currency_code,
+      }),
     },
     {
       label: "Shipping",
-      value: convertToLocale({ amount: shipping_total, currency_code }),
+      value: convertToLocale({
+        amount: shipping_total,
+        currencyCode: currency_code,
+      }),
     },
     {
       label: "Tax",
-      value: convertToLocale({ amount: tax_total, currency_code }),
+      value: convertToLocale({
+        amount: tax_total,
+        currencyCode: currency_code,
+      }),
     },
   ];
 
@@ -54,7 +63,7 @@ export function OrderTotals({ order, className }: OrderTotalsProps) {
           <div className="flex items-center justify-between">
             <span className="text-sm font-semibold">Total</span>
             <span className="text-base font-semibold">
-              {convertToLocale({ amount: total, currency_code })}
+              {convertToLocale({ amount: total, currencyCode: currency_code })}
             </span>
           </div>
         </div>

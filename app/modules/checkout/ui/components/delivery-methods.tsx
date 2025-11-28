@@ -28,14 +28,12 @@ export const DeliveryMethods = ({
   onMethodSelected,
   cartId,
   isUpdatingAddress,
-  isSettingShippingMethod,
   setIsSettingShippingMethod,
 }: {
   isShippingAddressValid?: boolean;
   onMethodSelected?: (isSelected: boolean) => void;
   cartId?: string;
   isUpdatingAddress?: boolean;
-  isSettingShippingMethod?: boolean;
   setIsSettingShippingMethod?: (isSetting: boolean) => void;
 }) => {
   const { cart } = useRetrieveCart({ cartId });
@@ -51,9 +49,14 @@ export const DeliveryMethods = ({
       shipping_address: cart?.shipping_address,
     },
     {
-      enabled: !!cart?.id && !!cart?.shipping_address && !!cart.email,
+      enabled:
+        !!cart?.id &&
+        !!cart?.shipping_address &&
+        !!cart.email &&
+        isShippingAddressValid,
     },
   );
+
   const rates = terminalRatesData?.rates || [];
 
   const { data: shippingOptions } = useListCartShippingMethodsQuery(

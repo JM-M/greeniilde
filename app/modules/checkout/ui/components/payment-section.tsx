@@ -6,7 +6,6 @@ import {
   usePlaceOrder,
 } from "@/app/modules/cart/hooks/use-cart-mutations";
 import { useRetrieveCart } from "@/app/modules/cart/hooks/use-cart-queries";
-import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { usePaystackPayment } from "react-paystack";
 import { toast } from "sonner";
@@ -17,24 +16,29 @@ export const PaymentSection = ({
   isShippingMethodSelected,
   isUpdatingAddress,
   isSettingShippingMethod,
+  onPaystackOpen,
+  onPaystackSettled,
 }: {
   cartId?: string;
   isShippingAddressValid: boolean;
   isShippingMethodSelected: boolean;
   isUpdatingAddress: boolean;
   isSettingShippingMethod: boolean;
+  onPaystackOpen?: () => void;
+  onPaystackSettled?: () => void;
 }) => {
   const { cart, isLoading: isRetrievingCart } = useRetrieveCart({ cartId });
   const { mutate: placeOrder, isPending: isPlacingOrder } = usePlaceOrder();
   const { mutate: initiatePaymentSession, isPending: isInitiatingPayment } =
     useInitiatePaymentSession();
-  const router = useRouter();
 
   useEffect(() => {
     if (
       cart?.id &&
       !cart?.payment_collection?.payment_sessions?.length &&
-      cart.email
+      cart.email &&
+      isShippingAddressValid &&
+      isShippingMethodSelected
     ) {
       initiatePaymentSession(
         {
@@ -71,9 +75,9 @@ export const PaymentSection = ({
   const initializePayment = usePaystackPayment(config);
 
   const onSuccess = () => {
+    onPaystackSettled?.();
     placeOrder(cart?.id, {
       onSuccess: (data) => {
-        console.log("success: ", data);
         if (data.type === "order" && data.order) {
           const orderId = data.order.id;
           window.location.href = `/checkout/confirmation?orderId=${orderId}`;
@@ -87,7 +91,7 @@ export const PaymentSection = ({
   };
 
   const onClose = () => {
-    console.log("Payment closed");
+    onPaystackSettled?.();
   };
 
   const handlePayment = () => {
@@ -95,6 +99,7 @@ export const PaymentSection = ({
       console.error("No Paystack session found");
       return;
     }
+    onPaystackOpen?.();
     initializePayment({ onSuccess, onClose });
   };
 
