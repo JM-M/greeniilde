@@ -1,6 +1,5 @@
 "use client";
 
-import { useIsMobile } from "@/app/hooks/use-mobile";
 import { useLogout } from "@/app/modules/auth/hooks/use-auth-mutations";
 import { useSuspenseCustomer } from "@/app/modules/auth/hooks/use-customer-queries";
 import { useAuthModal } from "@/app/providers/auth-modal-provider";
@@ -14,8 +13,6 @@ export const AuthButton = () => {
   const { mutate: logout, isPending: isLoggingOut } = useLogout();
 
   const { openAuthModal } = useAuthModal();
-
-  const isMobile = useIsMobile();
 
   if (customer)
     return (
