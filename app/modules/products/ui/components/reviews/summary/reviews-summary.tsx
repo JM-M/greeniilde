@@ -52,16 +52,20 @@ export function ReviewsSummary({
   return (
     <>
       <div className="flex flex-col gap-4 lg:flex-col">
-        <div className="flex flex-col gap-4">
-          <div className="text-center">
-            <div className="text-3xl font-semibold">{average.toFixed(1)}</div>
-            <div className="text-muted-foreground text-sm">{total} ratings</div>
-            <Stars value={average} className="text-sm" />
+        {total > 0 && (
+          <div className="flex flex-col gap-4">
+            <div className="text-center">
+              <div className="text-3xl font-semibold">{average.toFixed(1)}</div>
+              <div className="text-muted-foreground text-sm">
+                {total} ratings
+              </div>
+              <Stars value={average} className="text-sm" />
+            </div>
+            <div className="grid grid-cols-1 place-items-center gap-2">
+              {children}
+            </div>
           </div>
-          <div className="grid grid-cols-1 place-items-center gap-2">
-            {children}
-          </div>
-        </div>
+        )}
         <div className="flex justify-center gap-2">
           {verification?.hasPurchased && (
             <Button
