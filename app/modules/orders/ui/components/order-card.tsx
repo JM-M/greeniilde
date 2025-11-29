@@ -6,6 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/app/components/ui/card";
+import { Skeleton } from "@/app/components/ui/skeleton";
 import { HttpTypes } from "@medusajs/types";
 import { formatDistanceToNow } from "date-fns";
 import { DownloadIcon } from "lucide-react";
@@ -116,6 +117,47 @@ export function OrderCard({
             <Button asChild variant="outline" size="sm">
               <Link href={`/orders/${orderId}`}>View details</Link>
             </Button>
+          </div>
+        </div>
+      </CardFooter>
+    </Card>
+  );
+}
+
+export function OrderCardSkeleton() {
+  return (
+    <Card>
+      <CardHeader>
+        <div className="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
+          <div className="flex items-center gap-2">
+            <Skeleton className="h-6 w-32" />
+            <Skeleton className="h-5 w-20 rounded-full" />
+          </div>
+          <Skeleton className="h-4 w-24" />
+        </div>
+      </CardHeader>
+      <CardContent>
+        <div className="flex flex-col gap-3">
+          {Array.from({ length: 2 }).map((_, idx) => (
+            <div key={idx} className="flex items-start gap-3">
+              <Skeleton className="size-12 shrink-0 rounded-md" />
+              <div className="flex flex-col gap-2">
+                <Skeleton className="h-4 w-40" />
+                <Skeleton className="h-3 w-24" />
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="mt-4 border-t pt-3">
+          <Skeleton className="h-4 w-full max-w-[200px]" />
+        </div>
+      </CardContent>
+      <CardFooter>
+        <div className="flex w-full items-center justify-between">
+          <Skeleton className="h-5 w-24" />
+          <div className="flex items-center gap-1.5">
+            <Skeleton className="h-9 w-24" />
+            <Skeleton className="h-9 w-28" />
           </div>
         </div>
       </CardFooter>

@@ -2,6 +2,7 @@ import { convertToLocale } from "@/app/lib/utils";
 import {
   OrderCard,
   OrderCardProps,
+  OrderCardSkeleton,
 } from "@/app/modules/orders/ui/components/order-card";
 import { StoreOrder } from "@medusajs/types";
 
@@ -35,6 +36,16 @@ export function OrdersList({ orders }: { orders: StoreOrder[] }) {
             order.shipping_methods?.[0]?.name || "Standard Delivery"
           }
         />
+      ))}
+    </div>
+  );
+}
+
+export function OrdersListSkeleton() {
+  return (
+    <div className="flex flex-col gap-4 md:mx-auto md:max-w-xl">
+      {Array.from({ length: 3 }).map((_, idx) => (
+        <OrderCardSkeleton key={idx} />
       ))}
     </div>
   );
