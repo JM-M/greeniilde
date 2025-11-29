@@ -6,12 +6,14 @@ import {
 import { StoreOrder } from "@medusajs/types";
 
 export function OrdersList({ orders }: { orders: StoreOrder[] }) {
+  console.log(orders);
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 md:mx-auto md:max-w-xl">
       {orders.map((order) => (
         <OrderCard
           key={order.id}
-          orderId={(order.display_id || "").toString()}
+          orderId={(order.id || "").toString()}
+          displayId={order.display_id || ""}
           status={order.fulfillment_status as OrderCardProps["status"]}
           orderDate={new Date(order.created_at).toLocaleDateString("en-US", {
             month: "short",

@@ -1,6 +1,8 @@
+import { ReactNode } from "react";
+
 type PageTitleProps = {
-  title: string;
-  subtitle?: string;
+  title: ReactNode;
+  subtitle?: ReactNode;
   className?: string;
 };
 

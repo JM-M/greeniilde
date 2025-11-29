@@ -1,6 +1,7 @@
 "use client";
 
 import { PageTitle } from "@/app/components/shared/page-title";
+import { convertToLocale } from "@/app/lib/utils";
 import { useOrder } from "@/app/modules/orders/hooks/use-order";
 import { FulfillmentGroupsList } from "@/app/modules/orders/ui/components/fulfillment-groups/fulfillment-groups-list";
 import { BillingAddressCard } from "@/app/modules/orders/ui/components/order-addresses/billing-address-card";
@@ -12,8 +13,10 @@ import { DeliverySummaryCard } from "@/app/modules/orders/ui/components/order-su
 import { PaymentSummaryCard } from "@/app/modules/orders/ui/components/order-summary/payment-summary-card";
 import { ShippingSummaryCard } from "@/app/modules/orders/ui/components/order-summary/shipping-summary-card";
 import { OrderTotals } from "@/app/modules/orders/ui/components/order-totals";
-import { Loader2 } from "lucide-react";
+import { formatDistanceToNow } from "date-fns";
+import { DotIcon, Loader2 } from "lucide-react";
 import { useParams } from "next/navigation";
+import { OrderStatusBadge } from "../components/order-status-badge";
 
 export const OrderDetailsView = () => {
   const { id } = useParams<{ id: string }>();
@@ -38,17 +41,31 @@ export const OrderDetailsView = () => {
   }
 
   const statusLabel = order.fulfillment_status; // Or map to a display label
-  const orderDate = new Date(order.created_at).toLocaleDateString();
-  const totalFormatted = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: order.currency_code,
-  }).format(order.total / 100);
+  const orderDate = formatDistanceToNow(new Date(order.created_at), {
+    addSuffix: true,
+  });
+  const totalFormatted = convertToLocale({
+    amount: order.total,
+    currencyCode: order.currency_code,
+  });
 
   return (
     <div className="view-container">
       <PageTitle
         title={`Order #${order.display_id}`}
-        subtitle={`${statusLabel} • ${orderDate} • ${totalFormatted}`}
+        // subtitle={`${statusLabel
+        //   .split("_")
+        //   .map((s) => capitalize(s))
+        //   .join(" ")} • ${orderDate} • ${totalFormatted}`}
+        subtitle={
+          <div className="flex items-center">
+            <OrderStatusBadge status={order.status} />
+            <DotIcon />
+            <span>{orderDate}</span>
+            <DotIcon />
+            <span>{totalFormatted}</span>
+          </div>
+        }
       />
       <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
         <div>

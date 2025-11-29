@@ -1,4 +1,3 @@
-import { Badge } from "@/app/components/ui/badge";
 import { Button } from "@/app/components/ui/button";
 import {
   Card,
@@ -8,6 +7,8 @@ import {
 } from "@/app/components/ui/card";
 import { convertToLocale } from "@/app/lib/utils";
 import { HttpTypes } from "@medusajs/types";
+import { DownloadIcon } from "lucide-react";
+import { PaymentStatusBadge } from "../payment-status-badge";
 
 type PaymentSummaryCardProps = {
   order: HttpTypes.StoreOrder;
@@ -18,6 +19,8 @@ export function PaymentSummaryCard({ order }: PaymentSummaryCardProps) {
   const isPaid = paymentCollection?.status === "authorized";
   const amount = paymentCollection?.amount ?? order.total;
 
+  console.log(paymentCollection);
+
   return (
     <Card className="p-4 md:p-5">
       <CardHeader className="grid-rows-1 items-center gap-0 px-0 py-0">
@@ -25,13 +28,7 @@ export function PaymentSummaryCard({ order }: PaymentSummaryCardProps) {
           <CardTitle className="text-muted-foreground text-sm font-medium">
             Payment
           </CardTitle>
-          {isPaid ? (
-            <Badge className="border-transparent bg-emerald-100 text-emerald-800 dark:bg-emerald-400/20 dark:text-emerald-300">
-              Paid
-            </Badge>
-          ) : (
-            <Badge variant="outline">Pending</Badge>
-          )}
+          <PaymentStatusBadge status={isPaid ? "paid" : "pending"} />
         </div>
       </CardHeader>
       <CardContent className="px-0">
@@ -67,9 +64,10 @@ export function PaymentSummaryCard({ order }: PaymentSummaryCardProps) {
               })}
             </span>
           </div>
-          <div className="mt-2">
-            <Button variant="link" size="sm" className="px-0">
-              View invoice
+          <div className="mt-2 flex items-center justify-end">
+            <Button variant="outline" size="sm">
+              <DownloadIcon />
+              Receipt
             </Button>
           </div>
         </div>

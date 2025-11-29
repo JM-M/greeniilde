@@ -7,54 +7,58 @@ type TimelineStep = {
   state: StepState;
 };
 
+import { cn } from "@/app/lib/utils";
 import { StoreOrder } from "@medusajs/types";
+import { format } from "date-fns";
+
+const formatDate = (date: string | Date) =>
+  format(new Date(date), "MMM d, yyyy 'at' h:mm a");
 
 export function OrderStatusTimeline({ order }: { order: StoreOrder }) {
-  const createdDate = new Date(order.created_at).toLocaleString("en-US", {
-    month: "short",
-    day: "numeric",
-    hour: "numeric",
-    minute: "numeric",
-  });
+  // TODO: Update this when multiple shipments is supported
+  const fulfillment = order.fulfillments?.[0];
+  const { shipped_at, delivered_at, packed_at } = fulfillment || {};
 
-  const isShipped =
-    order.fulfillment_status === "shipped" ||
-    order.fulfillment_status === "fulfilled" ||
-    order.fulfillment_status === "partially_shipped";
+  const isPacked = !!packed_at;
+  const isShipped = !!shipped_at;
+  const isDelivered = !!delivered_at;
 
   // Mock, static steps purely for UI but updated with some real data logic
   const steps: TimelineStep[] = [
     {
       key: "placed",
       label: "Placed",
-      at: createdDate,
+      at: formatDate(order.created_at),
       state: "completed",
     },
     {
       key: "processed",
       label: "Processed",
-      at: isShipped ? "Completed" : "In Progress", // Simplified logic
-      state: isShipped ? "completed" : "current",
+      at: isPacked ? formatDate(packed_at) : "",
+      state: isPacked ? "completed" : "upcoming",
     },
     {
       key: "shipped",
       label: "Shipped",
+      at: isShipped ? formatDate(shipped_at) : "",
       state: isShipped ? "completed" : "upcoming",
     },
     {
       key: "delivered",
       label: "Delivered",
-      state: "upcoming", // We don't have delivery status in standard order object yet
+      at: isDelivered ? formatDate(delivered_at) : "",
+      state: isDelivered ? "completed" : "upcoming",
     },
   ];
+  const stepStates = steps.map((s) => s.state);
 
   return (
     <div aria-label="Order progress" className="rounded-xl border p-4 md:p-5">
       {/* Horizontal on md+, vertical on mobile */}
-      <ol className="relative flex flex-col gap-6">
-        {steps.map((step) => {
+      <ol className="relative flex flex-col">
+        {steps.map((step, index) => {
           const baseNode =
-            "relative z-10 flex size-5 items-center justify-center rounded-full ring-2 ring-background";
+            "relative z-10 top-[5px] flex size-5 items-center justify-center rounded-full ring-2 ring-background";
 
           const stateNode: Record<StepState, string> = {
             completed: "bg-primary text-primary-foreground",
@@ -63,14 +67,23 @@ export function OrderStatusTimeline({ order }: { order: StoreOrder }) {
             canceled: "bg-destructive text-white",
           };
 
+          const isBeforeCurrent = index < stepStates.indexOf("current");
           const isCurrent = step.state === "current";
+
+          const isLast = index === steps.length - 1;
 
           return (
             <li
               key={step.key}
-              className="relative"
+              className={cn("relative", {
+                "pb-6": !isLast,
+              })}
               {...(isCurrent ? { "aria-current": "step" } : {})}
             >
+              {isBeforeCurrent && (
+                <span className="bg-primary absolute top-[5px] left-[9px] inline-block h-full w-px" />
+              )}
+
               {/* Content */}
               <div className="flex items-start gap-3">
                 {/* Node */}

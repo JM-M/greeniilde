@@ -1,4 +1,3 @@
-import { Badge } from "@/app/components/ui/badge";
 import { Button } from "@/app/components/ui/button";
 import {
   Card,
@@ -8,6 +7,7 @@ import {
 } from "@/app/components/ui/card";
 
 import { StoreOrder } from "@medusajs/types";
+import { FulfillmentStatusBadge } from "../fulfillment-status-badge";
 
 export function DeliverySummaryCard({ order }: { order: StoreOrder }) {
   const shippingMethod = order.shipping_methods?.[0];
@@ -25,9 +25,7 @@ export function DeliverySummaryCard({ order }: { order: StoreOrder }) {
           <CardTitle className="text-muted-foreground text-sm font-medium">
             Delivery
           </CardTitle>
-          <Badge className="border-transparent bg-blue-100 text-blue-800 dark:bg-blue-400/20 dark:text-blue-300">
-            {status}
-          </Badge>
+          <FulfillmentStatusBadge status={status} />
         </div>
       </CardHeader>
       <CardContent className="px-0">
