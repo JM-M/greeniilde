@@ -75,3 +75,30 @@ export function PaymentSummaryCard({ order }: PaymentSummaryCardProps) {
     </Card>
   );
 }
+
+import { Skeleton } from "@/app/components/ui/skeleton";
+
+export function PaymentSummaryCardSkeleton() {
+  return (
+    <Card className="p-4 md:p-5">
+      <CardHeader className="grid-rows-1 items-center gap-0 px-0 py-0">
+        <div className="flex items-center justify-between">
+          <Skeleton className="h-5 w-20" />
+          <Skeleton className="h-6 w-20 rounded-full" />
+        </div>
+      </CardHeader>
+      <CardContent className="px-0">
+        <div className="mt-2 flex flex-col gap-2">
+          <Skeleton className="h-5 w-40" />
+          <div className="flex items-center gap-2">
+            <Skeleton className="h-4 w-12" />
+            <Skeleton className="h-5 w-24" />
+          </div>
+          <div className="mt-2 flex items-center justify-end">
+            <Skeleton className="h-9 w-24" />
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}

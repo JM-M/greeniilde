@@ -30,3 +30,21 @@ export function OrderNotes({ order }: { order: StoreOrder }) {
     </Card>
   );
 }
+
+import { Skeleton } from "@/app/components/ui/skeleton";
+
+export function OrderNotesSkeleton() {
+  return (
+    <Card className="p-4 md:p-5">
+      <CardHeader className="grid-rows-1 gap-0 px-0 py-0">
+        <Skeleton className="h-5 w-16" />
+      </CardHeader>
+      <CardContent className="px-0">
+        <div className="mt-2 flex flex-col gap-2">
+          <Skeleton className="h-4 w-full" />
+          <Skeleton className="h-4 w-3/4" />
+        </div>
+      </CardContent>
+    </Card>
+  );
+}

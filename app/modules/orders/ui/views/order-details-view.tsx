@@ -1,20 +1,51 @@
 "use client";
 
 import { PageTitle } from "@/app/components/shared/page-title";
+import { Skeleton } from "@/app/components/ui/skeleton";
 import { convertToLocale } from "@/app/lib/utils";
 import { useOrder } from "@/app/modules/orders/hooks/use-order";
-import { FulfillmentGroupsList } from "@/app/modules/orders/ui/components/fulfillment-groups/fulfillment-groups-list";
-import { BillingAddressCard } from "@/app/modules/orders/ui/components/order-addresses/billing-address-card";
-import { ShippingAddressCard } from "@/app/modules/orders/ui/components/order-addresses/shipping-address-card";
-import { OrderItemsList } from "@/app/modules/orders/ui/components/order-items/order-items-list";
-import { OrderNotes } from "@/app/modules/orders/ui/components/order-notes";
-import { OrderStatusTimeline } from "@/app/modules/orders/ui/components/order-status-timeline";
-import { DeliverySummaryCard } from "@/app/modules/orders/ui/components/order-summary/delivery-summary-card";
-import { PaymentSummaryCard } from "@/app/modules/orders/ui/components/order-summary/payment-summary-card";
-import { ShippingSummaryCard } from "@/app/modules/orders/ui/components/order-summary/shipping-summary-card";
-import { OrderTotals } from "@/app/modules/orders/ui/components/order-totals";
+import {
+  FulfillmentGroupsList,
+  FulfillmentGroupsListSkeleton,
+} from "@/app/modules/orders/ui/components/fulfillment-groups/fulfillment-groups-list";
+import {
+  BillingAddressCard,
+  BillingAddressCardSkeleton,
+} from "@/app/modules/orders/ui/components/order-addresses/billing-address-card";
+import {
+  ShippingAddressCard,
+  ShippingAddressCardSkeleton,
+} from "@/app/modules/orders/ui/components/order-addresses/shipping-address-card";
+import {
+  OrderItemsList,
+  OrderItemsListSkeleton,
+} from "@/app/modules/orders/ui/components/order-items/order-items-list";
+import {
+  OrderNotes,
+  OrderNotesSkeleton,
+} from "@/app/modules/orders/ui/components/order-notes";
+import {
+  OrderStatusTimeline,
+  OrderStatusTimelineSkeleton,
+} from "@/app/modules/orders/ui/components/order-status-timeline";
+import {
+  DeliverySummaryCard,
+  DeliverySummaryCardSkeleton,
+} from "@/app/modules/orders/ui/components/order-summary/delivery-summary-card";
+import {
+  PaymentSummaryCard,
+  PaymentSummaryCardSkeleton,
+} from "@/app/modules/orders/ui/components/order-summary/payment-summary-card";
+import {
+  ShippingSummaryCard,
+  ShippingSummaryCardSkeleton,
+} from "@/app/modules/orders/ui/components/order-summary/shipping-summary-card";
+import {
+  OrderTotals,
+  OrderTotalsSkeleton,
+} from "@/app/modules/orders/ui/components/order-totals";
 import { formatDistanceToNow } from "date-fns";
-import { DotIcon, Loader2 } from "lucide-react";
+import { DotIcon } from "lucide-react";
 import { useParams } from "next/navigation";
 import { OrderStatusBadge } from "../components/order-status-badge";
 
@@ -23,11 +54,7 @@ export const OrderDetailsView = () => {
   const { data: order, isLoading, error } = useOrder(id);
 
   if (isLoading) {
-    return (
-      <div className="flex h-screen items-center justify-center">
-        <Loader2 className="text-primary h-8 w-8 animate-spin" />
-      </div>
-    );
+    return <OrderDetailsViewSkeleton />;
   }
 
   if (error || !order) {
@@ -40,7 +67,6 @@ export const OrderDetailsView = () => {
     );
   }
 
-  const statusLabel = order.fulfillment_status; // Or map to a display label
   const orderDate = formatDistanceToNow(new Date(order.created_at), {
     addSuffix: true,
   });
@@ -98,3 +124,48 @@ export const OrderDetailsView = () => {
     </div>
   );
 };
+
+export function OrderDetailsViewSkeleton() {
+  return (
+    <div className="view-container">
+      <div>
+        <Skeleton className="h-8 w-48" />
+        <div className="mt-1 flex items-center gap-2">
+          <Skeleton className="h-5 w-20 rounded-full" />
+          <DotIcon className="text-muted-foreground" />
+          <Skeleton className="h-4 w-32" />
+          <DotIcon className="text-muted-foreground" />
+          <Skeleton className="h-4 w-24" />
+        </div>
+      </div>
+      <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div>
+          <OrderStatusTimelineSkeleton />
+        </div>
+        <div>
+          <OrderTotalsSkeleton />
+        </div>
+      </div>
+      <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-3">
+        <ShippingSummaryCardSkeleton />
+        <DeliverySummaryCardSkeleton />
+        <PaymentSummaryCardSkeleton />
+      </div>
+      <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div>
+          <FulfillmentGroupsListSkeleton />
+        </div>
+        <div>
+          <OrderItemsListSkeleton />
+        </div>
+      </div>
+      <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
+        <ShippingAddressCardSkeleton />
+        <BillingAddressCardSkeleton />
+      </div>
+      <div>
+        <OrderNotesSkeleton />
+      </div>
+    </div>
+  );
+}

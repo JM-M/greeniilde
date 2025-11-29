@@ -50,3 +50,25 @@ export function DeliverySummaryCard({ order }: { order: StoreOrder }) {
     </Card>
   );
 }
+
+import { Skeleton } from "@/app/components/ui/skeleton";
+
+export function DeliverySummaryCardSkeleton() {
+  return (
+    <Card className="p-4 md:p-5">
+      <CardHeader className="grid-rows-1 items-center gap-0 px-0 py-0">
+        <div className="flex items-center justify-between">
+          <Skeleton className="h-5 w-20" />
+          <Skeleton className="h-6 w-24 rounded-full" />
+        </div>
+      </CardHeader>
+      <CardContent className="px-0">
+        <div className="mt-2 flex flex-col gap-2">
+          <Skeleton className="h-5 w-32" />
+          <Skeleton className="h-4 w-40" />
+          <Skeleton className="h-4 w-32" />
+        </div>
+      </CardContent>
+    </Card>
+  );
+}

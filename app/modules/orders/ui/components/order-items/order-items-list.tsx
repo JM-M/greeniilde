@@ -61,3 +61,30 @@ export function OrderItemsList({
     </div>
   );
 }
+
+import { Skeleton } from "@/app/components/ui/skeleton";
+
+export function OrderItemsListSkeleton() {
+  return (
+    <div className="h-full rounded-xl border p-4 md:p-5">
+      <Skeleton className="mb-3 h-5 w-16" />
+      <div className="flex flex-col gap-4">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="flex items-center justify-between gap-3">
+            <div className="flex min-w-0 items-center gap-3">
+              <Skeleton className="size-12 rounded-md" />
+              <div className="flex flex-col gap-1">
+                <Skeleton className="h-4 w-32" />
+                <Skeleton className="h-3 w-16" />
+              </div>
+            </div>
+            <div className="flex flex-col items-end gap-1">
+              <Skeleton className="h-4 w-16" />
+              <Skeleton className="h-4 w-20" />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}

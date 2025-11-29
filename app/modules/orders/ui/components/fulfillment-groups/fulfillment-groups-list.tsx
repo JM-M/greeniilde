@@ -76,3 +76,34 @@ export function FulfillmentGroupsList({ order }: { order: StoreOrder }) {
     </div>
   );
 }
+
+import { Skeleton } from "@/app/components/ui/skeleton";
+
+export function FulfillmentGroupsListSkeleton() {
+  return (
+    <div className="flex flex-col gap-4">
+      <Skeleton className="h-5 w-24" />
+      <div className="flex flex-col gap-4">
+        {[1, 2].map((i) => (
+          <div key={i} className="rounded-xl border p-4 md:p-5">
+            <div className="flex items-center justify-between">
+              <Skeleton className="h-5 w-32" />
+              <Skeleton className="h-6 w-24 rounded-full" />
+            </div>
+            <div className="mt-4 flex flex-col gap-4">
+              {[1, 2].map((j) => (
+                <div key={j} className="flex items-center gap-3">
+                  <Skeleton className="size-12 rounded-md" />
+                  <div className="flex flex-col gap-1">
+                    <Skeleton className="h-4 w-32" />
+                    <Skeleton className="h-3 w-16" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
