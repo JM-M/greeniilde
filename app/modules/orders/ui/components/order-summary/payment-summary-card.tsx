@@ -19,8 +19,6 @@ export function PaymentSummaryCard({ order }: PaymentSummaryCardProps) {
   const isPaid = paymentCollection?.status === "authorized";
   const amount = paymentCollection?.amount ?? order.total;
 
-  console.log(paymentCollection);
-
   return (
     <Card className="p-4 md:p-5">
       <CardHeader className="grid-rows-1 items-center gap-0 px-0 py-0">
@@ -65,9 +63,11 @@ export function PaymentSummaryCard({ order }: PaymentSummaryCardProps) {
             </span>
           </div>
           <div className="mt-2 flex items-center justify-end">
-            <Button variant="outline" size="sm">
-              <DownloadIcon />
-              Receipt
+            <Button asChild variant="outline" size="sm">
+              <a href={`/api/orders/${order.id}/receipt`} target="_blank">
+                <DownloadIcon />
+                Receipt
+              </a>
             </Button>
           </div>
         </div>

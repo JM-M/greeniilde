@@ -53,10 +53,6 @@ export const OrderDetailsView = () => {
     <div className="view-container">
       <PageTitle
         title={`Order #${order.display_id}`}
-        // subtitle={`${statusLabel
-        //   .split("_")
-        //   .map((s) => capitalize(s))
-        //   .join(" ")} • ${orderDate} • ${totalFormatted}`}
         subtitle={
           <div className="flex items-center">
             <OrderStatusBadge status={order.status} />

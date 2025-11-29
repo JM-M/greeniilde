@@ -41,7 +41,10 @@ export function ShippingAddressCard({ order }: { order: StoreOrder }) {
           <div>{`${city}, ${province ? `${province} ` : ""}${postal_code}`}</div>
           <div className="text-muted-foreground uppercase">{country_code}</div>
           {phone && (
-            <div className="text-muted-foreground mt-2 truncate">{phone}</div>
+            // TODO: Format the number in a way that allow for other codes
+            <div className="text-muted-foreground mt-2 truncate">
+              +234{phone}
+            </div>
           )}
         </div>
       </CardContent>

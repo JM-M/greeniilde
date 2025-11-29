@@ -107,9 +107,11 @@ export function OrderCard({
         <div className="flex w-full items-center justify-between">
           <div className="text-sm font-semibold">{totalFormatted}</div>
           <div className="flex items-center gap-1.5">
-            <Button variant="ghost" size="sm">
-              <DownloadIcon />
-              Receipt
+            <Button asChild variant="ghost" size="sm">
+              <a href={`/api/orders/${orderId}/receipt`} target="_blank">
+                <DownloadIcon />
+                Receipt
+              </a>
             </Button>
             <Button asChild variant="outline" size="sm">
               <Link href={`/orders/${orderId}`}>View details</Link>

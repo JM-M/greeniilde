@@ -6,7 +6,6 @@ import {
 import { StoreOrder } from "@medusajs/types";
 
 export function OrdersList({ orders }: { orders: StoreOrder[] }) {
-  console.log(orders);
   return (
     <div className="flex flex-col gap-4 md:mx-auto md:max-w-xl">
       {orders.map((order) => (
