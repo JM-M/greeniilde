@@ -36,13 +36,13 @@ export const LandingView = async ({
       <div>
         <Hero />
         <ValueProp />
+        <Suspense fallback={<div>Loading case studies...</div>}>
+          <CaseStudies />
+        </Suspense>
         <Suspense fallback={<div>Loading products...</div>}>
           <Products />
         </Suspense>
         <Process />
-        <Suspense fallback={<div>Loading case studies...</div>}>
-          <CaseStudies />
-        </Suspense>
         <FAQs />
       </div>
     </HydrationBoundary>
