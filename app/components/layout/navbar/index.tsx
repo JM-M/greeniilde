@@ -55,7 +55,9 @@ export const Navbar = () => {
       <Suspense fallback={<></>}>
         <CartSheet className="text-background ml-auto md:ml-0" />
       </Suspense>
-      <MenuSheet open={isMenuOpen} onOpenChange={setIsMenuOpen} />
+      <Suspense fallback={<></>}>
+        <MenuSheet open={isMenuOpen} onOpenChange={setIsMenuOpen} />
+      </Suspense>
       <div
         className={cn(
           "fixed inset-x-0 top-0 z-50 border-b border-white/10 px-4 transition-colors supports-backdrop-filter:backdrop-blur-xl",

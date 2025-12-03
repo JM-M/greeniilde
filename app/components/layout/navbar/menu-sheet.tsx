@@ -7,6 +7,10 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/app/components/ui/sheet";
+import { useCartSheet } from "@/app/contexts/cart-sheet-context";
+import { useLogout } from "@/app/modules/auth/hooks/use-auth-mutations";
+import { useSuspenseCustomer } from "@/app/modules/auth/hooks/use-customer-queries";
+import { useAuthModal } from "@/app/providers/auth-modal-provider";
 import { siteConfig } from "@/app/site.config";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -18,10 +22,14 @@ type MenuSheetProps = {
 
 export function MenuSheet({ open, onOpenChange }: MenuSheetProps) {
   const pathname = usePathname();
+  const customer = useSuspenseCustomer();
+  const { openAuthModal } = useAuthModal();
+  const { setOpen: setCartOpen } = useCartSheet();
+  const { mutate: logout } = useLogout();
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="left" className="w-3/4 max-w-xs">
+      <SheetContent side="left" className="w-3/4 max-w-xs px-3">
         <SheetHeader className="text-left">
           <SheetTitle className="text-xl font-bold">
             {siteConfig.name}
@@ -44,6 +52,51 @@ export function MenuSheet({ open, onOpenChange }: MenuSheetProps) {
               </Link>
             </Button>
           ))}
+
+          <Button
+            variant="ghost"
+            className="justify-start text-base font-medium"
+            onClick={() => {
+              onOpenChange(false);
+              setCartOpen(true);
+            }}
+          >
+            Cart
+          </Button>
+
+          {customer ? (
+            <>
+              <Button
+                variant="ghost"
+                asChild
+                className="justify-start text-base font-medium"
+              >
+                <Link href="/orders" onClick={() => onOpenChange(false)}>
+                  History
+                </Link>
+              </Button>
+              <Button
+                variant="ghost"
+                className="justify-start text-base font-medium"
+                onClick={() => {
+                  logout();
+                  onOpenChange(false);
+                }}
+              >
+                Logout
+              </Button>
+            </>
+          ) : (
+            <Button
+              className="justify-start text-base font-medium"
+              onClick={() => {
+                onOpenChange(false);
+                openAuthModal("login");
+              }}
+            >
+              Login
+            </Button>
+          )}
         </nav>
       </SheetContent>
     </Sheet>
