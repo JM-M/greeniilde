@@ -62,7 +62,7 @@ export const CaseStudiesCarousel = ({
                 <CaseStudyCard
                   name={study.name}
                   location={study.location}
-                  imageUrl={study.imageUrl}
+                  imageUrl={study.imageUrls?.[0]}
                   className="h-full"
                 />
               </Link>

@@ -2,11 +2,11 @@
 
 import { PageTitle } from "@/app/components/shared/page-title";
 import { useSuspenseCaseStudy } from "@/app/lib/hooks/use-case-study-queries";
-import { CaseStudyHero } from "@/app/modules/case-studies/ui/components/case-study-hero";
 import { CaseStudyOverview } from "@/app/modules/case-studies/ui/components/case-study-overview";
 import { CaseStudyProjectDetailsCard } from "@/app/modules/case-studies/ui/components/case-study-project-details-card";
 import { RelatedCaseStudies } from "@/app/modules/case-studies/ui/components/related-case-studies";
 import { notFound } from "next/navigation";
+import { CaseStudyGallery } from "./case-study-gallery";
 
 type CaseStudyDetailsViewClientProps = {
   id: string;
@@ -32,10 +32,7 @@ export const CaseStudyDetailsViewClient = ({
       {/* Hero Section */}
       <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-10">
         <div>
-          <CaseStudyHero
-            imageUrl={caseStudy.imageUrl}
-            imageAlt={caseStudy.name}
-          />
+          <CaseStudyGallery images={caseStudy.imageUrls} />
         </div>
         <div>
           {/* Metrics data not available in source document */}

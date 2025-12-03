@@ -10,11 +10,16 @@ export function CaseStudiesGrid({ caseStudies }: CaseStudiesGridProps) {
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
       {caseStudies.map((study) => (
-        <Link key={study.id} href={`/case-studies/${study.id}`}>
+        <Link
+          key={study.id}
+          href={`/case-studies/${study.id}`}
+          className="block"
+        >
           <CaseStudyCard
             name={study.name}
             location={study.location}
-            imageUrl={study.imageUrl}
+            imageUrl={study.imageUrls?.[0]}
+            className="h-full"
           />
         </Link>
       ))}

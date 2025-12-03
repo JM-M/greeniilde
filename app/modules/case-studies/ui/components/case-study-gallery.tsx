@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 import { useEffect, useState } from "react";
 
 import { Button } from "@/app/components/ui/button";
@@ -15,24 +17,30 @@ type CaseStudyGalleryProps = {
   images?: string[];
 };
 
-const placeholderImages = Array.from({ length: 6 });
+const placeholderImages: (string | undefined)[] = Array.from({ length: 6 });
 
 export const CaseStudyGallery = ({ images }: CaseStudyGalleryProps) => {
   const [api, setApi] = useState<CarouselApi>();
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [canScrollPrev, setCanScrollPrev] = useState(false);
+  const [canScrollNext, setCanScrollNext] = useState(false);
 
   useEffect(() => {
     if (!api) return;
 
     const handleSelect = () => {
       setSelectedIndex(api.selectedScrollSnap());
+      setCanScrollPrev(api.canScrollPrev());
+      setCanScrollNext(api.canScrollNext());
     };
 
     handleSelect();
     api.on("select", handleSelect);
+    api.on("reInit", handleSelect);
 
     return () => {
       api.off("select", handleSelect);
+      api.off("reInit", handleSelect);
     };
   }, [api]);
 
@@ -43,11 +51,18 @@ export const CaseStudyGallery = ({ images }: CaseStudyGalleryProps) => {
       <Carousel className="w-full" setApi={setApi}>
         <CarouselContent className="-ml-3 md:-ml-4">
           {displayImages.map((image, index) => (
-            <CarouselItem
-              key={index}
-              className="pl-3 md:basis-1/2 md:pl-4 lg:basis-1/3 xl:basis-1/4"
-            >
-              <div className="bg-secondary aspect-square w-full overflow-hidden rounded-xl" />
+            <CarouselItem key={index} className="basis-full pl-3 md:pl-4">
+              <div className="bg-secondary relative aspect-square w-full overflow-hidden rounded-xl">
+                {image && (
+                  <Image
+                    src={image}
+                    alt={`Gallery image ${index + 1}`}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  />
+                )}
+              </div>
             </CarouselItem>
           ))}
         </CarouselContent>
@@ -56,8 +71,8 @@ export const CaseStudyGallery = ({ images }: CaseStudyGalleryProps) => {
         <Button
           variant="outline"
           size="icon"
-          // onClick={() => api?.scrollPrev()}
-          // disabled={!canScrollPrev}
+          onClick={() => api?.scrollPrev()}
+          disabled={!canScrollPrev}
         >
           <ChevronLeft className="size-4" />
           <span className="sr-only">Previous image</span>
@@ -65,8 +80,8 @@ export const CaseStudyGallery = ({ images }: CaseStudyGalleryProps) => {
         <Button
           variant="outline"
           size="icon"
-          // onClick={() => api?.scrollNext()}
-          // disabled={!canScrollNext}
+          onClick={() => api?.scrollNext()}
+          disabled={!canScrollNext}
         >
           <ChevronRight className="size-4" />
           <span className="sr-only">Next image</span>

@@ -4,7 +4,7 @@ export type CaseStudy = {
   location: string;
   overview: string;
   technologies: string[];
-  imageUrl: string;
+  imageUrls: string[];
   date: string;
   type: string;
 };
@@ -24,7 +24,12 @@ export const CASE_STUDIES: CaseStudy[] = [
       "Lightning Arrestors",
       "Earthing System",
     ],
-    imageUrl: "/images/case-studies/image1.jpeg",
+    imageUrls: [
+      "/images/case-studies/image1.jpeg",
+      "/images/case-studies/image2.jpg",
+      "/images/case-studies/image3.jpg",
+      "/images/case-studies/image4.jpg",
+    ],
     date: "2024",
     type: "Residential",
   },
@@ -45,7 +50,10 @@ export const CASE_STUDIES: CaseStudy[] = [
       "Earthing System",
       "Automatic Changeover System with Fast Bus Transfer",
     ],
-    imageUrl: "/images/case-studies/image2.jpg",
+    imageUrls: [
+      "/images/case-studies/image5.jpg",
+      "/images/case-studies/image6.jpg",
+    ],
     date: "2024",
     type: "Commercial",
   },
@@ -65,7 +73,10 @@ export const CASE_STUDIES: CaseStudy[] = [
       "Lightning Arrestors",
       "Earthing System",
     ],
-    imageUrl: "/images/case-studies/image3.jpg",
+    imageUrls: [
+      "/images/case-studies/image7.jpg",
+      "/images/case-studies/image8.jpg",
+    ],
     date: "2024",
     type: "Residential",
   },
