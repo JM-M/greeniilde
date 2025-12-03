@@ -1,6 +1,11 @@
+"use client";
+
+import { useSuspenseCaseStudies } from "@/app/lib/hooks/use-case-study-queries";
 import { CaseStudiesCarousel } from "@/app/modules/case-studies/ui/components/case-studies-carousel";
 
 export const CaseStudies = () => {
+  const { data: caseStudies } = useSuspenseCaseStudies();
+
   return (
     <section
       id="case-studies"
@@ -13,7 +18,7 @@ export const CaseStudies = () => {
         <h2 className="text-3xl font-semibold tracking-tight">Case Studies</h2>
       </div>
 
-      <CaseStudiesCarousel />
+      <CaseStudiesCarousel caseStudies={caseStudies} />
     </section>
   );
 };

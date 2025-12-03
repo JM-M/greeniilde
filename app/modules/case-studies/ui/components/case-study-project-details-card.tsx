@@ -1,4 +1,9 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/app/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/app/components/ui/card";
 
 type ProjectDetail = {
   label: string;
@@ -6,17 +11,17 @@ type ProjectDetail = {
 };
 
 type CaseStudyProjectDetailsCardProps = {
-  location?: string;
-  projectType?: string;
-  dateCompleted?: string;
-  technologies?: string[];
+  location: string;
+  projectType: string;
+  dateCompleted: string;
+  technologies: string[];
 };
 
 export const CaseStudyProjectDetailsCard = ({
-  location = "Arizona, USA",
-  projectType = "Commercial Solar",
-  dateCompleted = "March 2024",
-  technologies = ["Solar Panels", "Battery Storage", "Smart Inverters"],
+  location,
+  projectType,
+  dateCompleted,
+  technologies,
 }: CaseStudyProjectDetailsCardProps) => {
   const details: ProjectDetail[] = [
     { label: "Location", value: location },
@@ -32,15 +37,15 @@ export const CaseStudyProjectDetailsCard = ({
       <CardContent className="space-y-4">
         {details.map((detail) => (
           <div key={detail.label} className="space-y-1">
-            <p className="text-sm font-medium text-muted-foreground">
+            <p className="text-muted-foreground text-sm font-medium">
               {detail.label}
             </p>
             <p className="text-sm">{detail.value}</p>
           </div>
         ))}
         {technologies.length > 0 && (
-          <div className="space-y-2 pt-2 border-t">
-            <p className="text-sm font-medium text-muted-foreground">
+          <div className="space-y-2 border-t pt-2">
+            <p className="text-muted-foreground text-sm font-medium">
               Technologies
             </p>
             <ul className="space-y-1">
@@ -56,4 +61,3 @@ export const CaseStudyProjectDetailsCard = ({
     </Card>
   );
 };
-

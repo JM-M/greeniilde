@@ -1,35 +1,21 @@
-import Link from "next/link";
+import { CaseStudy } from "@/app/lib/data/case-studies";
 import { CaseStudyCard } from "@/app/modules/case-studies/ui/components/case-study-card";
+import Link from "next/link";
 
-const caseStudies = [
-  {
-    name: "Desert Ridge Agrisolar",
-    id: "desert-ridge-agrisolar",
-  },
-  {
-    name: "Harborview Microgrid",
-    id: "harborview-microgrid",
-  },
-  {
-    name: "Mountain Crest Resort",
-    id: "mountain-crest-resort",
-  },
-  {
-    name: "Riverside Packaging Plant",
-    id: "riverside-packaging-plant",
-  },
-  {
-    name: "Northwind Data Center",
-    id: "northwind-data-center",
-  },
-];
+type CaseStudiesGridProps = {
+  caseStudies: CaseStudy[];
+};
 
-export function CaseStudiesGrid() {
+export function CaseStudiesGrid({ caseStudies }: CaseStudiesGridProps) {
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
       {caseStudies.map((study) => (
         <Link key={study.id} href={`/case-studies/${study.id}`}>
-          <CaseStudyCard name={study.name} />
+          <CaseStudyCard
+            name={study.name}
+            location={study.location}
+            imageUrl={study.imageUrl}
+          />
         </Link>
       ))}
     </div>

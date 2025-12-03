@@ -1,3 +1,4 @@
+import { caseStudyQueries } from "@/app/lib/hooks/use-case-study-queries";
 import { getQueryClient } from "@/app/lib/query/get-query-client";
 import { productQueries } from "@/app/modules/products/queries";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
@@ -28,6 +29,8 @@ export const LandingView = async ({
     }),
   );
 
+  await queryClient.prefetchQuery(caseStudyQueries.list());
+
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <div>
@@ -37,7 +40,9 @@ export const LandingView = async ({
           <Products />
         </Suspense>
         <Process />
-        <CaseStudies />
+        <Suspense fallback={<div>Loading case studies...</div>}>
+          <CaseStudies />
+        </Suspense>
         <FAQs />
       </div>
     </HydrationBoundary>

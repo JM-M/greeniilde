@@ -1,18 +1,32 @@
-import { CaseStudyGallery } from "@/app/modules/case-studies/ui/components/case-study-gallery";
+import { cn } from "@/app/lib/utils";
+import Image from "next/image";
 
 type CaseStudyHeroProps = {
-  imageUrl?: string;
-  imageAlt?: string;
+  imageUrl: string;
+  imageAlt: string;
+  className?: string;
 };
 
 export const CaseStudyHero = ({
   imageUrl,
-  imageAlt = "Case study hero image",
+  imageAlt,
+  className,
 }: CaseStudyHeroProps) => {
-  // TODO: Add a carousel of images.
   return (
-    <div className="w-full">
-      <CaseStudyGallery />
+    <div
+      className={cn(
+        "bg-secondary relative aspect-video w-full overflow-hidden rounded-xl",
+        className,
+      )}
+    >
+      <Image
+        src={imageUrl}
+        alt={imageAlt}
+        fill
+        className="object-cover"
+        priority
+        sizes="(max-width: 768px) 100vw, 50vw"
+      />
     </div>
   );
 };
