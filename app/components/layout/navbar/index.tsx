@@ -10,10 +10,12 @@ import { Button } from "../../ui/button";
 import { AuthButton } from "./auth-button";
 import { CartButton } from "./cart-button";
 import { CartSheet } from "./cart-sheet";
+import { MenuSheet } from "./menu-sheet";
 import { useActiveIndicator } from "./use-active-indicator";
 
 export const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const pathname = usePathname();
 
@@ -53,6 +55,7 @@ export const Navbar = () => {
       <Suspense fallback={<></>}>
         <CartSheet className="text-background ml-auto md:ml-0" />
       </Suspense>
+      <MenuSheet open={isMenuOpen} onOpenChange={setIsMenuOpen} />
       <div
         className={cn(
           "fixed inset-x-0 top-0 z-50 border-b border-white/10 px-4 transition-colors supports-backdrop-filter:backdrop-blur-xl",
@@ -68,6 +71,7 @@ export const Navbar = () => {
               size="icon-sm"
               aria-label="Open navigation menu"
               className="text-background md:hidden"
+              onClick={() => setIsMenuOpen(true)}
             >
               <MenuIcon />
             </Button>
