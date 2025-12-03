@@ -1,10 +1,15 @@
 import Medusa from "@medusajs/js-sdk";
+import "server-only";
 
 // Defaults to standard port for Medusa server
+if (!process.env.BACKEND_URL) {
+  throw new Error("BACKEND_URL is not defined");
+}
+
 export const sdk = new Medusa({
-  baseUrl: process.env.NEXT_PUBLIC_BACKEND_URL!,
+  baseUrl: process.env.BACKEND_URL!,
   debug: process.env.NODE_ENV === "development",
-  publishableKey: process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY,
+  publishableKey: process.env.MEDUSA_PUBLISHABLE_KEY,
   auth: {
     type: "session",
   },
