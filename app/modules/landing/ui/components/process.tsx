@@ -40,7 +40,7 @@ export const Process = ({
   const processSteps = steps || defaultSteps;
 
   return (
-    <section id="process" className="container mx-auto px-4 py-16 space-y-8">
+    <section id="process" className="container mx-auto space-y-8 px-4 py-16">
       <SectionHeader
         title={sectionTitle || "Our Process"}
         description={
@@ -48,17 +48,17 @@ export const Process = ({
           "We follow a simple process to install your solar system."
         }
       />
-      <div className="flex flex-col items-center text-center pt-16">
+      <div className="flex flex-col items-center pt-16 text-center">
         {processSteps.map((step, idx) => (
-          <div key={step.title} className="flex flex-col items-center ">
+          <div key={idx} className="flex flex-col items-center">
             <div>
               <h3 className="text-2xl font-semibold">{step.title}</h3>
-              <p className="mt-2 text-base text-muted-foreground max-w-xl">
+              <p className="text-muted-foreground mt-2 max-w-xl text-base">
                 {step.description}
               </p>
             </div>
             {idx < processSteps.length - 1 && (
-              <div className="h-60 w-px bg-border my-4" aria-hidden="true" />
+              <div className="bg-border my-4 h-60 w-px" aria-hidden="true" />
             )}
           </div>
         ))}

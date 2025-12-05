@@ -1,34 +1,79 @@
 "use client";
 
-import { registerOverlayPortal } from "@measured/puck";
+import { registerOverlayPortal, usePuck } from "@measured/puck";
 import "@measured/puck/puck.css";
 import { useEffect, useRef } from "react";
 
 export const EditableText = ({
   value,
-  onChange,
+  propName,
+  componentId,
 }: {
   value: string;
-  onChange?: (value: string) => void;
+  propName: string;
+  componentId: string;
 }) => {
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLSpanElement>(null);
+
+  // Use public usePuck API
+  const { dispatch, getSelectorForId, getItemById } = usePuck();
 
   useEffect(() => {
     if (ref.current) {
-      // Register the element as an overlay portal so it can be interacted with
-      registerOverlayPortal(ref.current);
+      // Only update the DOM if the value has changed from outside
+      // This prevents cursor jumping during user typing
+      if (value !== ref.current.textContent) {
+        ref.current.textContent = value;
+      }
+
+      const cleanupPortal = registerOverlayPortal(ref.current);
+
+      const handleInput = async () => {
+        if (!ref.current) return;
+
+        const newValue = ref.current.textContent || "";
+
+        // Get the current component data
+        const node = getItemById(componentId);
+        if (!node) {
+          console.error(`Node not found for componentId: ${componentId}`);
+          return;
+        }
+
+        // Get selector (zone and index) for this component
+        const selector = getSelectorForId(componentId);
+        if (!selector) {
+          console.error(`Selector not found for componentId: ${componentId}`);
+          return;
+        }
+
+        // Update props with new value
+        const newProps = { ...node.props, [propName]: newValue };
+
+        // Dispatch replace action
+        dispatch({
+          type: "replace",
+          data: { ...node, props: newProps },
+          destinationIndex: selector.index,
+          destinationZone: selector.zone,
+          recordHistory: true,
+        });
+      };
+
+      ref.current.addEventListener("input", handleInput);
+
+      return () => {
+        ref.current?.removeEventListener("input", handleInput);
+        cleanupPortal?.();
+      };
     }
-  }, []);
+  }, [componentId, propName, value, dispatch, getSelectorForId, getItemById]);
 
   return (
     <span
       ref={ref}
       contentEditable
       suppressContentEditableWarning
-      onBlur={(e) => {
-        // Update Puck state when user finishes editing (onBlur)
-        onChange?.(e.currentTarget.textContent || "");
-      }}
       onKeyDown={(e) => {
         if (e.key === "Enter" && !e.shiftKey) {
           e.preventDefault();
@@ -42,8 +87,6 @@ export const EditableText = ({
         minHeight: "1em",
         display: "inline-block",
       }}
-    >
-      {value}
-    </span>
+    />
   );
 };

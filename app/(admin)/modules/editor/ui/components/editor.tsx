@@ -1,26 +1,43 @@
 "use client";
 
 import { Puck } from "@measured/puck";
+import { useDebouncedCallback } from "use-debounce";
 import config from "../../config";
+import { useSavePageContent } from "../../hooks/use-editor-mutations";
 import { useSuspenseGetPageContent } from "../../hooks/use-editor-queries";
 import { EditableText } from "./editable-text";
 
 const fieldTransforms = {
-  text: ({ value, onChange }: any) => (
-    <EditableText value={value} onChange={onChange} />
+  text: ({ value, propName, componentId }: any) => (
+    <EditableText value={value} propName={propName} componentId={componentId} />
   ),
-  textarea: ({ value, onChange }: any) => (
-    <EditableText value={value} onChange={onChange} />
+  textarea: ({ value, propName, componentId }: any) => (
+    <EditableText value={value} propName={propName} componentId={componentId} />
   ),
 };
 
 export const Editor = () => {
   const { data } = useSuspenseGetPageContent("home");
-  console.log(data);
+  const savePageContentMutation = useSavePageContent();
 
-  const handlePublish = (data: any) => {
-    console.log(data);
+  const handlePublish = (puckData: any) => {
+    // savePageContentMutation.mutate({
+    //   slug: "home",
+    //   title: "Home Page",
+    //   puckData,
+    //   status: "published",
+    // });
   };
+
+  const handleAutoSave = useDebouncedCallback((puckData: any) => {
+    console.log("saving...");
+    savePageContentMutation.mutate({
+      slug: "home",
+      title: "Home Page",
+      puckData,
+      status: "published",
+    });
+  }, 1000);
 
   return (
     <Puck
@@ -28,6 +45,7 @@ export const Editor = () => {
       data={data.puckData}
       fieldTransforms={fieldTransforms}
       onPublish={handlePublish}
+      onChange={handleAutoSave}
     />
   );
 };

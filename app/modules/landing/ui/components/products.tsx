@@ -58,9 +58,9 @@ export const Products = () => {
           >
             All
           </TabsTrigger>
-          {categories.map((category) => (
+          {categories.map((category, index) => (
             <TabsTrigger
-              key={category.id}
+              key={index}
               value={category.id}
               className="hover:bg-primary/10 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground flex-[unset] cursor-pointer"
             >
