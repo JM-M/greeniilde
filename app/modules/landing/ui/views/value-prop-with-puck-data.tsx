@@ -1,8 +1,8 @@
 "use client";
 
+import { getPageContent } from "@/app/lib/actions/content-pages";
 import { useEffect, useState } from "react";
 import { ValueProp } from "../components/value-prop";
-import type { Data } from "@measured/puck";
 
 type ValuePropStat = {
   label: string;
@@ -19,46 +19,48 @@ export const ValuePropWithPuckData = () => {
   const [videoSrc, setVideoSrc] = useState<string>();
 
   useEffect(() => {
-    // Load data from localStorage
-    const saved = localStorage.getItem("puck-data");
-    if (saved) {
+    async function loadValuePropData() {
       try {
-        const data: Data = JSON.parse(saved);
-        // Find the ValuePropSection component in the content
-        const valuePropComponent = data.content?.find(
-          (item) => item.type === "ValuePropSection"
-        );
-        if (valuePropComponent?.props) {
-          if (valuePropComponent.props.title) {
-            setTitle(valuePropComponent.props.title as string);
-          }
-          if (valuePropComponent.props.subtitle) {
-            setSubtitle(valuePropComponent.props.subtitle as string);
-          }
-          if (valuePropComponent.props.features) {
-            // Convert array of {feature: string} to array of strings
-            const featureArray = (
-              valuePropComponent.props.features as { feature: string }[]
-            ).map((f) => f.feature);
-            setFeatures(featureArray);
-          }
-          if (valuePropComponent.props.buttonText) {
-            setButtonText(valuePropComponent.props.buttonText as string);
-          }
-          if (valuePropComponent.props.stats) {
-            setStats(valuePropComponent.props.stats as ValuePropStat[]);
-          }
-          if (valuePropComponent.props.ctaText) {
-            setCtaText(valuePropComponent.props.ctaText as string);
-          }
-          if (valuePropComponent.props.videoSrc) {
-            setVideoSrc(valuePropComponent.props.videoSrc as string);
+        const pageData = await getPageContent("home");
+
+        if (pageData && pageData.puckData) {
+          const data = pageData.puckData;
+          const valuePropComponent = data.content?.find(
+            (item: any) => item.type === "ValuePropSection",
+          );
+          if (valuePropComponent?.props) {
+            if (valuePropComponent.props.title) {
+              setTitle(valuePropComponent.props.title as string);
+            }
+            if (valuePropComponent.props.subtitle) {
+              setSubtitle(valuePropComponent.props.subtitle as string);
+            }
+            if (valuePropComponent.props.features) {
+              const featuresList = (
+                valuePropComponent.props.features as { feature: string }[]
+              ).map((f) => f.feature);
+              setFeatures(featuresList);
+            }
+            if (valuePropComponent.props.buttonText) {
+              setButtonText(valuePropComponent.props.buttonText as string);
+            }
+            if (valuePropComponent.props.stats) {
+              setStats(valuePropComponent.props.stats as ValuePropStat[]);
+            }
+            if (valuePropComponent.props.ctaText) {
+              setCtaText(valuePropComponent.props.ctaText as string);
+            }
+            if (valuePropComponent.props.videoSrc) {
+              setVideoSrc(valuePropComponent.props.videoSrc as string);
+            }
           }
         }
       } catch (error) {
-        console.error("Failed to parse Puck data:", error);
+        console.error("Failed to load value prop data from backend:", error);
+        // Component will use default props if this fails
       }
     }
+    loadValuePropData();
   }, []);
 
   return (

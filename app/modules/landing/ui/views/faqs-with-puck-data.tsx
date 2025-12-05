@@ -1,8 +1,9 @@
 "use client";
 
+import { getPageContent } from "@/app/lib/actions/content-pages";
+import type { Data } from "@measured/puck";
 import { useEffect, useState } from "react";
 import { FAQs } from "../components/faqs";
-import type { Data } from "@measured/puck";
 
 type FAQItem = {
   question: string;
@@ -15,30 +16,33 @@ export const FAQsWithPuckData = () => {
   const [ctaText, setCtaText] = useState<string>();
 
   useEffect(() => {
-    // Load data from localStorage
-    const saved = localStorage.getItem("puck-data");
-    if (saved) {
+    async function loadFAQsData() {
       try {
-        const data: Data = JSON.parse(saved);
-        // Find the FAQsSection component in the content
-        const faqsComponent = data.content?.find(
-          (item) => item.type === "FAQsSection"
-        );
-        if (faqsComponent?.props) {
-          if (faqsComponent.props.sectionTitle) {
-            setSectionTitle(faqsComponent.props.sectionTitle as string);
-          }
-          if (faqsComponent.props.faqs) {
-            setFaqs(faqsComponent.props.faqs as FAQItem[]);
-          }
-          if (faqsComponent.props.ctaText) {
-            setCtaText(faqsComponent.props.ctaText as string);
+        const pageData = await getPageContent("home");
+
+        if (pageData && pageData.puckData) {
+          const data: Data = pageData.puckData;
+          const faqsComponent = data.content?.find(
+            (item: any) => item.type === "FAQsSection",
+          );
+          if (faqsComponent?.props) {
+            if (faqsComponent.props.sectionTitle) {
+              setSectionTitle(faqsComponent.props.sectionTitle as string);
+            }
+            if (faqsComponent.props.faqs) {
+              setFaqs(faqsComponent.props.faqs as FAQItem[]);
+            }
+            if (faqsComponent.props.ctaText) {
+              setCtaText(faqsComponent.props.ctaText as string);
+            }
           }
         }
       } catch (error) {
-        console.error("Failed to parse Puck data:", error);
+        console.error("Failed to load FAQs data from backend:", error);
+        // Component will use default props if this fails
       }
     }
+    loadFAQsData();
   }, []);
 
   return <FAQs sectionTitle={sectionTitle} faqs={faqs} ctaText={ctaText} />;

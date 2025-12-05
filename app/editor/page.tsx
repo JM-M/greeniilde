@@ -1,13 +1,24 @@
 "use client";
 
+import {
+  getPageContent,
+  savePageContent,
+} from "@/app/lib/actions/content-pages";
 import type { Data } from "@measured/puck";
 import { Puck, registerOverlayPortal } from "@measured/puck";
 import "@measured/puck/puck.css";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { config } from "../../puck.config";
 
-// Define inline editable text component
-const InlineEditableText = ({ value, onChange }: any) => {
+// Inline editable text component - edits on canvas sync to Puck state
+const InlineEditableText = ({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (value: string) => void;
+}) => {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -22,13 +33,21 @@ const InlineEditableText = ({ value, onChange }: any) => {
       ref={ref}
       contentEditable
       suppressContentEditableWarning
-      onInput={(e) => {
+      onBlur={(e) => {
+        // Update Puck state when user finishes editing (onBlur)
         onChange(e.currentTarget.textContent || "");
+      }}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" && !e.shiftKey) {
+          e.preventDefault();
+          e.currentTarget.blur();
+        }
       }}
       style={{
         outline: "2px dashed rgba(99, 102, 241, 0.5)",
         outlineOffset: "4px",
         cursor: "text",
+        minHeight: "1em",
       }}
     >
       {value}
@@ -47,6 +66,9 @@ const fieldTransforms = {
 };
 
 export default function EditorPage() {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
   const [data, setData] = useState<Data>({
     content: [
       {
@@ -194,24 +216,51 @@ export default function EditorPage() {
     root: {},
   });
 
-  // Load data from localStorage on mount
+  // Load data from backend on mount
   useEffect(() => {
-    const saved = localStorage.getItem("puck-data");
-    if (saved) {
-      setData(JSON.parse(saved));
+    async function loadPageData() {
+      try {
+        const pageData = await getPageContent("home");
+        if (pageData && pageData.puckData) {
+          setData(pageData.puckData);
+        }
+      } catch (error) {
+        console.error("Failed to load page data:", error);
+        // Keep default data if fetch fails
+      } finally {
+        setIsLoading(false);
+      }
     }
+    loadPageData();
   }, []);
+
+  const handlePublish = async (data: Data) => {
+    setIsSaving(true);
+    try {
+      await savePageContent("home", "Home Page", data, "published");
+      alert("Published successfully!");
+    } catch (error) {
+      console.error("Failed to save:", error);
+      alert("Failed to publish. Please try again.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <p>Loading editor...</p>
+      </div>
+    );
+  }
 
   return (
     <Puck
       config={config}
       data={data}
       fieldTransforms={fieldTransforms}
-      onPublish={(data) => {
-        // Save to localStorage
-        localStorage.setItem("puck-data", JSON.stringify(data));
-        alert("Published! Visit / to see changes");
-      }}
+      onPublish={handlePublish}
     />
   );
 }
