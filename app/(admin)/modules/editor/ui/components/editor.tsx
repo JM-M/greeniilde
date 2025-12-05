@@ -2,10 +2,11 @@
 
 import { Puck } from "@measured/puck";
 import { useDebouncedCallback } from "use-debounce";
-import config from "../../config";
+import { configs, ConfigType } from "../../configs";
 import { useSavePageContent } from "../../hooks/use-editor-mutations";
 import { useSuspenseGetPageContent } from "../../hooks/use-editor-queries";
 import { EditableText } from "./editable-text";
+import { EditorHeader } from "./editor-header";
 
 const fieldTransforms = {
   text: ({ value, propName, componentId }: any) => (
@@ -40,6 +41,9 @@ export const Editor = () => {
     });
   }, 1000);
 
+  const configKey = (data.type as ConfigType) || "landing-page";
+  const config = configs[configKey] || configs["landing-page"];
+
   return (
     <Puck
       config={config}
@@ -47,6 +51,16 @@ export const Editor = () => {
       fieldTransforms={fieldTransforms}
       onPublish={handlePublish}
       onChange={handleAutoSave}
+      overrides={{
+        header: () => {
+          return (
+            <EditorHeader
+              onPublish={handlePublish}
+              isPublishing={savePageContentMutation.isPending}
+            />
+          );
+        },
+      }}
     />
   );
 };

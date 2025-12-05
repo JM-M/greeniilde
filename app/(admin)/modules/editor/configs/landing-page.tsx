@@ -1,10 +1,10 @@
 import { AutoField, Config, FieldLabel } from "@measured/puck";
-import { CaseStudies } from "../../../modules/landing/ui/components/case-studies";
-import { FAQs } from "../../../modules/landing/ui/components/faqs";
-import { Hero } from "../../../modules/landing/ui/components/hero";
-import { Process } from "../../../modules/landing/ui/components/process";
-import { Products } from "../../../modules/landing/ui/components/products";
-import { ValueProp } from "../../../modules/landing/ui/components/value-prop";
+import { CaseStudies } from "../../../../modules/landing/ui/components/case-studies";
+import { FAQs } from "../../../../modules/landing/ui/components/faqs";
+import { Hero } from "../../../../modules/landing/ui/components/hero";
+import { Process } from "../../../../modules/landing/ui/components/process";
+import { Products } from "../../../../modules/landing/ui/components/products";
+import { ValueProp } from "../../../../modules/landing/ui/components/value-prop";
 
 type FocusArea = {
   label: string;
@@ -68,7 +68,7 @@ type Props = {
   };
 };
 
-export const config: Config<Props> = {
+export const landingPageConfig: Config<Props> = {
   components: {
     HeroTitle: {
       fields: {
@@ -439,5 +439,3 @@ export const config: Config<Props> = {
     },
   },
 };
-
-export default config;
