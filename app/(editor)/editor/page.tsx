@@ -3,13 +3,13 @@
 import {
   getPageContent,
   savePageContent,
-} from "@/app/lib/actions/content-pages";
+} from "@/app/(editor)/lib/api/content-pages";
 import type { Data } from "@measured/puck";
 import { Puck, registerOverlayPortal } from "@measured/puck";
 import "@measured/puck/puck.css";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { config } from "../../puck.config";
+import { config } from "../../../puck.config";
 
 // Inline editable text component - edits on canvas sync to Puck state
 const InlineEditableText = ({

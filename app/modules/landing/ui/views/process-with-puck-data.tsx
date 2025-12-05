@@ -1,6 +1,6 @@
 "use client";
 
-import { getPageContent } from "@/app/lib/actions/content-pages";
+import { getPageContent } from "@/app/(editor)/lib/api/content-pages";
 import { useEffect, useState } from "react";
 import { Process } from "../components/process";
 
