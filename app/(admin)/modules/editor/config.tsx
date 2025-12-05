@@ -42,6 +42,7 @@ type Props = {
     whySubtitle: string;
     sellingPoints: { point: string }[];
     metrics: HeroMetric[];
+    backgroundImage: string;
   };
   ValuePropSection: {
     title: string;
@@ -132,6 +133,19 @@ export const config: Config<Props> = {
             },
           },
         },
+        backgroundImage: {
+          type: "custom",
+          label: "Background Image URL",
+          render: ({ field, value, onChange }) => (
+            <FieldLabel label={field.label || "Background Image URL"}>
+              <AutoField
+                field={{ type: "text" }}
+                value={value}
+                onChange={onChange}
+              />
+            </FieldLabel>
+          ),
+        },
       },
       defaultProps: {
         title:
@@ -176,6 +190,7 @@ export const config: Config<Props> = {
           { label: "System uptime", value: "99.2%" },
           { label: "Customer NPS", value: "74" },
         ],
+        backgroundImage: "/images/hero.jpg",
       },
       render: ({
         title,
@@ -187,6 +202,7 @@ export const config: Config<Props> = {
         whySubtitle,
         sellingPoints,
         metrics,
+        backgroundImage,
       }) => (
         <Hero
           title={title}
@@ -198,6 +214,7 @@ export const config: Config<Props> = {
           whySubtitle={whySubtitle}
           sellingPoints={sellingPoints?.map((sp) => sp.point) || []}
           metrics={metrics}
+          backgroundImage={backgroundImage}
         />
       ),
     },

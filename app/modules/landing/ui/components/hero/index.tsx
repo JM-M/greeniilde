@@ -20,6 +20,7 @@ export const Hero = ({
   whySubtitle,
   sellingPoints,
   metrics,
+  backgroundImage,
 }: {
   title?: string;
   description?: string;
@@ -30,11 +31,15 @@ export const Hero = ({
   whySubtitle?: string;
   sellingPoints?: string[];
   metrics?: HeroMetric[];
+  backgroundImage?: string;
 } = {}) => {
   return (
     <header
       id="hero"
-      className="relative -mt-14 overflow-hidden bg-[#040b06] bg-[url('/images/hero.jpg')] bg-cover bg-center text-white"
+      className="relative -mt-14 overflow-hidden bg-[#040b06] bg-cover bg-center text-white"
+      style={{
+        backgroundImage: `url('${backgroundImage || "/images/hero.jpg"}')`,
+      }}
     >
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,#07150d,transparent_60%)]" />
       <div className="absolute inset-y-0 left-1/2 hidden w-240 -translate-x-1/4 rounded-full bg-emerald-700/15 blur-3xl lg:block" />

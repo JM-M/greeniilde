@@ -31,6 +31,7 @@ export const Editor = () => {
 
   const handleAutoSave = useDebouncedCallback((puckData: any) => {
     console.log("saving...");
+    // Saving as draft seems to fuck things up
     savePageContentMutation.mutate({
       slug: "home",
       title: "Home Page",
