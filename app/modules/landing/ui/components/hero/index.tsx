@@ -1,10 +1,36 @@
 import { HeroActions } from "./actions";
-import { focusAreas, heroMetrics, heroSellingPoints } from "./data";
+import {
+  focusAreas as defaultFocusAreas,
+  heroMetrics as defaultMetrics,
+  heroSellingPoints as defaultSellingPoints,
+  type FocusArea,
+  type HeroMetric,
+} from "./data";
 import { HeroFocusAreas } from "./focus-areas";
 import { HeroIntro } from "./intro";
 import { HeroWhy } from "./why";
 
-export const Hero = () => {
+export const Hero = ({
+  title,
+  description,
+  primaryCta,
+  secondaryCta,
+  focusAreas,
+  whyTitle,
+  whySubtitle,
+  sellingPoints,
+  metrics,
+}: {
+  title?: string;
+  description?: string;
+  primaryCta?: string;
+  secondaryCta?: string;
+  focusAreas?: FocusArea[];
+  whyTitle?: string;
+  whySubtitle?: string;
+  sellingPoints?: string[];
+  metrics?: HeroMetric[];
+} = {}) => {
   return (
     <header
       id="hero"
@@ -16,17 +42,28 @@ export const Hero = () => {
       <div className="relative z-10 container mx-auto grid min-h-[min(60rem,100vh)] gap-12 px-4 pt-28 pb-16 lg:max-w-3xl">
         <div className="flex flex-col justify-center space-y-10">
           <HeroIntro
-            title="Save on electricity with reliable, maintenance-free solar power."
-            description="We design, supply, and install turnkey residential and commercial solar systems across Nigeria—built for uptime, backed by proactive monitoring, and tailored to your energy profile."
+            title={
+              title ||
+              "Save on electricity with reliable, maintenance-free solar power."
+            }
+            description={
+              description ||
+              "We design, supply, and install turnkey residential and commercial solar systems across Nigeria—built for uptime, backed by proactive monitoring, and tailored to your energy profile."
+            }
           />
           <HeroActions
-            primaryCta="Book a project consult"
-            secondaryCta="Get in touch"
+            primaryCta={primaryCta || "Book a project consult"}
+            secondaryCta={secondaryCta || "Get in touch"}
           />
-          <HeroFocusAreas areas={focusAreas} />
+          <HeroFocusAreas areas={focusAreas || defaultFocusAreas} />
         </div>
 
-        <HeroWhy sellingPoints={heroSellingPoints} metrics={heroMetrics} />
+        <HeroWhy
+          title={whyTitle}
+          subtitle={whySubtitle}
+          sellingPoints={sellingPoints || defaultSellingPoints}
+          metrics={metrics || defaultMetrics}
+        />
       </div>
     </header>
   );

@@ -6,11 +6,11 @@ import { Suspense } from "react";
 import { loadLandingProductsParams } from "../../params";
 import { getMeilisearchFilterFromLandingProductsParams } from "../../utils";
 import { CaseStudies } from "../components/case-studies";
-import { FAQs } from "../components/faqs";
-import { Hero } from "../components/hero";
-import { Process } from "../components/process";
+import { FAQsWithPuckData } from "./faqs-with-puck-data";
+import { HeroWithPuckData } from "./hero-with-puck-data";
+import { ProcessWithPuckData } from "./process-with-puck-data";
 import { Products } from "../components/products";
-import { ValueProp } from "../components/value-prop";
+import { ValuePropWithPuckData } from "./value-prop-with-puck-data";
 
 interface LandingViewProps {
   landingProductsParams: Awaited<ReturnType<typeof loadLandingProductsParams>>;
@@ -34,16 +34,16 @@ export const LandingView = async ({
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <div>
-        <Hero />
-        <ValueProp />
+        <HeroWithPuckData />
+        <ValuePropWithPuckData />
         <Suspense fallback={<div>Loading case studies...</div>}>
           <CaseStudies />
         </Suspense>
         <Suspense fallback={<div>Loading products...</div>}>
           <Products />
         </Suspense>
-        <Process />
-        <FAQs />
+        <ProcessWithPuckData />
+        <FAQsWithPuckData />
       </div>
     </HydrationBoundary>
   );

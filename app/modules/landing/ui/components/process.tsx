@@ -1,7 +1,7 @@
 import { PrimaryCta } from "@/app/components/shared/primary-cta/button";
 import { SectionHeader } from "@/app/components/shared/section-header";
 
-const steps = [
+const defaultSteps = [
   {
     title: "Free Assessment",
     description:
@@ -24,15 +24,32 @@ const steps = [
   },
 ];
 
-export const Process = () => {
+type ProcessProps = {
+  sectionTitle?: string;
+  sectionDescription?: string;
+  steps?: { title: string; description: string }[];
+  ctaText?: string;
+};
+
+export const Process = ({
+  sectionTitle,
+  sectionDescription,
+  steps,
+  ctaText,
+}: ProcessProps = {}) => {
+  const processSteps = steps || defaultSteps;
+
   return (
     <section id="process" className="container mx-auto px-4 py-16 space-y-8">
       <SectionHeader
-        title="Our Process"
-        description="We follow a simple process to install your solar system."
+        title={sectionTitle || "Our Process"}
+        description={
+          sectionDescription ||
+          "We follow a simple process to install your solar system."
+        }
       />
       <div className="flex flex-col items-center text-center pt-16">
-        {steps.map((step, idx) => (
+        {processSteps.map((step, idx) => (
           <div key={step.title} className="flex flex-col items-center ">
             <div>
               <h3 className="text-2xl font-semibold">{step.title}</h3>
@@ -40,14 +57,17 @@ export const Process = () => {
                 {step.description}
               </p>
             </div>
-            {idx < steps.length - 1 && (
+            {idx < processSteps.length - 1 && (
               <div className="h-60 w-px bg-border my-4" aria-hidden="true" />
             )}
           </div>
         ))}
       </div>
       <div className="flex justify-center">
-        <PrimaryCta label="Book a project consult" className="max-w-xs" />
+        <PrimaryCta
+          label={ctaText || "Book a project consult"}
+          className="max-w-xs"
+        />
       </div>
     </section>
   );

@@ -1,22 +1,29 @@
 import type { HeroMetric } from "./data";
 
 type HeroWhyProps = {
+  title?: string;
+  subtitle?: string;
   sellingPoints: string[];
   metrics: HeroMetric[];
 };
 
-export const HeroWhy = ({ sellingPoints, metrics }: HeroWhyProps) => (
+export const HeroWhy = ({
+  title,
+  subtitle,
+  sellingPoints,
+  metrics,
+}: HeroWhyProps) => (
   <div className="flex flex-col justify-center gap-6 rounded-3xl border border-white/10 bg-white/5 p-8 text-left backdrop-blur">
     <div className="space-y-3">
       <p className="text-sm font-semibold uppercase tracking-widest text-emerald-200">
         Why Greeniilde
       </p>
       <h2 className="text-2xl font-semibold">
-        Engineered systems with proactive monitoring baked in.
+        {title || "Engineered systems with proactive monitoring baked in."}
       </h2>
       <p className="text-sm text-white/75">
-        Our in-house team guides permits, installs, and post-install maintenance so you stay online
-        even through extended load-shedding.
+        {subtitle ||
+          "Our in-house team guides permits, installs, and post-install maintenance so you stay online even through extended load-shedding."}
       </p>
     </div>
 
