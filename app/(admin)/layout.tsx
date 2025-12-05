@@ -1,4 +1,4 @@
-import { getUser } from "@/app/(editor)/lib/api/auth";
+import { getUser } from "@/app/(admin)/lib/api/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -9,8 +9,6 @@ export default async function EditorLayout({
 }) {
   const headersList = await headers();
   const pathname = headersList.get("x-pathname") || "";
-
-  console.log("pathname: ", pathname);
 
   // Skip auth check if already on login page
   const isLoginPage = pathname === "/editor/login";
@@ -24,5 +22,5 @@ export default async function EditorLayout({
     }
   }
 
-  return <>{children}</>;
+  return <div>{children}</div>;
 }

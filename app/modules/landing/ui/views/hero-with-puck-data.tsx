@@ -1,6 +1,6 @@
 "use client";
 
-import { getPageContent } from "@/app/(editor)/lib/api/content-pages";
+import { getPageContent } from "@/app/(admin)/lib/api/editor";
 import { useEffect, useState } from "react";
 import { Hero } from "../components/hero";
 

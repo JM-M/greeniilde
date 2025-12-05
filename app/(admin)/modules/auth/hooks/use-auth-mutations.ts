@@ -1,6 +1,6 @@
 "use client";
 
-import { login } from "@/app/(editor)/lib/api/auth";
+import { login } from "@/app/(admin)/lib/api/auth";
 import { useMutation, type UseMutationOptions } from "@tanstack/react-query";
 import { authMutations } from "../mutations";
 
