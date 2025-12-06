@@ -87,6 +87,7 @@ export const Editor = ({ path }: EditorProps) => {
       fieldTransforms={fieldTransforms}
       onPublish={handlePublish}
       onChange={handleAutoSave}
+      ui={{ leftSideBarVisible: false }}
       overrides={{
         header: () => {
           return (
@@ -99,6 +100,7 @@ export const Editor = ({ path }: EditorProps) => {
                 savePageContentMutation.isPending &&
                 savePageContentMutation.variables?.action === "publish"
               }
+              isDraft={data._status === "draft"}
             />
           );
         },

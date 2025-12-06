@@ -11,12 +11,14 @@ export const EditorHeader = ({
   status,
   pageId,
   pagePath,
+  isDraft,
 }: {
   onPublish: (data: any) => void;
   isPublishing: boolean;
   status: string;
   pageId: string;
   pagePath: string;
+  isDraft: boolean;
 }) => {
   return (
     <div className="flex w-screen items-center justify-between border-b p-4">
@@ -27,7 +29,11 @@ export const EditorHeader = ({
       <div className="flex w-fit items-center gap-3">
         <EditorStatus status={status} />
         <LayoutButtons />
-        <PublishButton onPublish={onPublish} isPublishing={isPublishing} />
+        <PublishButton
+          onPublish={onPublish}
+          isPublishing={isPublishing}
+          isDraft={isDraft}
+        />
         <Actions pageId={pageId} pagePath={pagePath} />
       </div>
     </div>

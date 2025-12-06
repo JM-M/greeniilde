@@ -9,9 +9,11 @@ import { GlobeIcon } from "lucide-react";
 export const PublishButton = ({
   onPublish,
   isPublishing,
+  isDraft,
 }: {
   onPublish: (data: any) => void;
   isPublishing: boolean;
+  isDraft: boolean;
 }) => {
   const { appState } = usePuck();
 
@@ -19,11 +21,12 @@ export const PublishButton = ({
 
   return (
     <Button
-      variant="outline"
+      variant={isDraft ? "default" : "outline"}
       onClick={() => {
         onPublish(appState.data);
       }}
       size={isMobile ? "icon" : "default"}
+      disabled={!isDraft}
     >
       {isPublishing ? <Spinner /> : <GlobeIcon />}
       {!isMobile && "Publish"}

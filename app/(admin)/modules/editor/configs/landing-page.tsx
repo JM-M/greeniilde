@@ -1,4 +1,3 @@
-import { Input } from "@/app/components/ui/input";
 import type { Config } from "@measured/puck";
 import { Suspense } from "react";
 import { CaseStudies } from "../../../../modules/landing/ui/components/case-studies";
@@ -7,7 +6,8 @@ import { Hero } from "../../../../modules/landing/ui/components/hero";
 import { Process } from "../../../../modules/landing/ui/components/process";
 import { Products } from "../../../../modules/landing/ui/components/products";
 import { ValueProp } from "../../../../modules/landing/ui/components/value-prop";
-import { AutoField, FieldLabel } from "../components/puck/client-wrappers";
+import { EditorImage } from "../ui/components/editor-image";
+import { EditorVideo } from "../ui/components/editor-video";
 
 type FocusArea = {
   label: string;
@@ -140,13 +140,10 @@ export const landingPageConfig: Config<Props> = {
           type: "custom",
           label: "Background Image URL",
           render: ({ name, onChange, value, field }) => (
-            <AutoField
-              field={{
-                type: "text",
-                label: field.label || name,
-              }}
+            <EditorImage
+              field={{ label: field.label || name }}
               value={value}
-              onChange={onChange}
+              onChange={(val) => onChange(val || "")}
             />
           ),
         },
@@ -267,14 +264,11 @@ export const landingPageConfig: Config<Props> = {
           type: "custom",
           label: "Video Source URL",
           render: ({ name, onChange, value, field }) => (
-            <FieldLabel label={field.label || name}>
-              <Input
-                defaultValue={value}
-                name={name}
-                onChange={(e) => onChange(e.target.value)}
-                style={{ width: "100%", padding: "4px" }}
-              />
-            </FieldLabel>
+            <EditorVideo
+              field={{ label: field.label || name }}
+              value={value}
+              onChange={(val) => onChange(val || "")}
+            />
           ),
         },
       },

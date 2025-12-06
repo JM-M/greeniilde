@@ -3,8 +3,8 @@
 import { Button } from "@/app/components/ui/button";
 import { usePuck } from "@measured/puck";
 import {
-  VscLayoutSidebarLeft,
-  VscLayoutSidebarLeftOff,
+  // VscLayoutSidebarLeft,
+  // VscLayoutSidebarLeftOff,
   VscLayoutSidebarRight,
   VscLayoutSidebarRightOff,
 } from "react-icons/vsc";
@@ -13,12 +13,12 @@ export const LayoutButtons = () => {
   const { appState, dispatch } = usePuck();
   const { leftSideBarVisible, rightSideBarVisible } = appState.ui;
 
-  const toggleLeft = () => {
-    dispatch({
-      type: "setUi",
-      ui: { leftSideBarVisible: !leftSideBarVisible },
-    });
-  };
+  // const toggleLeft = () => {
+  //   dispatch({
+  //     type: "setUi",
+  //     ui: { leftSideBarVisible: !leftSideBarVisible },
+  //   });
+  // };
 
   const toggleRight = () => {
     dispatch({
@@ -27,12 +27,12 @@ export const LayoutButtons = () => {
     });
   };
 
-  let leftPanelIcon = <VscLayoutSidebarLeft className="size-5" />;
+  // let leftPanelIcon = <VscLayoutSidebarLeft className="size-5" />;
   let rightPanelIcon = <VscLayoutSidebarRight className="size-5" />;
 
-  if (!leftSideBarVisible) {
-    leftPanelIcon = <VscLayoutSidebarLeftOff className="size-5" />;
-  }
+  // if (!leftSideBarVisible) {
+  //   leftPanelIcon = <VscLayoutSidebarLeftOff className="size-5" />;
+  // }
 
   if (!rightSideBarVisible) {
     rightPanelIcon = <VscLayoutSidebarRightOff className="size-5" />;
@@ -40,9 +40,9 @@ export const LayoutButtons = () => {
 
   return (
     <div className="flex items-center gap-1">
-      <Button variant="ghost" size="icon-sm" onClick={toggleLeft}>
+      {/* <Button variant="ghost" size="icon-sm" onClick={toggleLeft}>
         {leftPanelIcon}
-      </Button>
+      </Button> */}
       <Button variant="ghost" size="icon-sm" onClick={toggleRight}>
         {rightPanelIcon}
       </Button>
