@@ -1,6 +1,8 @@
 "use client";
 
 import {
+  createPage,
+  CreatePageInput,
   savePageContent,
   SavePageContentInput,
 } from "@/app/(admin)/lib/api/editor";
@@ -51,6 +53,50 @@ export const useSavePageContent = (
       onError: (error, variables, context) => {
         console.error("Failed to save page content:", error);
         toast.error("Failed to save page content. Please try again.");
+        options?.onError?.(error, variables, context);
+      },
+    }),
+  );
+};
+
+export const useCreatePage = (
+  options?: Omit<
+    UseMutationOptions<
+      Awaited<ReturnType<typeof createPage>>,
+      Error,
+      Parameters<typeof createPage>[0]
+    > & {
+      onSuccess: (
+        data: Awaited<ReturnType<typeof createPage>>,
+        variables?: CreatePageInput,
+        context?: unknown,
+      ) => void;
+      onError: (
+        error: Error,
+        variables?: CreatePageInput,
+        context?: unknown,
+      ) => void;
+    },
+    "mutationFn" | "mutationKey"
+  >,
+) => {
+  const queryClient = useQueryClient();
+
+  return useMutation(
+    editorMutations.createPage.mutationOptions({
+      ...options,
+      onSuccess: (data, variables, context) => {
+        // Invalidate pages list to show new page
+        queryClient.invalidateQueries({
+          queryKey: editorQueries.getPages.queryKey(),
+        });
+
+        toast.success("Page created successfully!");
+        options?.onSuccess?.(data, variables, context);
+      },
+      onError: (error, variables, context) => {
+        console.error("Failed to create page:", error);
+        toast.error("Failed to create page. Please try again.");
         options?.onError?.(error, variables, context);
       },
     }),

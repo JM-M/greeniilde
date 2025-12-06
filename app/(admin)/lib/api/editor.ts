@@ -14,7 +14,7 @@ export async function getPageContent(slug: string) {
     const headers = await getAuthHeaders();
 
     const response = await sdk.client.fetch<any>(
-      `/admin/content/pages?slug=${encodeURIComponent(slug)}`,
+      `/admin/content/pages/${slug}`,
       {
         method: "GET",
         headers,
@@ -74,6 +74,71 @@ export async function savePageContent({
     return response;
   } catch (error) {
     console.error("Error saving page content:", error);
+    throw error;
+  }
+}
+
+/**
+ * Get all content pages
+ */
+export async function getPages() {
+  try {
+    const headers = await getAuthHeaders();
+
+    const response = await sdk.client.fetch<{ pages: any[] }>(
+      `/admin/content/pages`,
+      {
+        method: "GET",
+        headers,
+        cache: "no-store",
+      },
+    );
+
+    return response.pages;
+  } catch (error) {
+    console.error("Error fetching pages:", error);
+    throw error;
+  }
+}
+
+export type CreatePageInput = {
+  title: string;
+  slug: string;
+  type: string;
+};
+
+/**
+ * Create a new content page
+ */
+export async function createPage({ title, slug, type }: CreatePageInput) {
+  try {
+    const headers = await getAuthHeaders();
+
+    // Check if authenticated before attempting save
+    if (!("authorization" in headers)) {
+      throw new Error(
+        "You must be logged in as an admin to create content. Please login at the admin portal first.",
+      );
+    }
+
+    const response = await sdk.client.fetch<any>(`/admin/content/pages`, {
+      method: "POST",
+      headers,
+      body: {
+        slug,
+        title,
+        type,
+        puckData: {
+          content: [],
+          root: { props: { title } },
+        },
+        status: "draft",
+      },
+    });
+
+    return response;
+  } catch (error) {
+    console.error("Error creating page:", error);
     throw error;
   }
 }

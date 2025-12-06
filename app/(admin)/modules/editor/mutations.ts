@@ -1,4 +1,4 @@
-import { savePageContent } from "@/app/(admin)/lib/api/editor";
+import { createPage, savePageContent } from "@/app/(admin)/lib/api/editor";
 import { createMutationAction } from "@/app/lib/query/create-query";
 
 export const editorMutations = {
@@ -6,4 +6,5 @@ export const editorMutations = {
     "editor",
     "savePageContent",
   ]),
+  createPage: createMutationAction(createPage, ["editor", "createPage"]),
 } as const;

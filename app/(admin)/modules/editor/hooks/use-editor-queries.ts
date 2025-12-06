@@ -1,6 +1,6 @@
 "use client";
 
-import { getPageContent } from "@/app/(admin)/lib/api/editor";
+import { getPageContent, getPages } from "@/app/(admin)/lib/api/editor";
 import {
   useQuery,
   useSuspenseQuery,
@@ -41,6 +41,18 @@ export const useGetPageContent = (
   >,
 ) => {
   return useQuery(editorQueries.getPageContent.queryOptions(slug, options));
+};
+
+/**
+ * Hook to get all pages
+ */
+export const useGetPages = (
+  options?: Omit<
+    UseQueryOptions<Awaited<ReturnType<typeof getPages>>, Error>,
+    "queryKey" | "queryFn"
+  >,
+) => {
+  return useQuery(editorQueries.getPages.queryOptions(undefined, options));
 };
 
 // Re-export editorQueries for convenience

@@ -44,6 +44,9 @@ export const Editor = () => {
   const configKey = (data.type as ConfigType) || "landing-page";
   const config = configs[configKey] || configs["landing-page"];
 
+  console.log("configs: ", configs);
+  console.log("config key: ", configKey);
+
   return (
     <Puck
       config={config}

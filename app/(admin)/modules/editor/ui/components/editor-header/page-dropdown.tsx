@@ -1,5 +1,3 @@
-"use client";
-
 import { Button } from "@/app/components/ui/button";
 import {
   InputGroup,
@@ -13,36 +11,35 @@ import {
 } from "@/app/components/ui/popover";
 import { cn } from "@/app/lib/utils";
 import { Check, ChevronDownIcon, Plus, Search } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
+import { useGetPages } from "../../../hooks/use-editor-queries";
+import { CreatePageDialog } from "../create-page-dialog";
 
-const pages = [
-  {
-    title: "Home Page",
-    path: "/",
-    value: "home",
-  },
-  {
-    title: "About Us",
-    path: "/about",
-    value: "about",
-  },
-  {
-    title: "Contact",
-    path: "/contact",
-    value: "contact",
-  },
-  {
-    title: "Case Study: Dutse",
-    path: "/case-studies/dutse-jigawa-residential",
-    value: "case-study-dutse",
-  },
-];
+type Page = {
+  id: string;
+  title: string;
+  slug: string;
+  type: string;
+  status: string;
+};
 
 export const PageDropdown = () => {
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState("home");
+  const [search, setSearch] = useState("");
+  const searchParams = useSearchParams();
+  const currentSlug = searchParams.get("slug") || "home";
 
-  const selectedPage = pages.find((page) => page.value === value);
+  const { data: rawPages = [] } = useGetPages();
+  const pages = rawPages as Page[];
+
+  const selectedPage = pages.find((page) => page.slug === currentSlug);
+
+  const filteredPages = pages.filter((page) =>
+    page.title.toLowerCase().includes(search.toLowerCase()),
+  );
+
+  console.log(pages);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -66,40 +63,51 @@ export const PageDropdown = () => {
             <InputGroupAddon>
               <Search className="text-muted-foreground size-4" />
             </InputGroupAddon>
-            <InputGroupInput placeholder="Search pages..." />
+            <InputGroupInput
+              placeholder="Search pages..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
           </InputGroup>
-          <Button
-            className="mb-2 w-full justify-start px-2"
-            variant="ghost"
-            size="sm"
-          >
-            <Plus className="mr-2 size-4" />
-            Create new page
-          </Button>
+          <CreatePageDialog onOpenChange={(open) => !open && setOpen(false)}>
+            <Button
+              className="mb-2 w-full justify-start px-2"
+              variant="ghost"
+              size="sm"
+            >
+              <Plus className="mr-2 size-4" />
+              Create new page
+            </Button>
+          </CreatePageDialog>
           <div className="max-h-[300px] overflow-y-auto">
-            {pages.map((page) => (
+            {filteredPages.map((page) => (
               <div
-                key={page.value}
+                key={page.id}
                 className={cn(
                   "hover:bg-accent hover:text-accent-foreground flex cursor-pointer items-center justify-between rounded-sm px-2 py-2 text-sm",
-                  value === page.value && "bg-accent",
+                  currentSlug === page.slug && "bg-accent",
                 )}
                 onClick={() => {
-                  setValue(page.value);
-                  setOpen(false);
+                  window.location.href = `/editor?slug=${page.slug}`;
                 }}
               >
                 <div className="flex flex-col gap-0.5">
                   <span className="font-medium">{page.title}</span>
                   <span className="text-muted-foreground text-xs">
-                    {page.path}
+                    {!page.slug.startsWith("/") && "/"}
+                    {page.slug}
                   </span>
                 </div>
-                {value === page.value && (
+                {currentSlug === page.slug && (
                   <Check className="text-primary h-4 w-4" />
                 )}
               </div>
             ))}
+            {filteredPages.length === 0 && (
+              <div className="text-muted-foreground py-4 text-center text-sm">
+                No pages found
+              </div>
+            )}
           </div>
         </div>
       </PopoverContent>
