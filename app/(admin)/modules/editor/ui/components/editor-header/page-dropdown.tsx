@@ -21,6 +21,7 @@ type Page = {
   title: string;
   slug: string;
   type: string;
+  path?: string;
   status: string;
 };
 
@@ -28,18 +29,23 @@ export const PageDropdown = () => {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
   const searchParams = useSearchParams();
-  const currentSlug = searchParams.get("slug") || "home";
+  const currentPath = searchParams.get("path") || "/";
 
   const { data: rawPages = [] } = useGetPages();
   const pages = rawPages as Page[];
 
-  const selectedPage = pages.find((page) => page.slug === currentSlug);
+  // Find page by path, normalizing both to ensure match
+  const selectedPage = pages.find((page) => {
+    const pagePath =
+      page.path || (page.slug === "home" ? "/" : `/${page.slug}`);
+    return pagePath === currentPath;
+  });
 
   const filteredPages = pages.filter((page) =>
     page.title.toLowerCase().includes(search.toLowerCase()),
   );
 
-  console.log(pages);
+  // console.log(pages);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -80,29 +86,32 @@ export const PageDropdown = () => {
             </Button>
           </CreatePageDialog>
           <div className="max-h-[300px] overflow-y-auto">
-            {filteredPages.map((page) => (
-              <div
-                key={page.id}
-                className={cn(
-                  "hover:bg-accent hover:text-accent-foreground flex cursor-pointer items-center justify-between rounded-sm px-2 py-2 text-sm",
-                  currentSlug === page.slug && "bg-accent",
-                )}
-                onClick={() => {
-                  window.location.href = `/editor?slug=${page.slug}`;
-                }}
-              >
-                <div className="flex flex-col gap-0.5">
-                  <span className="font-medium">{page.title}</span>
-                  <span className="text-muted-foreground text-xs">
-                    {!page.slug.startsWith("/") && "/"}
-                    {page.slug}
-                  </span>
+            {filteredPages.map((page) => {
+              const pagePath =
+                page.path || (page.slug === "home" ? "/" : `/${page.slug}`);
+              const isSelected = currentPath === pagePath;
+
+              return (
+                <div
+                  key={page.id}
+                  className={cn(
+                    "hover:bg-accent hover:text-accent-foreground flex cursor-pointer items-center justify-between rounded-sm px-2 py-2 text-sm",
+                    isSelected && "bg-accent",
+                  )}
+                  onClick={() => {
+                    window.location.href = `/editor?path=${pagePath}`;
+                  }}
+                >
+                  <div className="flex flex-col gap-0.5">
+                    <span className="font-medium">{page.title}</span>
+                    <span className="text-muted-foreground text-xs">
+                      {pagePath}
+                    </span>
+                  </div>
+                  {isSelected && <Check className="text-primary h-4 w-4" />}
                 </div>
-                {currentSlug === page.slug && (
-                  <Check className="text-primary h-4 w-4" />
-                )}
-              </div>
-            ))}
+              );
+            })}
             {filteredPages.length === 0 && (
               <div className="text-muted-foreground py-4 text-center text-sm">
                 No pages found

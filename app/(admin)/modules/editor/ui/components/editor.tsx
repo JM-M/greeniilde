@@ -7,6 +7,7 @@ import { useSavePageContent } from "../../hooks/use-editor-mutations";
 import { useSuspenseGetPageContent } from "../../hooks/use-editor-queries";
 import { EditableText } from "./editable-text";
 import { EditorHeader } from "./editor-header";
+import { EditorHome } from "./editor-home";
 
 const fieldTransforms = {
   text: ({ value, propName, componentId }: any) => (
@@ -17,14 +18,22 @@ const fieldTransforms = {
   ),
 };
 
-export const Editor = () => {
-  const { data } = useSuspenseGetPageContent("home");
+interface EditorProps {
+  path?: string;
+}
+
+export const Editor = ({ path }: EditorProps) => {
+  const { data } = useSuspenseGetPageContent(path || "");
   const savePageContentMutation = useSavePageContent();
+
+  if (!path) {
+    return <EditorHome />;
+  }
 
   const handlePublish = (puckData: any) => {
     // savePageContentMutation.mutate({
-    //   slug: "home",
-    //   title: "Home Page",
+    //   slug: data.slug,
+    //   title: data.title,
     //   puckData,
     //   status: "published",
     // });
@@ -34,8 +43,9 @@ export const Editor = () => {
     console.log("saving...");
     // Saving as draft seems to fuck things up
     savePageContentMutation.mutate({
-      slug: "home",
-      title: "Home Page",
+      slug: data.slug,
+      title: data.title,
+      path: data.path || path, // Use path from data or fallback to search param
       puckData,
       status: "published",
     });
@@ -43,9 +53,6 @@ export const Editor = () => {
 
   const configKey = (data.type as ConfigType) || "landing-page";
   const config = configs[configKey] || configs["landing-page"];
-
-  console.log("configs: ", configs);
-  console.log("config key: ", configKey);
 
   return (
     <Puck

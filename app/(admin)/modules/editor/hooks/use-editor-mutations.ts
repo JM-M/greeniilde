@@ -44,7 +44,7 @@ export const useSavePageContent = (
       onSuccess: (data, variables, context) => {
         // Invalidate page content to refetch with updated data
         queryClient.invalidateQueries({
-          queryKey: editorQueries.getPageContent.queryKey(variables.slug),
+          queryKey: editorQueries.getPageContent.queryKey(variables.path),
         });
 
         toast.success("Page content saved successfully!");

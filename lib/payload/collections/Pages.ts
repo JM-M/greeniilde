@@ -44,6 +44,31 @@ export const Pages: CollectionConfig = {
       },
     },
     {
+      name: "path",
+      type: "text",
+      label: "Page Path",
+      required: true,
+      unique: true,
+      admin: {
+        description:
+          "Full URL path (e.g., '/about', '/case-studies/project-a')",
+      },
+    },
+    {
+      name: "type",
+      type: "select",
+      label: "Page Type",
+      options: [
+        { label: "Landing Page", value: "landing-page" },
+        { label: "Case Study", value: "case-study" },
+      ],
+      defaultValue: "landing-page",
+      required: true,
+      admin: {
+        description: "Type of page determines the editor configuration",
+      },
+    },
+    {
       name: "puckData",
       type: "json",
       label: "Puck Editor Data",

@@ -17,14 +17,14 @@ import { editorQueries } from "../queries";
  * @param options - React Query options
  */
 export const useSuspenseGetPageContent = (
-  slug: string,
+  path: string,
   options?: Omit<
     UseSuspenseQueryOptions<Awaited<ReturnType<typeof getPageContent>>, Error>,
     "queryKey" | "queryFn"
   >,
 ) => {
   return useSuspenseQuery(
-    editorQueries.getPageContentNonSuspense.queryOptions(slug, options),
+    editorQueries.getPageContentNonSuspense.queryOptions(path, options),
   );
 };
 
@@ -34,13 +34,13 @@ export const useSuspenseGetPageContent = (
  * @param options - React Query options
  */
 export const useGetPageContent = (
-  slug: string,
+  path: string,
   options?: Omit<
     UseQueryOptions<Awaited<ReturnType<typeof getPageContent>>, Error>,
     "queryKey" | "queryFn"
   >,
 ) => {
-  return useQuery(editorQueries.getPageContent.queryOptions(slug, options));
+  return useQuery(editorQueries.getPageContent.queryOptions(path, options));
 };
 
 /**

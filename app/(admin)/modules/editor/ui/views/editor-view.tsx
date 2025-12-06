@@ -4,16 +4,22 @@ import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { Suspense } from "react";
 import { Editor } from "../components/editor";
 
-export const EditorView = async () => {
+export const EditorView = async ({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined };
+}) => {
   const queryClient = getQueryClient();
 
-  // Prefetch home page content
-  queryClient.prefetchQuery(editorQueries.getPageContent.queryOptions("home"));
+  const path = searchParams.path as string | undefined;
+
+  // Prefetch page content
+  queryClient.prefetchQuery(editorQueries.getPageContent.queryOptions(path));
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <Suspense fallback={<div>Loading editor...</div>}>
-        <Editor />
+        <Editor path={path} />
       </Suspense>
     </HydrationBoundary>
   );

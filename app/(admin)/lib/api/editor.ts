@@ -3,18 +3,27 @@
 import { sdk } from "@/app/lib/medusa/config";
 import { getAuthHeaders } from "./auth";
 
-// TODO: Implement proper types
+import { Page } from "@/types/page";
+
+// ...
 
 /**
  * Get content page data by slug
  * This is used to load page content for display and editing
  */
-export async function getPageContent(slug: string) {
+export async function getPageContent(path?: string) {
+  if (!path) {
+    return null;
+  }
+
   try {
     const headers = await getAuthHeaders();
 
-    const response = await sdk.client.fetch<any>(
-      `/admin/content/pages/${slug}`,
+    // Remove leading slash if present to avoid double slashes in URL
+    // const cleanPath = path.startsWith("/") ? path.slice(1) : path;
+
+    const response = await sdk.client.fetch<Page>(
+      `/admin/content/pages/by-path?path=${encodeURIComponent(path)}`,
       {
         method: "GET",
         headers,
@@ -33,12 +42,10 @@ export async function getPageContent(slug: string) {
   }
 }
 
-export type SavePageContentInput = {
-  slug: string;
-  title: string;
-  puckData: any;
-  status: "draft" | "published";
-};
+export type SavePageContentInput = Pick<
+  Page,
+  "slug" | "title" | "path" | "puckData" | "status"
+>;
 
 /**
  * Save or update content page
@@ -47,6 +54,7 @@ export type SavePageContentInput = {
 export async function savePageContent({
   slug,
   title,
+  path,
   puckData,
   status,
 }: SavePageContentInput) {
@@ -60,12 +68,13 @@ export async function savePageContent({
       );
     }
 
-    const response = await sdk.client.fetch<any>(`/admin/content/pages`, {
+    const response = await sdk.client.fetch<Page>(`/admin/content/pages`, {
       method: "POST",
       headers,
       body: {
         slug,
         title,
+        path,
         puckData,
         status,
       },
@@ -85,7 +94,7 @@ export async function getPages() {
   try {
     const headers = await getAuthHeaders();
 
-    const response = await sdk.client.fetch<{ pages: any[] }>(
+    const response = await sdk.client.fetch<{ pages: Page[] }>(
       `/admin/content/pages`,
       {
         method: "GET",
@@ -101,16 +110,14 @@ export async function getPages() {
   }
 }
 
-export type CreatePageInput = {
-  title: string;
-  slug: string;
-  type: string;
+export type CreatePageInput = Pick<Page, "title" | "slug" | "type"> & {
+  path?: string;
 };
 
 /**
  * Create a new content page
  */
-export async function createPage({ title, slug, type }: CreatePageInput) {
+export async function createPage({ title, slug, type, path }: CreatePageInput) {
   try {
     const headers = await getAuthHeaders();
 
@@ -121,13 +128,14 @@ export async function createPage({ title, slug, type }: CreatePageInput) {
       );
     }
 
-    const response = await sdk.client.fetch<any>(`/admin/content/pages`, {
+    const response = await sdk.client.fetch<Page>(`/admin/content/pages`, {
       method: "POST",
       headers,
       body: {
         slug,
         title,
         type,
+        path,
         puckData: {
           content: [],
           root: { props: { title } },
