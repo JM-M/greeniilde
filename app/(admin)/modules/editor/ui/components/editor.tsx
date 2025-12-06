@@ -26,8 +26,6 @@ export const Editor = ({ path }: EditorProps) => {
   const { data } = useSuspenseGetPageContent(path || "");
   const savePageContentMutation = useSavePageContent();
 
-  console.log(path, data);
-
   if (!path) {
     return <EditorHome />;
   }

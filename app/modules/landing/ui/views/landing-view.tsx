@@ -1,16 +1,13 @@
+import { getPageContent } from "@/app/(admin)/lib/api/editor";
+import { landingPageConfig } from "@/app/(admin)/modules/editor/configs/landing-page";
 import { caseStudyQueries } from "@/app/lib/hooks/use-case-study-queries";
 import { getQueryClient } from "@/app/lib/query/get-query-client";
 import { productQueries } from "@/app/modules/products/queries";
+import { Render } from "@measured/puck";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
-import { Suspense } from "react";
+import { headers } from "next/headers";
 import { loadLandingProductsParams } from "../../params";
 import { getMeilisearchFilterFromLandingProductsParams } from "../../utils";
-import { CaseStudies } from "../components/case-studies";
-import { FAQsWithPuckData } from "./faqs-with-puck-data";
-import { HeroWithPuckData } from "./hero-with-puck-data";
-import { ProcessWithPuckData } from "./process-with-puck-data";
-import { Products } from "../components/products";
-import { ValuePropWithPuckData } from "./value-prop-with-puck-data";
 
 interface LandingViewProps {
   landingProductsParams: Awaited<ReturnType<typeof loadLandingProductsParams>>;
@@ -20,6 +17,10 @@ export const LandingView = async ({
   landingProductsParams,
 }: LandingViewProps) => {
   const queryClient = getQueryClient();
+  const headersList = await headers();
+  const pathname = headersList.get("x-pathname");
+
+  const pageContent = await getPageContent(pathname);
 
   queryClient.prefetchQuery(
     productQueries.getProductsFromMeilisearch.queryOptions({
@@ -33,18 +34,7 @@ export const LandingView = async ({
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <div>
-        <HeroWithPuckData />
-        <ValuePropWithPuckData />
-        <Suspense fallback={<div>Loading case studies...</div>}>
-          <CaseStudies />
-        </Suspense>
-        <Suspense fallback={<div>Loading products...</div>}>
-          <Products />
-        </Suspense>
-        <ProcessWithPuckData />
-        <FAQsWithPuckData />
-      </div>
+      <Render config={landingPageConfig} data={pageContent?.puckData || {}} />
     </HydrationBoundary>
   );
 };

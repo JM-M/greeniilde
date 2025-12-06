@@ -15,8 +15,6 @@ import { AuthModalProvider } from "../providers/auth-modal-provider";
 const PagesLayout = async ({ children }: { children: React.ReactNode }) => {
   const queryClient = getQueryClient();
 
-  // TODO: Consider having a suspense boundary in here.
-
   // TODO: Create and use a server action (you may have to create a new route) that gets all categories (within a reasonable limit).
   queryClient.prefetchQuery(categoryQueries.listCategories.queryOptions({}));
 

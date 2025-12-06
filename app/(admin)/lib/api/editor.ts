@@ -11,7 +11,7 @@ import { Page } from "@/types/page";
  * Get content page data by slug
  * This is used to load page content for display and editing
  */
-export async function getPageContent(path?: string) {
+export async function getPageContent(path?: string | null) {
   if (!path) {
     return null;
   }

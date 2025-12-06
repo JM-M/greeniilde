@@ -17,7 +17,7 @@ const getPagesQuery = createQuery(getPages, ["editor", "getPages"]);
 // Export query utilities for easy access to query keys
 // Usage: editorQueries.getPageContent.queryKey(path)
 export const editorQueries = {
+  getSuspensePageContent: getSuspensePageContentQuery,
   getPageContent: getPageContentQuery,
-  getPageContentNonSuspense: getSuspensePageContentQuery,
   getPages: getPagesQuery,
 } as const;

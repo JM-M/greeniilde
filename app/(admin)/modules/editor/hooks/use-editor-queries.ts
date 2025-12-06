@@ -24,7 +24,7 @@ export const useSuspenseGetPageContent = (
   >,
 ) => {
   return useSuspenseQuery(
-    editorQueries.getPageContentNonSuspense.queryOptions(path, options),
+    editorQueries.getSuspensePageContent.queryOptions(path, options),
   );
 };
 
