@@ -22,6 +22,8 @@ export const EditorHome = () => {
     page.title.toLowerCase().includes(search.toLowerCase()),
   );
 
+  console.log(data);
+
   return (
     <div className="flex h-full min-h-screen w-full flex-col items-center justify-center p-8">
       <div className="w-full max-w-2xl space-y-8">
@@ -68,7 +70,7 @@ export const EditorHome = () => {
               <Spinner />
             </div>
           )}
-          {filteredPages.length === 0 && (
+          {!isLoadingPages && filteredPages.length === 0 && (
             <div className="text-muted-foreground col-span-full py-8 text-center">
               No pages found
             </div>

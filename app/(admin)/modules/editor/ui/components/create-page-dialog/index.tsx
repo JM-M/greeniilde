@@ -6,7 +6,7 @@ import {
   DialogTrigger,
 } from "@/app/components/ui/dialog";
 import { useState } from "react";
-import { CreatePageForm } from "./create-page-form";
+import { CreatePageForm } from "./form";
 
 type Props = {
   children: React.ReactNode;

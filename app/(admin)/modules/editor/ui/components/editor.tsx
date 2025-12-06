@@ -26,8 +26,14 @@ export const Editor = ({ path }: EditorProps) => {
   const { data } = useSuspenseGetPageContent(path || "");
   const savePageContentMutation = useSavePageContent();
 
+  console.log(path, data);
+
   if (!path) {
     return <EditorHome />;
+  }
+
+  if (!data) {
+    return "Unable to fetch page data";
   }
 
   const handlePublish = (puckData: any) => {
@@ -51,8 +57,8 @@ export const Editor = ({ path }: EditorProps) => {
     });
   }, 1000);
 
-  const configKey = (data.type as ConfigType) || "landing-page";
-  const config = configs[configKey] || configs["landing-page"];
+  const configKey = data.type as ConfigType;
+  const config = configs[configKey];
 
   return (
     <Puck

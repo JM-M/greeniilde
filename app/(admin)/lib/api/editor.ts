@@ -19,8 +19,7 @@ export async function getPageContent(path?: string) {
   try {
     const headers = await getAuthHeaders();
 
-    // Remove leading slash if present to avoid double slashes in URL
-    // const cleanPath = path.startsWith("/") ? path.slice(1) : path;
+    console.log("Getting page content with path: ", path);
 
     const response = await sdk.client.fetch<Page>(
       `/admin/content/pages/by-path?path=${encodeURIComponent(path)}`,
@@ -30,6 +29,8 @@ export async function getPageContent(path?: string) {
         cache: "no-store", // Always fetch fresh data
       },
     );
+
+    console.log("response from get page content: ", response);
 
     return response;
   } catch (error: any) {
@@ -147,6 +148,33 @@ export async function createPage({ title, slug, type, path }: CreatePageInput) {
     return response;
   } catch (error) {
     console.error("Error creating page:", error);
+    throw error;
+  }
+}
+
+/**
+ * Delete a content page
+ */
+export async function deletePage(id: string) {
+  try {
+    const headers = await getAuthHeaders();
+
+    // Check if authenticated
+    if (!("authorization" in headers)) {
+      throw new Error(
+        "You must be logged in as an admin to delete content. Please login at the admin portal first.",
+      );
+    }
+
+    const response = await sdk.client.fetch(`/admin/content/pages`, {
+      method: "DELETE",
+      headers,
+      body: { id },
+    });
+
+    return response;
+  } catch (error) {
+    console.error("Error deleting page:", error);
     throw error;
   }
 }

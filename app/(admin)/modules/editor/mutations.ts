@@ -1,4 +1,8 @@
-import { createPage, savePageContent } from "@/app/(admin)/lib/api/editor";
+import {
+  createPage,
+  deletePage,
+  savePageContent,
+} from "@/app/(admin)/lib/api/editor";
 import { createMutationAction } from "@/app/lib/query/create-query";
 
 export const editorMutations = {
@@ -7,4 +11,5 @@ export const editorMutations = {
     "savePageContent",
   ]),
   createPage: createMutationAction(createPage, ["editor", "createPage"]),
+  deletePage: createMutationAction(deletePage, ["editor", "deletePage"]),
 } as const;

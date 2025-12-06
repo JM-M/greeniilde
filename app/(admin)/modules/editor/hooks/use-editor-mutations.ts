@@ -3,6 +3,7 @@
 import {
   createPage,
   CreatePageInput,
+  deletePage,
   savePageContent,
   SavePageContentInput,
 } from "@/app/(admin)/lib/api/editor";
@@ -103,5 +104,42 @@ export const useCreatePage = (
   );
 };
 
-// Re-export editorMutations for convenience
-export { editorMutations } from "../mutations";
+export const useDeletePage = (
+  options?: Omit<
+    UseMutationOptions<
+      Awaited<ReturnType<typeof deletePage>>,
+      Error,
+      string
+    > & {
+      onSuccess: (
+        data: Awaited<ReturnType<typeof deletePage>>,
+        variables?: string,
+        context?: unknown,
+      ) => void;
+      onError?: (error: Error, variables?: string, context?: unknown) => void;
+    },
+    "mutationFn" | "mutationKey"
+  >,
+) => {
+  const queryClient = useQueryClient();
+
+  return useMutation(
+    editorMutations.deletePage.mutationOptions({
+      ...options,
+      onSuccess: (data, variables, context) => {
+        // Invalidate pages list
+        queryClient.invalidateQueries({
+          queryKey: editorQueries.getPages.queryKey(),
+        });
+
+        toast.success("Page deleted successfully!");
+        options?.onSuccess?.(data, variables, context);
+      },
+      onError: (error, variables, context) => {
+        console.error("Failed to delete page:", error);
+        toast.error("Failed to delete page. Please try again.");
+        options?.onError?.(error, variables, context);
+      },
+    }),
+  );
+};
