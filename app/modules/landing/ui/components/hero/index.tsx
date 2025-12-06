@@ -33,8 +33,6 @@ export const Hero = ({
   metrics?: HeroMetric[];
   backgroundImage?: string;
 } = {}) => {
-  console.log("title: ", title);
-  console.log("background image: ", backgroundImage);
   return (
     <header
       id="hero"

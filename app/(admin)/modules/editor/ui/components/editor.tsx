@@ -35,28 +35,50 @@ export const Editor = ({ path }: EditorProps) => {
   }
 
   const handlePublish = (puckData: any) => {
-    // savePageContentMutation.mutate({
-    //   slug: data.slug,
-    //   title: data.title,
-    //   puckData,
-    //   status: "published",
-    // });
+    savePageContentMutation.mutate({
+      slug: data.slug,
+      title: data.title,
+      path: data.path || path,
+      puckData,
+      action: "publish",
+    });
   };
 
   const handleAutoSave = useDebouncedCallback((puckData: any) => {
     console.log("saving...");
-    // Saving as draft seems to fuck things up
     savePageContentMutation.mutate({
       slug: data.slug,
       title: data.title,
       path: data.path || path, // Use path from data or fallback to search param
       puckData,
-      status: "published",
+      action: "draft",
     });
   }, 1000);
 
   const configKey = data.type as ConfigType;
   const config = configs[configKey];
+
+  const getStatus = () => {
+    if (
+      savePageContentMutation.isPending &&
+      savePageContentMutation.variables?.action === "publish"
+    ) {
+      return "Publishing...";
+    }
+
+    if (
+      savePageContentMutation.isPending &&
+      savePageContentMutation.variables?.action === "draft"
+    ) {
+      return "Saving draft...";
+    }
+
+    if (data._status === "published") {
+      return "Published";
+    }
+
+    return "Draft saved";
+  };
 
   return (
     <Puck
@@ -70,7 +92,13 @@ export const Editor = ({ path }: EditorProps) => {
           return (
             <EditorHeader
               onPublish={handlePublish}
-              isPublishing={savePageContentMutation.isPending}
+              status={getStatus()}
+              pageId={String(data.id)}
+              pagePath={data.path}
+              isPublishing={
+                savePageContentMutation.isPending &&
+                savePageContentMutation.variables?.action === "publish"
+              }
             />
           );
         },

@@ -24,7 +24,10 @@ export const useSuspenseGetPageContent = (
   >,
 ) => {
   return useSuspenseQuery(
-    editorQueries.getSuspensePageContent.queryOptions(path, options),
+    editorQueries.getSuspensePageContent.queryOptions(
+      { path, isDraft: true },
+      options,
+    ),
   );
 };
 
@@ -40,7 +43,9 @@ export const useGetPageContent = (
     "queryKey" | "queryFn"
   >,
 ) => {
-  return useQuery(editorQueries.getPageContent.queryOptions(path, options));
+  return useQuery(
+    editorQueries.getPageContent.queryOptions({ path, isDraft: true }, options),
+  );
 };
 
 /**

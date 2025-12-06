@@ -11,7 +11,13 @@ import { Page } from "@/types/page";
  * Get content page data by slug
  * This is used to load page content for display and editing
  */
-export async function getPageContent(path?: string | null) {
+export async function getPageContent({
+  path,
+  isDraft = false,
+}: {
+  path?: string | null;
+  isDraft?: boolean;
+}) {
   if (!path) {
     return null;
   }
@@ -22,7 +28,7 @@ export async function getPageContent(path?: string | null) {
     console.log("Getting page content with path: ", path);
 
     const response = await sdk.client.fetch<Page>(
-      `/admin/content/pages/by-path?path=${encodeURIComponent(path)}`,
+      `/admin/content/pages/by-path?path=${encodeURIComponent(path)}&draft=${isDraft}`,
       {
         method: "GET",
         headers,
@@ -45,8 +51,10 @@ export async function getPageContent(path?: string | null) {
 
 export type SavePageContentInput = Pick<
   Page,
-  "slug" | "title" | "path" | "puckData" | "status"
->;
+  "slug" | "title" | "path" | "puckData"
+> & {
+  action: "draft" | "publish";
+};
 
 /**
  * Save or update content page
@@ -57,7 +65,7 @@ export async function savePageContent({
   title,
   path,
   puckData,
-  status,
+  action,
 }: SavePageContentInput) {
   try {
     const headers = await getAuthHeaders();
@@ -77,7 +85,7 @@ export async function savePageContent({
         title,
         path,
         puckData,
-        status,
+        action,
       },
     });
 
@@ -141,7 +149,7 @@ export async function createPage({ title, slug, type, path }: CreatePageInput) {
           content: [],
           root: { props: { title } },
         },
-        status: "draft",
+        action: "draft",
       },
     });
 
@@ -175,6 +183,35 @@ export async function deletePage(id: string) {
     return response;
   } catch (error) {
     console.error("Error deleting page:", error);
+    throw error;
+  }
+}
+
+/**
+ * Discard draft changes and revert to published version
+ */
+export async function discardDraft(id: string) {
+  try {
+    const headers = await getAuthHeaders();
+
+    // Check if authenticated
+    if (!("authorization" in headers)) {
+      throw new Error(
+        "You must be logged in as an admin to discard drafts. Please login at the admin portal first.",
+      );
+    }
+
+    const response = await sdk.client.fetch(
+      `/admin/content/pages/${id}/draft`,
+      {
+        method: "DELETE",
+        headers,
+      },
+    );
+
+    return response;
+  } catch (error) {
+    console.error("Error discarding draft:", error);
     throw error;
   }
 }

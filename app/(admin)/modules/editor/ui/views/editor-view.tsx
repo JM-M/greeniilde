@@ -14,7 +14,9 @@ export const EditorView = async ({
   const path = searchParams.path as string | undefined;
 
   // Prefetch page content
-  queryClient.prefetchQuery(editorQueries.getPageContent.queryOptions(path));
+  queryClient.prefetchQuery(
+    editorQueries.getPageContent.queryOptions({ path, isDraft: true }),
+  );
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

@@ -9,4 +9,5 @@ export interface Page {
   publishedAt?: string;
   createdAt: string;
   updatedAt: string;
+  _status?: "draft" | "published";
 }

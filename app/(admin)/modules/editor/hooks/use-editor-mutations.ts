@@ -4,6 +4,7 @@ import {
   createPage,
   CreatePageInput,
   deletePage,
+  discardDraft,
   savePageContent,
   SavePageContentInput,
 } from "@/app/(admin)/lib/api/editor";
@@ -21,17 +22,18 @@ export const useSavePageContent = (
     UseMutationOptions<
       Awaited<ReturnType<typeof savePageContent>>,
       Error,
-      Parameters<typeof savePageContent>[0]
+      Parameters<typeof savePageContent>[0],
+      { previousPage: unknown }
     > & {
       onSuccess: (
         data: Awaited<ReturnType<typeof savePageContent>>,
         variables?: SavePageContentInput,
-        context?: unknown,
+        context?: { previousPage: unknown },
       ) => void;
       onError: (
         error: Error,
         variables?: SavePageContentInput,
-        context?: unknown,
+        context?: { previousPage: unknown },
       ) => void;
     },
     "mutationFn" | "mutationKey"
@@ -42,19 +44,80 @@ export const useSavePageContent = (
   return useMutation(
     editorMutations.savePageContent.mutationOptions({
       ...options,
-      onSuccess: (data, variables, context) => {
-        // Invalidate page content to refetch with updated data
-        queryClient.invalidateQueries({
-          queryKey: editorQueries.getPageContent.queryKey(variables.path),
+      onMutate: async (variables) => {
+        // Cancel any outgoing refetches
+        // (so they don't overwrite our optimistic update)
+        await queryClient.cancelQueries({
+          queryKey: editorQueries.getPageContent.queryKey({
+            path: variables.path,
+            isDraft: true,
+          }),
         });
 
+        // Snapshot the previous value
+        const previousPage = queryClient.getQueryData(
+          editorQueries.getPageContent.queryKey({
+            path: variables.path,
+            isDraft: true,
+          }),
+        );
+
+        // Optimistically update to the new value
+        queryClient.setQueryData(
+          editorQueries.getPageContent.queryKey({
+            path: variables.path,
+            isDraft: true,
+          }),
+          (old: any) => {
+            if (!old) return old;
+            return {
+              ...old,
+              ...variables,
+              _status: variables.action === "publish" ? "published" : "draft",
+            };
+          },
+        );
+
+        // Return a context object with the snapshotted value
+        return { previousPage };
+      },
+      onSuccess: (data, variables, context) => {
         toast.success("Page content saved successfully!");
-        options?.onSuccess?.(data, variables, context);
+        options?.onSuccess?.(
+          data,
+          variables,
+          context as { previousPage: unknown },
+        );
       },
       onError: (error, variables, context) => {
         console.error("Failed to save page content:", error);
         toast.error("Failed to save page content. Please try again.");
-        options?.onError?.(error, variables, context);
+
+        // If the mutation fails, use the context returned from onMutate to roll back
+        if ((context as any)?.previousPage) {
+          queryClient.setQueryData(
+            editorQueries.getPageContent.queryKey({
+              path: variables.path,
+              isDraft: true,
+            }),
+            (context as any).previousPage,
+          );
+        }
+
+        options?.onError?.(
+          error,
+          variables,
+          context as { previousPage: unknown },
+        );
+      },
+      onSettled: (data, error, variables) => {
+        // Always refetch after error or success:
+        queryClient.invalidateQueries({
+          queryKey: editorQueries.getPageContent.queryKey({
+            path: variables.path,
+            isDraft: true,
+          }),
+        });
       },
     }),
   );
@@ -142,4 +205,53 @@ export const useDeletePage = (
       },
     }),
   );
+};
+
+export type DiscardDraftInput = {
+  id: string;
+  path: string;
+};
+
+export const useDiscardDraft = (
+  options?: Omit<
+    UseMutationOptions<
+      Awaited<ReturnType<typeof discardDraft>>,
+      Error,
+      DiscardDraftInput
+    > & {
+      onSuccess: (
+        data: any,
+        variables?: DiscardDraftInput,
+        context?: unknown,
+      ) => void;
+      onError?: (
+        error: Error,
+        variables?: DiscardDraftInput,
+        context?: unknown,
+      ) => void;
+    },
+    "mutationFn" | "mutationKey"
+  >,
+) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationKey: editorMutations.discardDraft.mutationKey(),
+    mutationFn: async (input: DiscardDraftInput) => {
+      return await discardDraft(input.id);
+    },
+    onSuccess: (data, variables, context) => {
+      toast.success("Draft discarded successfully!");
+      options?.onSuccess?.(data, variables, context);
+
+      // TODO: Dont reload, use optimistic update and qeury invalidation instead.
+      // Reload the page to fetch fresh data from the backend
+      window.location.reload();
+    },
+    onError: (error, variables, context) => {
+      console.error("Failed to discard draft:", error);
+      toast.error("Failed to discard draft. Please try again.");
+      options?.onError?.(error, variables, context);
+    },
+  });
 };

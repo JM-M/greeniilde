@@ -20,7 +20,7 @@ export const LandingView = async ({
   const headersList = await headers();
   const pathname = headersList.get("x-pathname");
 
-  const pageContent = await getPageContent(pathname);
+  const pageContent = await getPageContent({ path: pathname });
 
   queryClient.prefetchQuery(
     productQueries.getProductsFromMeilisearch.queryOptions({
