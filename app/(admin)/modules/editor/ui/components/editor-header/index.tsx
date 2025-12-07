@@ -1,6 +1,7 @@
 import { Actions } from "./actions";
 import { EditorStatus } from "./editor-status";
 import { HistoryButtons } from "./history-buttons";
+import { HomeButton } from "./home-button";
 import { LayoutButtons } from "./layout-buttons";
 import { PageDropdown } from "./page-dropdown";
 import { PublishButton } from "./publish-button";
@@ -22,7 +23,10 @@ export const EditorHeader = ({
 }) => {
   return (
     <div className="flex w-screen items-center justify-between border-b p-4">
-      <HistoryButtons />
+      <div className="flex w-fit items-center gap-3">
+        <HomeButton />
+        <HistoryButtons />
+      </div>
       <div className="mx-auto flex w-fit items-center gap-3">
         <PageDropdown />
       </div>

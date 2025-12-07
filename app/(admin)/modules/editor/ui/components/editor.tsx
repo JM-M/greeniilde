@@ -51,13 +51,21 @@ interface EditorProps {
   path?: string;
 }
 
+// Main Editor component - handles the path check before any data fetching
 export const Editor = ({ path }: EditorProps) => {
-  const { data } = useSuspenseGetPageContent(path || "");
-  const savePageContentMutation = useSavePageContent();
-
+  // If no path, show the home view without fetching page data
   if (!path) {
     return <EditorHome />;
   }
+
+  // When we have a path, render the data-fetching editor
+  return <EditorWithData path={path} />;
+};
+
+// Inner component that fetches data - only rendered when path is defined
+const EditorWithData = ({ path }: { path: string }) => {
+  const { data } = useSuspenseGetPageContent(path);
+  const savePageContentMutation = useSavePageContent();
 
   if (!data) {
     return "Unable to fetch page data";
