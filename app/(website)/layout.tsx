@@ -12,6 +12,10 @@ import { storeQueries } from "../modules/store/queries";
 import { terminalQueries } from "../modules/terminal/queries";
 import { AuthModalProvider } from "../providers/auth-modal-provider";
 
+// Force dynamic rendering for all website pages to avoid prerender issues with queries
+// TODO: Remove this once we fix the issue
+export const dynamic = "force-dynamic";
+
 const PagesLayout = async ({ children }: { children: React.ReactNode }) => {
   const queryClient = getQueryClient();
 
