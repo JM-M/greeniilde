@@ -75,6 +75,7 @@ const EditorWithData = ({ path }: { path: string }) => {
     savePageContentMutation.mutate({
       slug: data.slug,
       title: data.title,
+      type: data.type,
       path: data.path || path,
       puckData,
       action: "publish",
@@ -82,10 +83,10 @@ const EditorWithData = ({ path }: { path: string }) => {
   };
 
   const handleAutoSave = useDebouncedCallback((puckData: any) => {
-    console.log("saving...");
     savePageContentMutation.mutate({
       slug: data.slug,
       title: data.title,
+      type: data.type,
       path: data.path || path, // Use path from data or fallback to search param
       puckData,
       action: "draft",

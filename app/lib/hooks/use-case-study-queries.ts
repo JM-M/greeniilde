@@ -1,4 +1,4 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { getCaseStudy, listCaseStudies } from "../api/case-studies";
 
 export const caseStudyQueries = {
@@ -15,6 +15,16 @@ export const caseStudyQueries = {
   }),
 };
 
+// Non-suspense hooks
+export const useCaseStudies = () => {
+  return useQuery(caseStudyQueries.list());
+};
+
+export const useCaseStudy = (id: string) => {
+  return useQuery(caseStudyQueries.detail(id));
+};
+
+// Suspense hooks
 export const useSuspenseCaseStudies = () => {
   return useSuspenseQuery(caseStudyQueries.list());
 };

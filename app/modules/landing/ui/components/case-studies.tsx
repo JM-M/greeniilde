@@ -6,6 +6,8 @@ import { CaseStudiesCarousel } from "@/app/modules/case-studies/ui/components/ca
 export const CaseStudies = () => {
   const { data: caseStudies } = useSuspenseCaseStudies();
 
+  console.log(caseStudies);
+
   return (
     <section
       id="case-studies"

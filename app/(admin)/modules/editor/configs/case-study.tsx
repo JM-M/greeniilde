@@ -1,34 +1,44 @@
-import { Config } from "@measured/puck";
+import {
+  CaseStudyContentSection,
+  CaseStudyHeaderSection,
+  CaseStudyHeroSection,
+  CaseStudyRelatedSection,
+} from "@/app/modules/case-studies/ui/components/sections/details-view";
+import type { Config } from "@measured/puck";
+import { EditorImage } from "../ui/components/editor-image";
 
 type Props = {
-  CaseStudyHeader: {
-    title: string;
+  CaseStudyHeaderSection: {
+    name: string;
     location: string;
     date: string;
     type: "Residential" | "Commercial";
   };
-  CaseStudyGallery: {
-    images: { url: string }[];
+  CaseStudyHeroSection: {
+    images: string[];
+    location: string;
+    projectType: string;
+    dateCompleted: string;
+    technologies: string[];
   };
-  ProjectDetails: {
-    technologies: { name: string }[];
-    systemSize: string;
-    batterySize: string;
+  CaseStudyContentSection: {
+    overview: string;
   };
-  Overview: {
-    content: string;
+  CaseStudyRelatedSection: {
+    currentId: string;
   };
 };
 
 export const caseStudyConfig: Config<Props> = {
   components: {
-    CaseStudyHeader: {
+    CaseStudyHeaderSection: {
       fields: {
-        title: { type: "text" },
-        location: { type: "text" },
-        date: { type: "text" },
+        name: { type: "text", label: "Case Study Name" },
+        location: { type: "text", label: "Location" },
+        date: { type: "text", label: "Date Completed" },
         type: {
           type: "select",
+          label: "Project Type",
           options: [
             { label: "Residential", value: "Residential" },
             { label: "Commercial", value: "Commercial" },
@@ -36,80 +46,108 @@ export const caseStudyConfig: Config<Props> = {
         },
       },
       defaultProps: {
-        title: "New Case Study",
+        name: "New Case Study",
         location: "Lagos, Nigeria",
         date: "2024",
         type: "Residential",
       },
-      render: ({ title, location, date, type }) => (
-        <div className="border-b p-4">
-          <h1 className="text-2xl font-bold">{title}</h1>
-          <p className="text-gray-500">
-            {location} • {date} • {type}
-          </p>
-        </div>
-      ),
+      render: (props) => <CaseStudyHeaderSection {...props} />,
     },
-    CaseStudyGallery: {
+
+    CaseStudyHeroSection: {
       fields: {
         images: {
           type: "array",
+          label: "Gallery Images",
           arrayFields: {
-            url: { type: "text" },
+            url: {
+              type: "custom",
+              label: "Image",
+              render: ({ name, onChange, value, field }) => (
+                <EditorImage
+                  field={{ label: field.label || name }}
+                  value={value}
+                  onChange={(val) => onChange(val || "")}
+                />
+              ),
+            },
           },
+          getItemSummary: (item: any, index: number) =>
+            item?.url ? `Image ${index + 1}` : `Empty ${index + 1}`,
         },
-      },
-      defaultProps: {
-        images: [{ url: "/images/placeholder.jpg" }],
-      },
-      render: ({ images }) => (
-        <div className="grid grid-cols-3 gap-4 p-4">
-          {images?.map((img, i) => (
-            <img
-              key={i}
-              src={img.url}
-              alt={`Gallery ${i}`}
-              className="h-32 w-full rounded object-cover"
-            />
-          ))}
-        </div>
-      ),
-    },
-    ProjectDetails: {
-      fields: {
+        location: { type: "text", label: "Location" },
+        projectType: {
+          type: "select",
+          label: "Project Type",
+          options: [
+            { label: "Residential", value: "Residential" },
+            { label: "Commercial", value: "Commercial" },
+          ],
+        },
+        dateCompleted: { type: "text", label: "Date Completed" },
         technologies: {
           type: "array",
+          label: "Technologies Used",
           arrayFields: {
-            name: { type: "text" },
+            name: { type: "text", label: "Technology Name" },
           },
+          getItemSummary: (item: any) => item?.name || "Unnamed",
         },
-        systemSize: { type: "text" },
-        batterySize: { type: "text" },
       },
       defaultProps: {
-        technologies: [{ name: "Solar Panels" }, { name: "Inverter" }],
-        systemSize: "10kVA",
-        batterySize: "15kWh",
+        images: [],
+        location: "Lagos, Nigeria",
+        projectType: "Residential",
+        dateCompleted: "2024",
+        technologies: [],
       },
-      render: ({ technologies, systemSize, batterySize }) => (
-        <div className="bg-gray-50 p-4">
-          <h3 className="mb-2 font-bold">Project Details</h3>
-          <ul className="list-disc pl-5">
-            <li>System Size: {systemSize}</li>
-            <li>Battery Size: {batterySize}</li>
-            <li>Technologies: {technologies?.map((t) => t.name).join(", ")}</li>
-          </ul>
-        </div>
-      ),
+      render: ({
+        images,
+        location,
+        projectType,
+        dateCompleted,
+        technologies,
+      }) => {
+        // Transform array items to the expected format
+        const imageUrls =
+          (images as any[])?.map((img) => img?.url).filter(Boolean) || [];
+        const techNames =
+          (technologies as any[])?.map((t) => t?.name).filter(Boolean) || [];
+
+        return (
+          <CaseStudyHeroSection
+            images={imageUrls}
+            location={location}
+            projectType={projectType}
+            dateCompleted={dateCompleted}
+            technologies={techNames}
+          />
+        );
+      },
     },
-    Overview: {
+
+    CaseStudyContentSection: {
       fields: {
-        content: { type: "textarea" },
+        overview: { type: "textarea", label: "Overview Text" },
       },
       defaultProps: {
-        content: "Project overview goes here...",
+        overview:
+          "This project showcases our expertise in delivering high-quality solar installations. The system was designed to meet the specific energy needs of the property while maximizing efficiency and long-term savings.",
       },
-      render: ({ content }) => <div className="p-4">{content}</div>,
+      render: (props) => <CaseStudyContentSection {...props} />,
+    },
+
+    CaseStudyRelatedSection: {
+      fields: {
+        currentId: {
+          type: "text",
+          label: "Current Case Study ID (for exclusion)",
+        },
+      },
+      defaultProps: {
+        currentId: "",
+      },
+      render: (props) => <CaseStudyRelatedSection {...props} />,
     },
   },
 };

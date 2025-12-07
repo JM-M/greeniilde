@@ -1,6 +1,6 @@
 "use client";
 
-import { useSuspenseCaseStudies } from "@/app/lib/hooks/use-case-study-queries";
+import { useCaseStudies } from "@/app/lib/hooks/use-case-study-queries";
 import { CaseStudiesCarousel } from "@/app/modules/case-studies/ui/components/case-studies-carousel";
 
 type RelatedCaseStudiesProps = {
@@ -8,7 +8,15 @@ type RelatedCaseStudiesProps = {
 };
 
 export const RelatedCaseStudies = ({ currentId }: RelatedCaseStudiesProps) => {
-  const { data: allCaseStudies } = useSuspenseCaseStudies();
+  const { data: allCaseStudies, isLoading } = useCaseStudies();
+
+  if (isLoading || !allCaseStudies) {
+    return (
+      <div className="text-muted-foreground py-4">
+        Loading related case studies...
+      </div>
+    );
+  }
 
   const relatedCaseStudies = allCaseStudies.filter(
     (study) => study.id !== currentId,

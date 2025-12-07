@@ -126,7 +126,7 @@ export const EditableText = ({
       }}
       style={{
         outline: "2px dashed rgba(99, 102, 241, 0.5)",
-        outlineOffset: "4px",
+        outlineOffset: "2px",
         cursor: "text",
         minHeight: "1em",
         display: "inline-block",

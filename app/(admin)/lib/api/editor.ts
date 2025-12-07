@@ -24,8 +24,6 @@ export async function getPageContent({
   try {
     const headers = await getAuthHeaders();
 
-    console.log("Getting page content with path: ", path);
-
     const response = await sdk.client.fetch<Page>(
       `/admin/content/pages/by-path?path=${encodeURIComponent(path)}&draft=${isDraft}`,
       {
@@ -34,8 +32,6 @@ export async function getPageContent({
         cache: "no-store", // Always fetch fresh data
       },
     );
-
-    console.log("response from get page content: ", response);
 
     return response;
   } catch (error: any) {
@@ -50,7 +46,7 @@ export async function getPageContent({
 
 export type SavePageContentInput = Pick<
   Page,
-  "slug" | "title" | "path" | "puckData"
+  "slug" | "title" | "type" | "path" | "puckData"
 > & {
   action: "draft" | "publish";
 };
@@ -62,6 +58,7 @@ export type SavePageContentInput = Pick<
 export async function savePageContent({
   slug,
   title,
+  type,
   path,
   puckData,
   action,
@@ -82,6 +79,7 @@ export async function savePageContent({
       body: {
         slug,
         title,
+        type,
         path,
         puckData,
         action,
