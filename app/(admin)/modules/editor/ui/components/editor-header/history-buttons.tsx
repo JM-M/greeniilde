@@ -1,11 +1,15 @@
 "use client";
 
 import { Button } from "@/app/components/ui/button";
-import { usePuck } from "@measured/puck";
+import { createUsePuck } from "@measured/puck";
 import { RedoIcon, UndoIcon } from "lucide-react";
 
+// Create usePuck with selector support
+const usePuck = createUsePuck();
+
 export const HistoryButtons = () => {
-  const { history } = usePuck();
+  // Use selector to only subscribe to history changes
+  const history = usePuck((s) => s.history);
 
   return (
     <div className="flex items-center gap-1">

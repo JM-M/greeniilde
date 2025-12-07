@@ -3,8 +3,11 @@
 import { Button } from "@/app/components/ui/button";
 import { Spinner } from "@/app/components/ui/spinner";
 import { useIsMobile } from "@/app/hooks/use-mobile";
-import { usePuck } from "@measured/puck";
+import { createUsePuck } from "@measured/puck";
 import { GlobeIcon } from "lucide-react";
+
+// Create usePuck with selector support
+const usePuck = createUsePuck();
 
 export const PublishButton = ({
   onPublish,
@@ -15,7 +18,8 @@ export const PublishButton = ({
   isPublishing: boolean;
   isDraft: boolean;
 }) => {
-  const { appState } = usePuck();
+  // Only select appState.data to minimize re-renders
+  const data = usePuck((s) => s.appState.data);
 
   const isMobile = useIsMobile();
 
@@ -23,7 +27,7 @@ export const PublishButton = ({
     <Button
       variant={isDraft ? "default" : "outline"}
       onClick={() => {
-        onPublish(appState.data);
+        onPublish(data);
       }}
       size={isMobile ? "icon" : "default"}
       disabled={!isDraft}

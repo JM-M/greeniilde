@@ -1,6 +1,6 @@
 "use client";
 
-import { Puck, usePuck } from "@measured/puck";
+import { createUsePuck, Puck } from "@measured/puck";
 import { useDebouncedCallback } from "use-debounce";
 import { configs, ConfigType } from "../../configs";
 import { useSavePageContent } from "../../hooks/use-editor-mutations";
@@ -20,6 +20,9 @@ const fieldTransforms = {
   ),
 };
 
+// Create a typed usePuck with selector support for better performance
+const usePuck = createUsePuck();
+
 // Field wrapper component that reads componentId from Puck context
 const FieldTypeWrapper = ({
   children,
@@ -28,8 +31,10 @@ const FieldTypeWrapper = ({
   children: React.ReactNode;
   name: string;
 }) => {
-  const { selectedItem } = usePuck();
-  const componentId = selectedItem?.props?.id as string | undefined;
+  // Use selector to only re-render when selectedItem changes
+  const componentId = usePuck(
+    (s) => s.selectedItem?.props?.id as string | undefined,
+  );
 
   if (!componentId) {
     return <>{children}</>;

@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/app/components/ui/button";
-import { usePuck } from "@measured/puck";
+import { createUsePuck } from "@measured/puck";
 import {
   // VscLayoutSidebarLeft,
   // VscLayoutSidebarLeftOff,
@@ -9,9 +9,13 @@ import {
   VscLayoutSidebarRightOff,
 } from "react-icons/vsc";
 
+// Create usePuck with selector support
+const usePuck = createUsePuck();
+
 export const LayoutButtons = () => {
-  const { appState, dispatch } = usePuck();
-  const { leftSideBarVisible, rightSideBarVisible } = appState.ui;
+  // Use selectors to only subscribe to specific values
+  const rightSideBarVisible = usePuck((s) => s.appState.ui.rightSideBarVisible);
+  const dispatch = usePuck((s) => s.dispatch);
 
   // const toggleLeft = () => {
   //   dispatch({

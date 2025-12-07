@@ -1,9 +1,12 @@
 "use client";
 
-import { registerOverlayPortal, usePuck } from "@measured/puck";
+import { createUsePuck, registerOverlayPortal } from "@measured/puck";
 import "@measured/puck/puck.css";
 import { useEffect, useRef } from "react";
 import { getFieldId, useInlineEditorContext } from "./inline-editor-context";
+
+// Create usePuck with selector support
+const usePuck = createUsePuck();
 
 export const EditableText = ({
   value,
@@ -16,8 +19,10 @@ export const EditableText = ({
 }) => {
   const ref = useRef<HTMLSpanElement>(null);
 
-  // Use public usePuck API
-  const { dispatch, getSelectorForId, getItemById } = usePuck();
+  // Use selectors to only get the specific functions we need
+  const dispatch = usePuck((s) => s.dispatch);
+  const getSelectorForId = usePuck((s) => s.getSelectorForId);
+  const getItemById = usePuck((s) => s.getItemById);
 
   // Use inline editor context for sidebar field communication
   const { setActiveField, scrollToSidebarField, registerEditableTextRef } =
