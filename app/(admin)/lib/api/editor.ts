@@ -1,11 +1,10 @@
 "use server";
 
 import { sdk } from "@/app/lib/medusa/config";
+import { Page } from "@/types/page";
 import { getAuthHeaders } from "./auth";
 
-import { Page } from "@/types/page";
-
-// ...
+// Refactor to communicate directly with admin instead of through backend.
 
 /**
  * Get content page data by slug
