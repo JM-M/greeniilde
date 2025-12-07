@@ -1,6 +1,6 @@
 "use client";
 
-import { Puck } from "@measured/puck";
+import { Puck, usePuck } from "@measured/puck";
 import { useDebouncedCallback } from "use-debounce";
 import { configs, ConfigType } from "../../configs";
 import { useSavePageContent } from "../../hooks/use-editor-mutations";
@@ -8,6 +8,8 @@ import { useSuspenseGetPageContent } from "../../hooks/use-editor-queries";
 import { EditableText } from "./editable-text";
 import { EditorHeader } from "./editor-header";
 import { EditorHome } from "./editor-home";
+import { InlineEditorProvider } from "./inline-editor-context";
+import { SidebarFieldWrapper } from "./sidebar-field-wrapper";
 
 const fieldTransforms = {
   text: ({ value, propName, componentId }: any) => (
@@ -16,6 +18,28 @@ const fieldTransforms = {
   textarea: ({ value, propName, componentId }: any) => (
     <EditableText value={value} propName={propName} componentId={componentId} />
   ),
+};
+
+// Field wrapper component that reads componentId from Puck context
+const FieldTypeWrapper = ({
+  children,
+  name,
+}: {
+  children: React.ReactNode;
+  name: string;
+}) => {
+  const { selectedItem } = usePuck();
+  const componentId = selectedItem?.props?.id as string | undefined;
+
+  if (!componentId) {
+    return <>{children}</>;
+  }
+
+  return (
+    <SidebarFieldWrapper componentId={componentId} propName={name}>
+      {children}
+    </SidebarFieldWrapper>
+  );
 };
 
 interface EditorProps {
@@ -81,30 +105,40 @@ export const Editor = ({ path }: EditorProps) => {
   };
 
   return (
-    <Puck
-      config={config}
-      data={data.puckData}
-      fieldTransforms={fieldTransforms}
-      onPublish={handlePublish}
-      onChange={handleAutoSave}
-      ui={{ leftSideBarVisible: false }}
-      overrides={{
-        header: () => {
-          return (
-            <EditorHeader
-              onPublish={handlePublish}
-              status={getStatus()}
-              pageId={String(data.id)}
-              pagePath={data.path}
-              isPublishing={
-                savePageContentMutation.isPending &&
-                savePageContentMutation.variables?.action === "publish"
-              }
-              isDraft={data._status === "draft"}
-            />
-          );
-        },
-      }}
-    />
+    <InlineEditorProvider>
+      <Puck
+        config={config}
+        data={data.puckData}
+        fieldTransforms={fieldTransforms}
+        onPublish={handlePublish}
+        onChange={handleAutoSave}
+        ui={{ leftSideBarVisible: false }}
+        overrides={{
+          header: () => {
+            return (
+              <EditorHeader
+                onPublish={handlePublish}
+                status={getStatus()}
+                pageId={String(data.id)}
+                pagePath={data.path}
+                isPublishing={
+                  savePageContentMutation.isPending &&
+                  savePageContentMutation.variables?.action === "publish"
+                }
+                isDraft={data._status === "draft"}
+              />
+            );
+          },
+          fieldTypes: {
+            text: ({ children, name }) => (
+              <FieldTypeWrapper name={name}>{children}</FieldTypeWrapper>
+            ),
+            textarea: ({ children, name }) => (
+              <FieldTypeWrapper name={name}>{children}</FieldTypeWrapper>
+            ),
+          },
+        }}
+      />
+    </InlineEditorProvider>
   );
 };

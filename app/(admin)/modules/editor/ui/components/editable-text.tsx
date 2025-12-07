@@ -3,6 +3,7 @@
 import { registerOverlayPortal, usePuck } from "@measured/puck";
 import "@measured/puck/puck.css";
 import { useEffect, useRef } from "react";
+import { getFieldId, useInlineEditorContext } from "./inline-editor-context";
 
 export const EditableText = ({
   value,
@@ -17,6 +18,17 @@ export const EditableText = ({
 
   // Use public usePuck API
   const { dispatch, getSelectorForId, getItemById } = usePuck();
+
+  // Use inline editor context for sidebar field communication
+  const { setActiveField, scrollToSidebarField, registerEditableTextRef } =
+    useInlineEditorContext();
+  const fieldId = getFieldId(componentId, propName);
+
+  // Register this editable text ref for scroll-to-view from sidebar
+  useEffect(() => {
+    registerEditableTextRef(fieldId, ref.current);
+    return () => registerEditableTextRef(fieldId, null);
+  }, [fieldId, registerEditableTextRef]);
 
   useEffect(() => {
     if (ref.current) {
@@ -74,6 +86,33 @@ export const EditableText = ({
       ref={ref}
       contentEditable
       suppressContentEditableWarning
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      }}
+      onClickCapture={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        // Get the selector for this component and set it to maintain sidebar focus
+        const selector = getSelectorForId(componentId);
+        if (selector) {
+          dispatch({
+            type: "setUi",
+            ui: {
+              itemSelector: selector,
+            },
+          });
+        }
+
+        // Set active field for sidebar highlighting
+        setActiveField(fieldId);
+        scrollToSidebarField(fieldId);
+      }}
+      onBlur={() => {
+        // Clear active field when inline text loses focus
+        setActiveField(null);
+      }}
       onKeyDown={(e) => {
         if (e.key === "Enter" && !e.shiftKey) {
           e.preventDefault();
