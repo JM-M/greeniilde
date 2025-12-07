@@ -26,17 +26,26 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import {
+  buildPath,
+  getPageTypeOptions,
+  PAGE_TYPES,
+  type PageType,
+} from "../../../configs/page-types";
 import { useCreatePage } from "../../../hooks/use-editor-mutations";
 
 type Props = {
   onSuccess: () => void;
 };
 
+const pageTypeOptions = getPageTypeOptions();
+const pageTypeValues = Object.keys(PAGE_TYPES) as [PageType, ...PageType[]];
+
 const formSchema = z.object({
   title: z.string().min(1, "Title is required"),
   slug: z.string().min(1, "Slug is required"),
   path: z.string().min(1, "Path is required"),
-  type: z.enum(["landing-page", "case-study"] as const),
+  type: z.enum(pageTypeValues),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -50,7 +59,7 @@ export function CreatePageForm({ onSuccess }: Props) {
       title: "",
       slug: "",
       path: "",
-      type: "landing-page",
+      type: pageTypeOptions[0]?.value || "",
     },
   });
 
@@ -59,6 +68,10 @@ export function CreatePageForm({ onSuccess }: Props) {
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/(^-|-$)+/g, "");
+  };
+
+  const updatePath = (slug: string, type: PageType) => {
+    form.setValue("path", buildPath(slug, type));
   };
 
   const onSubmit = (values: FormValues) => {
@@ -79,6 +92,8 @@ export function CreatePageForm({ onSuccess }: Props) {
     );
   };
 
+  console.log(pageTypeOptions);
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -89,6 +104,42 @@ export function CreatePageForm({ onSuccess }: Props) {
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
+          <FormField
+            control={form.control}
+            name="type"
+            render={({ field }) => (
+              <FormItem className="grid grid-cols-4 items-center gap-4 space-y-0">
+                <FormLabel className="text-right">Type</FormLabel>
+                <div className="col-span-3">
+                  <Select
+                    onValueChange={(value: PageType) => {
+                      field.onChange(value);
+                      const currentSlug = form.getValues("slug");
+                      if (currentSlug) {
+                        updatePath(currentSlug, value);
+                      }
+                    }}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a page type" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {pageTypeOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </div>
+              </FormItem>
+            )}
+          />
+
           <FormField
             control={form.control}
             name="title"
@@ -105,7 +156,7 @@ export function CreatePageForm({ onSuccess }: Props) {
                         // Auto-generate slug and path from title
                         const newSlug = generateSlug(e.target.value);
                         form.setValue("slug", newSlug);
-                        form.setValue("path", `/${newSlug}`);
+                        updatePath(newSlug, form.getValues("type"));
                       }}
                     />
                   </FormControl>
@@ -128,7 +179,7 @@ export function CreatePageForm({ onSuccess }: Props) {
                       placeholder="my-new-page"
                       onChange={(e) => {
                         field.onChange(e);
-                        form.setValue("path", `/${e.target.value}`);
+                        updatePath(e.target.value, form.getValues("type"));
                       }}
                     />
                   </FormControl>
@@ -146,35 +197,13 @@ export function CreatePageForm({ onSuccess }: Props) {
                 <FormLabel className="text-right">Path</FormLabel>
                 <div className="col-span-3">
                   <FormControl>
-                    <Input {...field} placeholder="/my-new-page" />
+                    <Input
+                      {...field}
+                      placeholder="/my-new-page"
+                      readOnly
+                      className="bg-muted"
+                    />
                   </FormControl>
-                  <FormMessage />
-                </div>
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="type"
-            render={({ field }) => (
-              <FormItem className="grid grid-cols-4 items-center gap-4 space-y-0">
-                <FormLabel className="text-right">Type</FormLabel>
-                <div className="col-span-3">
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a page type" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="landing-page">Landing Page</SelectItem>
-                      <SelectItem value="case-study">Case Study</SelectItem>
-                    </SelectContent>
-                  </Select>
                   <FormMessage />
                 </div>
               </FormItem>
