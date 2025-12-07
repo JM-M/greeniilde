@@ -4,8 +4,13 @@ import {
   CaseStudyHeroSection,
   CaseStudyRelatedSection,
 } from "@/app/modules/case-studies/ui/components/sections/details-view";
-import type { Config } from "@measured/puck";
+import type { Config, CustomField } from "@measured/puck";
 import { EditorImage } from "../ui/components/editor-image";
+
+// Type for image array items
+type ImageItem = { url: string };
+// Type for technology array items
+type TechnologyItem = { name: string };
 
 type Props = {
   CaseStudyHeaderSection: {
@@ -63,7 +68,17 @@ export const caseStudyConfig: Config<Props> = {
             url: {
               type: "custom",
               label: "Image",
-              render: ({ name, onChange, value, field }) => (
+              render: ({
+                name,
+                onChange,
+                value,
+                field,
+              }: {
+                name: string;
+                onChange: (value: string) => void;
+                value: string;
+                field: CustomField<string>;
+              }) => (
                 <EditorImage
                   field={{ label: field.label || name }}
                   value={value}
@@ -72,8 +87,10 @@ export const caseStudyConfig: Config<Props> = {
               ),
             },
           },
-          getItemSummary: (item: any, index: number) =>
-            item?.url ? `Image ${index + 1}` : `Empty ${index + 1}`,
+          getItemSummary: (item: ImageItem, index?: number) =>
+            item?.url
+              ? `Image ${(index ?? 0) + 1}`
+              : `Empty ${(index ?? 0) + 1}`,
         },
         location: { type: "text", label: "Location" },
         projectType: {
@@ -91,7 +108,7 @@ export const caseStudyConfig: Config<Props> = {
           arrayFields: {
             name: { type: "text", label: "Technology Name" },
           },
-          getItemSummary: (item: any) => item?.name || "Unnamed",
+          getItemSummary: (item: TechnologyItem) => item?.name || "Unnamed",
         },
       },
       defaultProps: {

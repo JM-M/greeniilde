@@ -1,6 +1,6 @@
-import { CaseStudy } from "@/app/lib/data/case-studies";
 import { CaseStudyCard } from "@/app/modules/case-studies/ui/components/case-study-card";
 import Link from "next/link";
+import { CaseStudy } from "../../transforms";
 
 type CaseStudiesGridProps = {
   caseStudies: CaseStudy[];

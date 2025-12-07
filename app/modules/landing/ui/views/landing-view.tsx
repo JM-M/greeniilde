@@ -3,7 +3,7 @@ import { landingPageConfig } from "@/app/(admin)/modules/editor/configs/landing-
 import { caseStudyQueries } from "@/app/lib/hooks/use-case-study-queries";
 import { getQueryClient } from "@/app/lib/query/get-query-client";
 import { productQueries } from "@/app/modules/products/queries";
-import { Render } from "@measured/puck";
+import { Data, Render } from "@measured/puck";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { headers } from "next/headers";
 import { loadLandingProductsParams } from "../../params";
@@ -34,7 +34,10 @@ export const LandingView = async ({
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <Render config={landingPageConfig} data={pageContent?.puckData || {}} />
+      <Render
+        config={landingPageConfig}
+        data={(pageContent?.puckData as Data) ?? { content: [], root: {} }}
+      />
     </HydrationBoundary>
   );
 };

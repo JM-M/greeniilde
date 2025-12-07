@@ -18,7 +18,7 @@ import {
   isSingleton,
   type PageType,
 } from "@/app/(admin)/modules/editor/configs/page-types";
-import { Page } from "@/types/page";
+import type { Page } from "@/payload-types";
 import { useState } from "react";
 import { DeletePageDialog } from "./delete-page-dialog";
 
@@ -77,7 +77,7 @@ export const PageItem = ({ page, onClick }: PageItemProps) => {
       <DeletePageDialog
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
-        pageId={id}
+        pageId={String(id)}
         pageName={title}
       />
     </>

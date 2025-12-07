@@ -2,7 +2,7 @@ import { getPageContent } from "@/app/(admin)/lib/api/editor";
 import { caseStudyConfig } from "@/app/(admin)/modules/editor/configs/case-study";
 import { caseStudyQueries } from "@/app/lib/hooks/use-case-study-queries";
 import { getQueryClient } from "@/app/lib/query/get-query-client";
-import { Render } from "@measured/puck";
+import { Data, Render } from "@measured/puck";
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 
 type CaseStudyDetailsViewProps = {
@@ -23,7 +23,10 @@ export const CaseStudyDetailsView = async ({
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <Render config={caseStudyConfig} data={pageContent?.puckData || {}} />
+      <Render
+        config={caseStudyConfig}
+        data={(pageContent?.puckData as Data) ?? { content: [], root: {} }}
+      />
     </HydrationBoundary>
   );
 };

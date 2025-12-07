@@ -1,35 +1,8 @@
 import type { Page } from "@/payload-types";
+import type { CaseStudy, PuckData } from "./types";
 
-/**
- * Represents a case study extracted from a Puck-managed Page.
- */
-export type CaseStudy = {
-  id: string;
-  slug: string;
-  name: string;
-  location: string;
-  overview: string;
-  technologies: string[];
-  imageUrls: string[];
-  date: string;
-  type: string;
-};
-
-/**
- * Puck component data structure within puckData.content
- */
-type PuckComponentData = {
-  type: string;
-  props: Record<string, unknown>;
-};
-
-/**
- * Puck data structure stored in Page.puckData
- */
-type PuckData = {
-  content?: PuckComponentData[];
-  root?: Record<string, unknown>;
-};
+// Re-export CaseStudy for backwards compatibility
+export type { CaseStudy } from "./types";
 
 /**
  * Transform a Payload Page (case-study type) into a CaseStudy object.
