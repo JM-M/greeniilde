@@ -14,6 +14,10 @@ import {
 } from "@/app/components/ui/item";
 import { MoreHorizontal, Trash2Icon } from "lucide-react";
 
+import {
+  isSingleton,
+  type PageType,
+} from "@/app/(admin)/modules/editor/configs/page-types";
 import { Page } from "@/types/page";
 import { useState } from "react";
 import { DeletePageDialog } from "./delete-page-dialog";
@@ -24,8 +28,9 @@ interface PageItemProps {
 }
 
 export const PageItem = ({ page, onClick }: PageItemProps) => {
-  const { title, path, id } = page;
+  const { title, path, id, type } = page;
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const canDelete = !isSingleton(type as PageType);
 
   return (
     <>
@@ -55,9 +60,10 @@ export const PageItem = ({ page, onClick }: PageItemProps) => {
               onClick={(e: React.MouseEvent) => e.stopPropagation()}
             >
               <DropdownMenuItem
+                disabled={!canDelete}
                 onClick={(e) => {
                   e.stopPropagation();
-                  setDeleteDialogOpen(true);
+                  if (canDelete) setDeleteDialogOpen(true);
                 }}
               >
                 <Trash2Icon className="size-4" />

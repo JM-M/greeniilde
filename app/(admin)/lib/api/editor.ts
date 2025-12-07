@@ -1,5 +1,10 @@
 "use server";
 
+import {
+  getDefaultPuckData,
+  isSingleton,
+  type PageType,
+} from "@/app/(admin)/modules/editor/configs/page-types";
 import { getPayloadClient } from "@/app/lib/payload/client";
 import type { Page } from "@/payload-types";
 
@@ -135,18 +140,16 @@ export async function createPage({
   path,
 }: CreatePageInput): Promise<Page> {
   const payload = await getPayloadClient();
+  const pageType = (type as PageType) || "landing-page";
 
   const result = await payload.create({
     collection: "pages",
     data: {
       slug,
       title,
-      type: (type as "landing-page" | "case-study") || "landing-page",
+      type: pageType,
       path: path || `/${slug === "home" ? "" : slug}`,
-      puckData: {
-        content: [],
-        root: { props: { title } },
-      },
+      puckData: getDefaultPuckData(pageType, title),
       _status: "draft",
     },
     draft: true,
@@ -160,6 +163,16 @@ export async function createPage({
  */
 export async function deletePage(id: string): Promise<{ success: boolean }> {
   const payload = await getPayloadClient();
+
+  // Fetch the page first to check if it's a singleton
+  const page = await payload.findByID({
+    collection: "pages",
+    id: Number(id),
+  });
+
+  if (page && isSingleton(page.type as PageType)) {
+    throw new Error("Cannot delete singleton pages");
+  }
 
   await payload.delete({
     collection: "pages",

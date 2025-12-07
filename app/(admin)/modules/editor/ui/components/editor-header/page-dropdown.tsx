@@ -18,23 +18,13 @@ import { useState } from "react";
 import { useGetPages } from "../../../hooks/use-editor-queries";
 import { CreatePageDialog } from "../create-page-dialog";
 
-type Page = {
-  id: string;
-  title: string;
-  slug: string;
-  type: string;
-  path?: string;
-  status: string;
-};
-
 export const PageDropdown = () => {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
   const searchParams = useSearchParams();
   const currentPath = searchParams.get("path") || "/";
 
-  const { data: rawPages = [] } = useGetPages();
-  const pages = rawPages as Page[];
+  const { data: pages = [] } = useGetPages();
 
   // Find page by path, normalizing both to ensure match
   const selectedPage = pages.find((page) => {
