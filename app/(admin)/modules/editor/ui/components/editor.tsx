@@ -1,6 +1,6 @@
 "use client";
 
-import { createUsePuck, Puck } from "@measured/puck";
+import { createUsePuck, Data, Puck } from "@measured/puck";
 import { useDebouncedCallback } from "use-debounce";
 import { configs, ConfigType } from "../../configs";
 import { useSavePageContent } from "../../hooks/use-editor-mutations";
@@ -122,7 +122,7 @@ const EditorWithData = ({ path }: { path: string }) => {
     <InlineEditorProvider>
       <Puck
         config={config}
-        data={data.puckData}
+        data={(data.puckData as Data) ?? { content: [], root: {} }}
         fieldTransforms={fieldTransforms}
         onPublish={handlePublish}
         onChange={handleAutoSave}

@@ -11,7 +11,7 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/app/components/ui/carousel";
-import { CaseStudy } from "@/app/lib/data/case-studies";
+import { CaseStudy } from "@/app/modules/case-studies/transforms";
 import { CaseStudyCard } from "@/app/modules/case-studies/ui/components/case-study-card";
 
 type CaseStudiesCarouselProps = {

@@ -1,13 +1,10 @@
 "use server";
 
-import { sdk } from "@/app/lib/medusa/config";
-import { Page } from "@/types/page";
-import { getAuthHeaders } from "./auth";
-
-// Refactor to communicate directly with admin instead of through backend.
+import { getPayloadClient } from "@/app/lib/payload/client";
+import type { Page } from "@/payload-types";
 
 /**
- * Get content page data by slug
+ * Get content page data by path
  * This is used to load page content for display and editing
  */
 export async function getPageContent({
@@ -16,44 +13,37 @@ export async function getPageContent({
 }: {
   path?: string | null;
   isDraft?: boolean;
-}) {
+}): Promise<Page | null> {
   if (!path) {
     return null;
   }
 
-  try {
-    const headers = await getAuthHeaders();
+  const payload = await getPayloadClient();
 
-    const response = await sdk.client.fetch<Page>(
-      `/admin/content/pages/by-path?path=${encodeURIComponent(path)}&draft=${isDraft}`,
-      {
-        method: "GET",
-        headers,
-        cache: "no-store", // Always fetch fresh data
-      },
-    );
+  const result = await payload.find({
+    collection: "pages",
+    where: {
+      path: { equals: path },
+    },
+    limit: 1,
+    draft: isDraft,
+  });
 
-    return response;
-  } catch (error: any) {
-    // Check if it's a 404 error
-    if (error?.status === 404 || error?.response?.status === 404) {
-      return null;
-    }
-    console.error("Error fetching page content:", error);
-    throw error;
-  }
+  return result.docs[0] || null;
 }
 
-export type SavePageContentInput = Pick<
-  Page,
-  "slug" | "title" | "type" | "path" | "puckData"
-> & {
+export type SavePageContentInput = {
+  slug: string;
+  title: string;
+  type?: string;
+  path: string;
+  puckData: any;
   action: "draft" | "publish";
 };
 
 /**
  * Save or update content page
- * This is used by the Puck editor when user clicks "Publish"
+ * This is used by the Puck editor when user clicks "Publish" or auto-saves
  */
 export async function savePageContent({
   slug,
@@ -62,153 +52,152 @@ export async function savePageContent({
   path,
   puckData,
   action,
-}: SavePageContentInput) {
-  try {
-    const headers = await getAuthHeaders();
+}: SavePageContentInput): Promise<Page> {
+  const payload = await getPayloadClient();
 
-    // Check if authenticated before attempting save
-    if (!("authorization" in headers)) {
-      throw new Error(
-        "You must be logged in as an admin to save content. Please login at the admin portal first.",
-      );
-    }
+  // Check if page exists
+  const existing = await payload.find({
+    collection: "pages",
+    where: {
+      slug: { equals: slug },
+    },
+    limit: 1,
+  });
 
-    const response = await sdk.client.fetch<Page>(`/admin/content/pages`, {
-      method: "POST",
-      headers,
-      body: {
+  const existingPage = existing.docs[0];
+  const isDraft = action === "draft";
+
+  if (existingPage) {
+    // Update existing page
+    const result = await payload.update({
+      collection: "pages",
+      id: existingPage.id,
+      data: {
         slug,
         title,
-        type,
+        type: (type as "landing-page" | "case-study") || "landing-page",
         path,
         puckData,
-        action,
+        _status: isDraft ? "draft" : "published",
       },
+      draft: isDraft,
     });
 
-    return response;
-  } catch (error) {
-    console.error("Error saving page content:", error);
-    throw error;
+    return result;
+  } else {
+    // Create new page
+    const result = await payload.create({
+      collection: "pages",
+      data: {
+        slug,
+        title,
+        type: (type as "landing-page" | "case-study") || "landing-page",
+        path,
+        puckData,
+        _status: isDraft ? "draft" : "published",
+      },
+      draft: isDraft,
+    });
+
+    return result;
   }
 }
 
 /**
  * Get all content pages
  */
-export async function getPages() {
-  try {
-    const headers = await getAuthHeaders();
+export async function getPages(): Promise<Page[]> {
+  const payload = await getPayloadClient();
 
-    const response = await sdk.client.fetch<{ pages: Page[] }>(
-      `/admin/content/pages`,
-      {
-        method: "GET",
-        headers,
-        cache: "no-store",
-      },
-    );
+  const result = await payload.find({
+    collection: "pages",
+    limit: 100,
+    sort: "-createdAt",
+  });
 
-    return response.pages;
-  } catch (error) {
-    console.error("Error fetching pages:", error);
-    throw error;
-  }
+  return result.docs;
 }
 
-export type CreatePageInput = Pick<Page, "title" | "slug" | "type"> & {
+export type CreatePageInput = {
+  title: string;
+  slug: string;
+  type?: string;
   path?: string;
 };
 
 /**
  * Create a new content page
  */
-export async function createPage({ title, slug, type, path }: CreatePageInput) {
-  try {
-    const headers = await getAuthHeaders();
+export async function createPage({
+  title,
+  slug,
+  type,
+  path,
+}: CreatePageInput): Promise<Page> {
+  const payload = await getPayloadClient();
 
-    // Check if authenticated before attempting save
-    if (!("authorization" in headers)) {
-      throw new Error(
-        "You must be logged in as an admin to create content. Please login at the admin portal first.",
-      );
-    }
-
-    const response = await sdk.client.fetch<Page>(`/admin/content/pages`, {
-      method: "POST",
-      headers,
-      body: {
-        slug,
-        title,
-        type,
-        path,
-        puckData: {
-          content: [],
-          root: { props: { title } },
-        },
-        action: "draft",
+  const result = await payload.create({
+    collection: "pages",
+    data: {
+      slug,
+      title,
+      type: (type as "landing-page" | "case-study") || "landing-page",
+      path: path || `/${slug === "home" ? "" : slug}`,
+      puckData: {
+        content: [],
+        root: { props: { title } },
       },
-    });
+      _status: "draft",
+    },
+    draft: true,
+  });
 
-    return response;
-  } catch (error) {
-    console.error("Error creating page:", error);
-    throw error;
-  }
+  return result;
 }
 
 /**
  * Delete a content page
  */
-export async function deletePage(id: string) {
-  try {
-    const headers = await getAuthHeaders();
+export async function deletePage(id: string): Promise<{ success: boolean }> {
+  const payload = await getPayloadClient();
 
-    // Check if authenticated
-    if (!("authorization" in headers)) {
-      throw new Error(
-        "You must be logged in as an admin to delete content. Please login at the admin portal first.",
-      );
-    }
+  await payload.delete({
+    collection: "pages",
+    id: Number(id),
+  });
 
-    const response = await sdk.client.fetch(`/admin/content/pages`, {
-      method: "DELETE",
-      headers,
-      body: { id },
-    });
-
-    return response;
-  } catch (error) {
-    console.error("Error deleting page:", error);
-    throw error;
-  }
+  return { success: true };
 }
 
 /**
  * Discard draft changes and revert to published version
  */
-export async function discardDraft(id: string) {
-  try {
-    const headers = await getAuthHeaders();
+export async function discardDraft(
+  id: string,
+): Promise<{ success: boolean; page?: Page }> {
+  const payload = await getPayloadClient();
 
-    // Check if authenticated
-    if (!("authorization" in headers)) {
-      throw new Error(
-        "You must be logged in as an admin to discard drafts. Please login at the admin portal first.",
-      );
-    }
+  // Get the published version
+  const publishedResult = await payload.findByID({
+    collection: "pages",
+    id: Number(id),
+    draft: false,
+  });
 
-    const response = await sdk.client.fetch(
-      `/admin/content/pages/${id}/draft`,
-      {
-        method: "DELETE",
-        headers,
-      },
-    );
-
-    return response;
-  } catch (error) {
-    console.error("Error discarding draft:", error);
-    throw error;
+  if (!publishedResult) {
+    throw new Error(`No published version found for page with id ${id}`);
   }
+
+  // Update the document with the published content
+  const result = await payload.update({
+    collection: "pages",
+    id: Number(id),
+    data: {
+      ...publishedResult,
+      _status: "published",
+    },
+    draft: false,
+  });
+
+  return { success: true, page: result };
 }
