@@ -3,6 +3,8 @@ import { Work_Sans } from "next/font/google";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
+import { AdminFontProvider } from "./components/admin-font-provider";
+
 const workSans = Work_Sans({
   subsets: ["latin"],
   variable: "--font-work-sans",
@@ -28,5 +30,10 @@ export default async function EditorLayout({
     }
   }
 
-  return <div className={workSans.className}>{children}</div>;
+  return (
+    <div className={workSans.className}>
+      <AdminFontProvider className={workSans.className} />
+      {children}
+    </div>
+  );
 }

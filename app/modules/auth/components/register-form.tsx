@@ -115,7 +115,7 @@ export const RegisterForm = () => {
           {isPending ? "Creating Account..." : "Create Account"}
         </Button>
       </form>
-      <div className="text-center text-sm">
+      <div className="mt-4 text-center text-sm">
         Already created an account?{" "}
         <button
           type="button"

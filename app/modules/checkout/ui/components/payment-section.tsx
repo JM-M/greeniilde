@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/app/components/ui/button";
+import { Spinner } from "@/app/components/ui/spinner";
 import {
   useInitiatePaymentSession,
   usePlaceOrder,
@@ -103,13 +104,16 @@ export const PaymentSection = ({
     initializePayment({ onSuccess, onClose });
   };
 
-  const isLoading = isPlacingOrder || isInitiatingPayment;
-  const isPaymentDisabled =
+  const isLoading =
+    isPlacingOrder ||
+    isInitiatingPayment ||
     !paystackSession ||
+    isRetrievingCart;
+
+  const isPaymentDisabled =
     isLoading ||
     !isShippingAddressValid ||
     !isShippingMethodSelected ||
-    isRetrievingCart ||
     isUpdatingAddress ||
     isSettingShippingMethod;
 
@@ -120,7 +124,14 @@ export const PaymentSection = ({
         onClick={handlePayment}
         disabled={isPaymentDisabled}
       >
-        {isLoading ? "Processing..." : "Pay with Paystack"}
+        {isLoading ? (
+          <>
+            <Spinner />
+            Please wait...
+          </>
+        ) : (
+          "Pay with Paystack"
+        )}
       </Button>
     </div>
   );

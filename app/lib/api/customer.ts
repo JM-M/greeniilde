@@ -26,31 +26,31 @@ export const retrieveCustomer = async () => {
     .catch(() => null);
 };
 
-export async function login({ email, password }: any) {
-  try {
-    const token = await sdk.auth.login("customer", "emailpass", {
-      email,
-      password,
-    });
+export async function login({
+  email,
+  password,
+}: {
+  email: string;
+  password: string;
+}) {
+  const token = await sdk.auth.login("customer", "emailpass", {
+    email,
+    password,
+  });
 
-    await setAuthToken(token as string);
-    // TODO: Add caching
-    // revalidateTag("customer");
+  await setAuthToken(token as string);
+  // TODO: Add caching
+  // revalidateTag("customer");
 
-    // Transfer cart if exists
-    const cartId = await getCartIdCookie();
-    if (cartId) {
-      await sdk.store.cart
-        .transferCart(cartId, {}, { authorization: `Bearer ${token}` })
-        .catch(() => {
-          // Ignore transfer errors
-        });
-    }
-  } catch (error: any) {
-    return error.toString();
+  // Transfer cart if exists
+  const cartId = await getCartIdCookie();
+  if (cartId) {
+    await sdk.store.cart
+      .transferCart(cartId, {}, { authorization: `Bearer ${token}` })
+      .catch(() => {
+        // Ignore transfer errors
+      });
   }
-
-  return { success: true };
 }
 
 export async function register({ email, password, firstName, lastName }: any) {

@@ -27,7 +27,7 @@ const formSchema = z.object({
 
 export const LoginForm = () => {
   const { setView, closeAuthModal } = useAuthModal();
-  const { mutate: login, isPending } = useLogin();
+  const { mutate: login, isPending, error } = useLogin();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -74,6 +74,11 @@ export const LoginForm = () => {
             </FormItem>
           )}
         />
+        {error && (
+          <div className="text-destructive text-sm font-medium">
+            {error.message}
+          </div>
+        )}
         <Button type="submit" className="w-full" disabled={isPending}>
           {isPending ? "Logging in..." : "Login"}
         </Button>

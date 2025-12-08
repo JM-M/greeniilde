@@ -16,6 +16,7 @@ export const ProductsView = () => {
   const { data, isLoading } = useListProducts({
     q: debouncedSearchTerm || undefined,
     fields: "*categories",
+    order: "-created_at",
     limit: PAGE_SIZE,
     offset: currentPage * PAGE_SIZE,
   });

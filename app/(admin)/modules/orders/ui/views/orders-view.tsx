@@ -13,6 +13,7 @@ export const OrdersView = () => {
 
   const { data, isLoading } = useListOrders({
     fields: "*customer,*items,+currency_code",
+    order: "-created_at",
     limit: PAGE_SIZE,
     offset: currentPage * PAGE_SIZE,
   });
