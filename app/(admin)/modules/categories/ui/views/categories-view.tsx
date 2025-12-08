@@ -2,6 +2,7 @@
 
 import { useListCategories } from "@/app/(admin)/modules/categories/hooks/use-category-queries";
 import { useMemo, useState } from "react";
+import { useDebounce } from "use-debounce";
 import { CategoriesTable } from "../components/categories-table";
 import { CategoryTableRow } from "../components/categories-table/columns";
 
@@ -9,8 +10,11 @@ const PAGE_SIZE = 20;
 
 export const CategoriesView = () => {
   const [currentPage, setCurrentPage] = useState(0);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearchTerm] = useDebounce(searchTerm, 300);
 
   const { data, isLoading } = useListCategories({
+    q: debouncedSearchTerm || undefined,
     fields: "+products.id",
     limit: PAGE_SIZE,
     offset: currentPage * PAGE_SIZE,
@@ -42,6 +46,8 @@ export const CategoriesView = () => {
       hasPreviousPage={hasPreviousPage}
       onNextPage={() => setCurrentPage((p) => p + 1)}
       onPreviousPage={() => setCurrentPage((p) => p - 1)}
+      searchTerm={searchTerm}
+      onSearchChange={setSearchTerm}
       isLoading={isLoading}
     />
   );

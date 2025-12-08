@@ -1,12 +1,7 @@
 import { selectColumn } from "@/app/(admin)/dashboard/components/shared/data-table/columns";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/app/components/ui/avatar";
+import { Thumbnail } from "@/app/(admin)/dashboard/components/shared/thumbnail";
 import { HttpTypes } from "@medusajs/types";
 import { ColumnDef } from "@tanstack/react-table";
-import { ImageIcon } from "lucide-react";
 import Link from "next/link";
 import { ProductStatusBadge } from "../product-status-badge";
 
@@ -28,22 +23,12 @@ export const columns: ColumnDef<ProductTableRow>[] = [
     header: "Product",
     cell: ({ row }) => {
       const product = row.original;
-      const thumbnail = product.thumbnail;
-      const title = product.title;
       const numVariants = product.variants?.length || 0;
       return (
         <div className="flex items-center gap-2">
-          <Avatar className="rounded-lg">
-            <AvatarImage src={thumbnail || ""} className="rounded-lg" />
-            <AvatarFallback className="rounded-lg">
-              <ImageIcon
-                strokeWidth={1}
-                className="text-muted-foreground size-4"
-              />
-            </AvatarFallback>
-          </Avatar>
+          <Thumbnail src={product.thumbnail} alt={product.title} />
           <div>
-            <div className="font-medium">{title}</div>
+            <div className="font-medium">{product.title}</div>
             <div className="text-muted-foreground text-sm">
               {numVariants} variant{numVariants === 1 ? "" : "s"}
             </div>

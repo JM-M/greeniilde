@@ -3,9 +3,11 @@
 import { DataTable } from "@/app/(admin)/dashboard/components/shared/data-table";
 import { DataTablePagination } from "@/app/(admin)/dashboard/components/shared/data-table/pagination";
 import { RowSelectionState } from "@tanstack/react-table";
+import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { CategoriesTableActions } from "./actions";
 import { CategoryTableRow, columns } from "./columns";
+import { CategoryTableHeader } from "./header";
 
 interface CategoriesTableProps {
   data: CategoryTableRow[];
@@ -16,6 +18,8 @@ interface CategoriesTableProps {
   hasPreviousPage: boolean;
   onNextPage: () => void;
   onPreviousPage: () => void;
+  searchTerm: string;
+  onSearchChange: (value: string) => void;
   isLoading?: boolean;
 }
 
@@ -28,8 +32,11 @@ export const CategoriesTable = ({
   hasPreviousPage,
   onNextPage,
   onPreviousPage,
+  searchTerm,
+  onSearchChange,
   isLoading,
 }: CategoriesTableProps) => {
+  const router = useRouter();
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
   const selectedCategoryIds = useMemo(() => {
@@ -38,6 +45,7 @@ export const CategoriesTable = ({
 
   return (
     <div className="space-y-3">
+      <CategoryTableHeader value={searchTerm} onChange={onSearchChange} />
       <DataTable
         columns={columns}
         data={data}
@@ -45,6 +53,8 @@ export const CategoriesTable = ({
         onRowSelectionChange={setRowSelection}
         getRowId={(row) => row.id}
         isLoading={isLoading}
+        onRowClick={(row) => router.push(`/dashboard/categories/${row.id}`)}
+        getRowClassName={() => "cursor-pointer"}
       />
       <CategoriesTableActions
         selectedIds={selectedCategoryIds}

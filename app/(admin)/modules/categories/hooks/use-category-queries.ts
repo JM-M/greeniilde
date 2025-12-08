@@ -1,6 +1,6 @@
 "use client";
 
-import { listCategories } from "@/app/(admin)/lib/api/categories";
+import { getCategory, listCategories } from "@/app/(admin)/lib/api/categories";
 import { useQuery, type UseQueryOptions } from "@tanstack/react-query";
 import { categoryQueries } from "../queries";
 
@@ -15,4 +15,14 @@ export const useListCategories = (
   >,
 ) => {
   return useQuery(categoryQueries.listCategories.queryOptions(query, options));
+};
+
+/**
+ * Hook to get a single category by ID
+ */
+export const useGetCategory = (
+  categoryId: string,
+  query?: Parameters<typeof getCategory>[1],
+) => {
+  return useQuery(categoryQueries.getCategory.queryOptions(categoryId, query));
 };
