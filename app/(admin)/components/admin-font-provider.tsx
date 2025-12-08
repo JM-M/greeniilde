@@ -1,3 +1,5 @@
+// TODO: Remove this when we have a proper font provider
+
 "use client";
 
 import { useEffect } from "react";

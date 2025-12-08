@@ -1,6 +1,7 @@
 "use client";
 
 import { DeleteConfirmationDialog } from "@/app/(admin)/dashboard/components/shared/delete-confirmation-dialog";
+import { useAppBreadcrumbLabel } from "@/app/(admin)/dashboard/contexts/breadcrumb";
 import { useDeleteCategory } from "@/app/(admin)/modules/categories/hooks/use-category-actions";
 import { useGetCategory } from "@/app/(admin)/modules/categories/hooks/use-category-queries";
 import { useListProducts } from "@/app/(admin)/modules/products/hooks/use-product-queries";
@@ -30,6 +31,9 @@ export const CategoryDetailsView = ({
       enabled: Boolean(categoryId),
     },
   );
+  const category = data?.product_category;
+
+  useAppBreadcrumbLabel(categoryId, category?.name);
 
   const deleteCategoryMutation = useDeleteCategory({
     onSuccess: () => {
@@ -44,8 +48,6 @@ export const CategoryDetailsView = ({
   if (isLoading) {
     return <div className="p-4">Loading...</div>;
   }
-
-  const category = data?.product_category;
 
   if (!category) {
     return <div className="p-4">Category not found</div>;

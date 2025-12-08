@@ -1,6 +1,7 @@
 "use client";
 
 import { DeleteConfirmationDialog } from "@/app/(admin)/dashboard/components/shared/delete-confirmation-dialog";
+import { useAppBreadcrumbLabel } from "@/app/(admin)/dashboard/contexts/breadcrumb";
 import { useDeleteProduct } from "@/app/(admin)/modules/products/hooks/use-product-actions";
 import { useGetProduct } from "@/app/(admin)/modules/products/hooks/use-product-queries";
 import { ProductFormValues } from "@/app/(admin)/modules/products/schemas";
@@ -87,6 +88,8 @@ export const ProductDetailsView = ({ productId }: ProductDetailsViewProps) => {
     },
   });
 
+  useAppBreadcrumbLabel(productId, data?.product?.title);
+
   if (isLoading) {
     return <ProductFormSkeleton />;
   }
@@ -94,8 +97,8 @@ export const ProductDetailsView = ({ productId }: ProductDetailsViewProps) => {
   if (!data?.product) {
     return <div className="p-4">Product not found</div>;
   }
+  const product = data?.product;
 
-  const product = data.product;
   const initialValues = transformProductToFormValues(product);
   const enableVariantsInitially =
     (product.variants?.length || 0) > 1 || (product.options?.length || 0) > 0;

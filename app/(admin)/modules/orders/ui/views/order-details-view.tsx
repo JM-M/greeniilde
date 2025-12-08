@@ -1,5 +1,6 @@
 "use client";
 
+import { useAppBreadcrumbLabel } from "@/app/(admin)/dashboard/contexts/breadcrumb";
 import { useStockLocations } from "@/app/(admin)/modules/location/hooks/use-location-queries";
 import { useGetOrder } from "@/app/(admin)/modules/orders/hooks/use-order-queries";
 import { useCapturePayment } from "@/app/(admin)/modules/orders/hooks/use-payment-mutations";
@@ -22,6 +23,8 @@ export const OrderDetailsView = ({ orderId }: OrderDetailsViewProps) => {
       "+currency_code,*customer,*items,*fulfillments,*payment_collections,*payment_collections.payments",
   });
   const order = data?.order;
+
+  useAppBreadcrumbLabel(orderId, order ? `#${order.display_id}` : undefined);
 
   const { data: stockLocationsData } = useStockLocations();
   const firstLocationId = stockLocationsData?.stock_locations?.[0]?.id;
