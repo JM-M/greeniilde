@@ -2,6 +2,7 @@ import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import type { Metadata } from "next";
 import { Geist_Mono, Stack_Sans_Notch } from "next/font/google";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { Toaster } from "sonner";
 import "./globals.css";
 import { getQueryClient } from "./lib/query/get-query-client";
 import { regionQueries } from "./modules/region/queries";
@@ -49,7 +50,10 @@ export default async function RootLayout({
       >
         <QueryProvider>
           <HydrationBoundary state={dehydrate(queryClient)}>
-            <NuqsAdapter>{children}</NuqsAdapter>
+            <NuqsAdapter>
+              {children}
+              <Toaster />
+            </NuqsAdapter>
           </HydrationBoundary>
         </QueryProvider>
       </body>

@@ -4,5 +4,5 @@ import { createMutationAction } from "@/app/lib/query/create-query";
 export const authMutations = {
   login: createMutationAction(login, ["login"]),
   register: createMutationAction(register, ["register"]),
-  logout: createMutationAction(logout, ["logout"]),
+  logout: createMutationAction<void, void>(logout, ["logout"]),
 };
