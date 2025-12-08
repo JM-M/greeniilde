@@ -11,9 +11,12 @@ export const listProducts = async (
   return await sdk.admin.product.list(query, headers);
 };
 
-export const getProduct = async (id: string) => {
+export const getProduct = async (
+  id: string,
+  query?: HttpTypes.SelectParams,
+) => {
   const headers = await getAuthHeaders();
-  return await sdk.admin.product.retrieve(id, undefined, headers);
+  return await sdk.admin.product.retrieve(id, query, headers);
 };
 
 export const updateProduct = async ({

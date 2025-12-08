@@ -22,7 +22,10 @@ export const TagsField = () => {
 
   const handleAddTag = () => {
     if (inputValue.trim() && !tags.includes(inputValue.trim())) {
-      setValue("tags", [...tags, inputValue.trim()], { shouldValidate: true });
+      setValue("tags", [...tags, inputValue.trim()], {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
       setInputValue("");
     }
   };
@@ -31,7 +34,7 @@ export const TagsField = () => {
     setValue(
       "tags",
       tags.filter((tag) => tag !== tagToRemove),
-      { shouldValidate: true },
+      { shouldValidate: true, shouldDirty: true },
     );
   };
 

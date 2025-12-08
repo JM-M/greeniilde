@@ -18,7 +18,9 @@ export const VariantToggle = ({
           <Switch checked={checked} onCheckedChange={onCheckedChange} />
         </div>
         <div className="text-muted-foreground text-xs">
-          If disabled, a default variant will be created for the product.
+          {checked
+            ? "Product has multiple variants with different options."
+            : "A default variant will be created for the product."}
         </div>
       </div>
     </div>

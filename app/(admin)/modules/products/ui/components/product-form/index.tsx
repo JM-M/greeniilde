@@ -1,7 +1,7 @@
 "use client";
 
 import { FormActionsBar } from "@/app/(admin)/dashboard/components/shared/form-actions-bar";
-import { useUploadFiles } from "@/app/(admin)/hooks/use-upload-files";
+import { usePresignedUpload } from "@/app/(admin)/hooks/use-presigned-upload";
 import {
   useCreateProduct,
   useUpdateProduct,
@@ -16,7 +16,7 @@ import {
 } from "@/app/(admin)/modules/products/utils/transform-form-to-api";
 import { Form } from "@/app/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { HttpTypes } from "@medusajs/types";
+
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -26,11 +26,38 @@ import { VariantToggle } from "./variant-toggle";
 import { cn } from "@/app/lib/utils";
 import { ContentFields } from "./content-fields";
 import { ShippingField } from "./shipping-field";
+import { StatusToggle } from "./status-toggle";
 import { TagsField } from "./tags-field";
 import { VariantsManager } from "./variants-manager";
 
+const DEFAULT_VALUES: ProductFormValues = {
+  title: "",
+  description: "",
+  status: "draft",
+  category: "",
+  shipping: {
+    package: "",
+    weight: undefined,
+  },
+  media: [],
+  tags: [],
+  options: [],
+  variants: [],
+};
+
 type ProductFormProps = {
-  product?: HttpTypes.AdminProduct;
+  /**
+   * Product ID for updates. If not provided, form is in create mode.
+   */
+  productId?: string;
+  /**
+   * Initial form values. Falls back to defaults if not provided.
+   */
+  initialValues?: Partial<ProductFormValues>;
+  /**
+   * Whether variants are initially enabled (e.g., product has multiple variants or options)
+   */
+  enableVariantsInitially?: boolean;
 };
 
 const prepareFilesForUpload = async (mediaUrls: string[]) => {
@@ -57,15 +84,17 @@ const prepareFilesForUpload = async (mediaUrls: string[]) => {
   return { filesToUpload, blobIndices };
 };
 
-export const ProductForm = ({ product }: ProductFormProps) => {
+export const ProductForm = ({
+  productId,
+  initialValues,
+  enableVariantsInitially = false,
+}: ProductFormProps) => {
   const router = useRouter();
-  const isUpdate = Boolean(product);
-  const [enableVariants, setEnableVariants] = useState(
-    (product?.variants?.length || 0) > 1 || (product?.options?.length || 0) > 0,
-  );
+  const isUpdate = Boolean(productId);
+  const [enableVariants, setEnableVariants] = useState(enableVariantsInitially);
 
   // Mutations
-  const uploadFilesMutation = useUploadFiles();
+  const presignedUploadMutation = usePresignedUpload();
 
   const createProductMutation = useCreateProduct({
     onSuccess: (res) => {
@@ -89,33 +118,26 @@ export const ProductForm = ({ product }: ProductFormProps) => {
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(productFormSchema),
     defaultValues: {
-      title: product?.title || "",
-      description: product?.description || "",
-      status: product?.status || "draft",
-      category: product?.categories?.[0]?.id || "",
-      shipping: {
-        package: "", // TODO: Map from product
-        weight: product?.weight || undefined,
-      },
-      media: product?.images?.map((img) => img.url) || [],
-      tags: product?.tags?.map((tag) => tag.value) || [],
-      options:
-        product?.options?.map((opt) => ({
-          name: opt.title,
-          values: opt.values?.map((v) => v.value) || [],
-        })) || [],
-      variants: [], // TODO: Map variants
+      ...DEFAULT_VALUES,
+      ...initialValues,
     },
   });
 
   const submitProduct = (values: ProductFormValues) => {
-    if (isUpdate && product) {
+    if (isUpdate && productId) {
       // Update existing product
       const updateData = transformFormToUpdateProduct(values);
-      updateProductMutation.mutate({
-        productId: product.id,
-        updates: updateData,
-      });
+      updateProductMutation.mutate(
+        {
+          productId,
+          updates: updateData,
+        },
+        {
+          onSuccess: () => {
+            form.reset(values); // Reset form with submitted values to clear isDirty
+          },
+        },
+      );
     } else {
       // Create new product
       const createData = transformFormToCreateProduct(values);
@@ -132,26 +154,22 @@ export const ProductForm = ({ product }: ProductFormProps) => {
       );
 
       if (filesToUpload.length > 0) {
-        const formData = new FormData();
-        filesToUpload.forEach((file) => {
-          formData.append("files", file);
-        });
-
-        uploadFilesMutation.mutate(formData, {
-          onSuccess: (uploadResult) => {
-            const mediaUrls = [...(values.media || [])];
-            uploadResult.files.forEach(
-              (file: HttpTypes.AdminFile, index: number) => {
+        presignedUploadMutation.mutate(
+          { files: filesToUpload },
+          {
+            onSuccess: (uploadResult) => {
+              const mediaUrls = [...(values.media || [])];
+              uploadResult.files.forEach((file, index) => {
                 const originalIndex = blobIndices[index];
                 mediaUrls[originalIndex] = file.url;
-              },
-            );
-            submitProduct({ ...values, media: mediaUrls });
+              });
+              submitProduct({ ...values, media: mediaUrls });
+            },
+            onError: (error) => {
+              toast.error(`Failed to upload images: ${error.message}`);
+            },
           },
-          onError: (error) => {
-            toast.error(`Failed to upload images: ${error.message}`);
-          },
-        });
+        );
       } else {
         submitProduct(values);
       }
@@ -165,7 +183,7 @@ export const ProductForm = ({ product }: ProductFormProps) => {
     form.formState.isSubmitting ||
     createProductMutation.isPending ||
     updateProductMutation.isPending ||
-    uploadFilesMutation.isPending;
+    presignedUploadMutation.isPending;
 
   return (
     <Form {...form}>
@@ -194,7 +212,8 @@ export const ProductForm = ({ product }: ProductFormProps) => {
           </div>
 
           <div className="space-y-8 lg:col-span-3">
-            <div className="sticky top-0 space-y-6">
+            <div className="sticky top-4 space-y-6">
+              <StatusToggle />
               <ShippingField />
               <TagsField />
             </div>

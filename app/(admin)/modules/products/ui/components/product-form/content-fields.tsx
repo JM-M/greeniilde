@@ -21,35 +21,6 @@ export const ContentFields = () => {
   return (
     <Card>
       <CardContent className="space-y-6">
-        <FormField
-          control={control}
-          name="media"
-          render={({ field }) => {
-            const mediaValue = watch("media") || [];
-            const mediaItems: MediaItem[] = mediaValue.map((url, index) => ({
-              id: url || `existing-${index}`,
-              url,
-            }));
-
-            return (
-              <FormItem>
-                <FormLabel>Media</FormLabel>
-                <FormControl>
-                  <MediaUpload
-                    value={mediaItems}
-                    onChange={(files) => {
-                      const urls = files.map((f) => f.url);
-                      setValue("media", urls, { shouldValidate: true });
-                    }}
-                    maxFiles={10}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            );
-          }}
-        />
-
         <div className="grid gap-2 md:grid-cols-2">
           <FormField
             control={control}
@@ -100,6 +71,38 @@ export const ContentFields = () => {
               <FormMessage />
             </FormItem>
           )}
+        />
+
+        <FormField
+          control={control}
+          name="media"
+          render={({ field }) => {
+            const mediaValue = watch("media") || [];
+            const mediaItems: MediaItem[] = mediaValue.map((url, index) => ({
+              id: url || `existing-${index}`,
+              url,
+            }));
+
+            return (
+              <FormItem>
+                <FormLabel>Media</FormLabel>
+                <FormControl>
+                  <MediaUpload
+                    value={mediaItems}
+                    onChange={(files) => {
+                      const urls = files.map((f) => f.url);
+                      setValue("media", urls, {
+                        shouldValidate: true,
+                        shouldDirty: true,
+                      });
+                    }}
+                    maxFiles={10}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            );
+          }}
         />
       </CardContent>
     </Card>

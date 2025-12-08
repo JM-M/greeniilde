@@ -60,11 +60,14 @@ export const ShippingField = () => {
                 <Input
                   type="number"
                   placeholder="0"
-                  {...field}
+                  value={field.value ?? ""}
                   onChange={(event) => {
                     const value = event.target.value;
                     field.onChange(value === "" ? undefined : Number(value));
                   }}
+                  onBlur={field.onBlur}
+                  name={field.name}
+                  ref={field.ref}
                 />
               </FormControl>
               <FormMessage />

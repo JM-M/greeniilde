@@ -1,6 +1,7 @@
 "use client";
 
 import { getProduct, listProducts } from "@/app/(admin)/lib/api/products";
+import { HttpTypes } from "@medusajs/types";
 import { useQuery, type UseQueryOptions } from "@tanstack/react-query";
 import { productQueries } from "../queries";
 
@@ -22,10 +23,15 @@ export const useListProducts = (
  */
 export const useGetProduct = (
   id: string,
+  query?: HttpTypes.SelectParams,
   options?: Omit<
     UseQueryOptions<Awaited<ReturnType<typeof getProduct>>, Error>,
     "queryKey" | "queryFn"
   >,
 ) => {
-  return useQuery(productQueries.getProduct.queryOptions(id, options));
+  return useQuery({
+    queryKey: ["products", "getProduct", id, query] as const,
+    queryFn: () => getProduct(id, query),
+    ...options,
+  });
 };
