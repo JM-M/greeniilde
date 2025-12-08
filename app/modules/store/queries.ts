@@ -1,11 +1,14 @@
 import { getStoreConfig } from "@/app/lib/api/store";
-import { createSuspenseQuery } from "@/app/lib/query/create-query";
+import { createQuery, createSuspenseQuery } from "@/app/lib/query/create-query";
 
-const getStoreConfigQuery = createSuspenseQuery(getStoreConfig, [
+const getSuspenseStoreConfigQuery = createSuspenseQuery(getStoreConfig, [
   "store",
   "config",
 ]);
 
+const getStoreConfigQuery = createQuery(getStoreConfig, ["store", "config"]);
+
 export const storeQueries = {
+  getSuspenseStoreConfig: getSuspenseStoreConfigQuery,
   getStoreConfig: getStoreConfigQuery,
 } as const;

@@ -1,6 +1,6 @@
 "use client";
 
-import { Command, PencilRuler, Settings, ShoppingBag } from "lucide-react";
+import { PencilRuler, Settings, ShoppingBag } from "lucide-react";
 import * as React from "react";
 
 import {
@@ -14,6 +14,7 @@ import {
 } from "@/app/components/ui/sidebar";
 import { NavMain } from "./nav-main";
 import { NavSecondary } from "./nav-secondary";
+import { NavStore } from "./nav-store";
 import { NavUser } from "./nav-user";
 
 const data = {
@@ -31,15 +32,15 @@ const data = {
       items: [
         {
           title: "Orders",
-          url: "#",
+          url: "/dashboard/orders",
         },
         {
           title: "Products",
-          url: "#",
+          url: "/dashboard/products",
         },
         {
           title: "Categories",
-          url: "#",
+          url: "/dashboard/categories",
         },
       ],
     },
@@ -73,15 +74,7 @@ export function DashboardSidebar({
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <a href="#">
-                <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-                  <Command className="size-4" />
-                </div>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">Acme Inc</span>
-                  <span className="truncate text-xs">Enterprise</span>
-                </div>
-              </a>
+              <NavStore />
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
@@ -91,7 +84,7 @@ export function DashboardSidebar({
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser />
       </SidebarFooter>
     </Sidebar>
   );

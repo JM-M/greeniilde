@@ -38,7 +38,7 @@ export const LoginForm = () => {
     loginMutation.mutate(values, {
       onSuccess: () => {
         // Redirect to editor after successful login
-        router.push("/editor");
+        router.push("/dashboard/orders");
         router.refresh();
       },
       onError: (err) => {
