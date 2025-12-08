@@ -11,7 +11,7 @@ export const VariantToggle = ({
   onCheckedChange,
 }: VariantToggleProps) => {
   return (
-    <div className="rounded-lg border p-4 shadow-sm">
+    <div className="rounded-lg border p-4">
       <div className="space-y-0.5">
         <div className="flex flex-row items-center justify-between">
           <Label className="text-base">Enable variants</Label>
