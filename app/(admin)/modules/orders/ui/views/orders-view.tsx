@@ -39,10 +39,6 @@ export const OrdersView = () => {
   const hasNextPage = (currentPage + 1) * PAGE_SIZE < totalItems;
   const hasPreviousPage = currentPage > 0;
 
-  if (isLoading) {
-    return <div className="p-4">Loading orders...</div>;
-  }
-
   return (
     <OrdersTable
       data={tableData}
@@ -53,6 +49,7 @@ export const OrdersView = () => {
       hasPreviousPage={hasPreviousPage}
       onNextPage={() => setCurrentPage((p) => p + 1)}
       onPreviousPage={() => setCurrentPage((p) => p - 1)}
+      isLoading={isLoading}
     />
   );
 };

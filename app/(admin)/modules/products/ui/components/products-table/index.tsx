@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { ProductsTableActions } from "./actions";
 import { columns, ProductTableRow } from "./columns";
+import { ProductTableHeader } from "./header";
 
 interface ProductsTableProps {
   data: ProductTableRow[];
@@ -17,6 +18,9 @@ interface ProductsTableProps {
   hasPreviousPage: boolean;
   onNextPage: () => void;
   onPreviousPage: () => void;
+  searchTerm: string;
+  onSearchChange: (value: string) => void;
+  isLoading?: boolean;
 }
 
 export const ProductsTable = ({
@@ -28,6 +32,9 @@ export const ProductsTable = ({
   hasPreviousPage,
   onNextPage,
   onPreviousPage,
+  searchTerm,
+  onSearchChange,
+  isLoading,
 }: ProductsTableProps) => {
   const router = useRouter();
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
@@ -42,6 +49,7 @@ export const ProductsTable = ({
 
   return (
     <div className="space-y-3">
+      <ProductTableHeader value={searchTerm} onChange={onSearchChange} />
       <DataTable
         columns={columns}
         data={data}
@@ -50,6 +58,7 @@ export const ProductsTable = ({
         getRowId={(row) => row.id}
         onRowClick={handleRowClick}
         getRowClassName={() => "cursor-pointer"}
+        isLoading={isLoading}
       />
       <ProductsTableActions selectedCount={selectedProductIds.length} />
       <DataTablePagination

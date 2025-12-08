@@ -16,6 +16,7 @@ interface OrdersTableProps {
   hasPreviousPage: boolean;
   onNextPage: () => void;
   onPreviousPage: () => void;
+  isLoading?: boolean;
 }
 
 export const OrdersTable = ({
@@ -27,6 +28,7 @@ export const OrdersTable = ({
   hasPreviousPage,
   onNextPage,
   onPreviousPage,
+  isLoading,
 }: OrdersTableProps) => {
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
@@ -42,6 +44,7 @@ export const OrdersTable = ({
         rowSelection={rowSelection}
         onRowSelectionChange={setRowSelection}
         getRowId={(row) => row.id}
+        isLoading={isLoading}
       />
       <OrdersTableActions selectedCount={selectedOrderIds.length} />
       <DataTablePagination

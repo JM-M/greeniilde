@@ -16,6 +16,7 @@ interface CategoriesTableProps {
   hasPreviousPage: boolean;
   onNextPage: () => void;
   onPreviousPage: () => void;
+  isLoading?: boolean;
 }
 
 export const CategoriesTable = ({
@@ -27,6 +28,7 @@ export const CategoriesTable = ({
   hasPreviousPage,
   onNextPage,
   onPreviousPage,
+  isLoading,
 }: CategoriesTableProps) => {
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
@@ -42,6 +44,7 @@ export const CategoriesTable = ({
         rowSelection={rowSelection}
         onRowSelectionChange={setRowSelection}
         getRowId={(row) => row.id}
+        isLoading={isLoading}
       />
       <CategoriesTableActions selectedCount={selectedCategoryIds.length} />
       <DataTablePagination

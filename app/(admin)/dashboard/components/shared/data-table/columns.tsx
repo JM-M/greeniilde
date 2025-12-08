@@ -1,5 +1,7 @@
 import { Checkbox } from "@/app/components/ui/checkbox";
+import { Skeleton } from "@/app/components/ui/skeleton";
 import { ColumnDef } from "@tanstack/react-table";
+import "./types"; // Import type augmentation
 
 export const selectColumn = <TData,>(): ColumnDef<TData> => ({
   id: "select",
@@ -29,5 +31,6 @@ export const selectColumn = <TData,>(): ColumnDef<TData> => ({
   enableHiding: false,
   meta: {
     className: "w-7",
+    skeleton: <Skeleton className="size-4 rounded" />,
   },
 });

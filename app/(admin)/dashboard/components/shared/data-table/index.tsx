@@ -22,6 +22,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/app/components/ui/table";
+import { DataTableSkeleton } from "./skeleton";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -34,6 +35,14 @@ interface DataTableProps<TData, TValue> {
   rowSelection?: RowSelectionState;
   onRowSelectionChange?: OnChangeFn<RowSelectionState>;
   getRowId?: (originalRow: TData, index: number, parent?: Row<TData>) => string;
+  /**
+   * Whether the table is in a loading state
+   */
+  isLoading?: boolean;
+  /**
+   * Number of skeleton rows to show when loading. Defaults to 5.
+   */
+  loadingRowCount?: number;
 }
 
 export function DataTable<TData, TValue>({
@@ -47,6 +56,8 @@ export function DataTable<TData, TValue>({
   rowSelection,
   onRowSelectionChange,
   getRowId,
+  isLoading = false,
+  loadingRowCount = 5,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [expanded, setExpanded] = React.useState({});
@@ -70,6 +81,41 @@ export function DataTable<TData, TValue>({
       rowSelection: rowSelection || internalRowSelection,
     },
   });
+
+  const renderTableBody = () => {
+    if (isLoading) {
+      return <DataTableSkeleton columns={columns} rowCount={loadingRowCount} />;
+    }
+
+    if (!table.getRowModel().rows?.length) {
+      return (
+        <TableRow>
+          <TableCell colSpan={columns.length} className="h-24 text-center">
+            No results.
+          </TableCell>
+        </TableRow>
+      );
+    }
+
+    return table.getRowModel().rows.map((row) => (
+      <TableRow
+        key={row.id}
+        className={getRowClassName?.(row)}
+        data-state={row.getIsSelected() && "selected"}
+        onClick={() => onRowClick?.(row)}
+        role={onRowClick ? "button" : undefined}
+      >
+        {row.getVisibleCells().map((cell) => (
+          <TableCell
+            key={cell.id}
+            className={(cell.column.columnDef.meta as any)?.className}
+          >
+            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+          </TableCell>
+        ))}
+      </TableRow>
+    ));
+  };
 
   return (
     <div className="w-full space-y-3">
@@ -99,40 +145,7 @@ export function DataTable<TData, TValue>({
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  className={getRowClassName?.(row)}
-                  data-state={row.getIsSelected() && "selected"}
-                  onClick={() => onRowClick?.(row)}
-                  role={onRowClick ? "button" : undefined}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell
-                      key={cell.id}
-                      className={(cell.column.columnDef.meta as any)?.className}
-                    >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
+          <TableBody>{renderTableBody()}</TableBody>
         </Table>
       </div>
       {renderBelowTable}

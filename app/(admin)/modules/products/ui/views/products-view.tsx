@@ -2,6 +2,7 @@
 
 import { useListProducts } from "@/app/(admin)/modules/products/hooks/use-product-queries";
 import { useMemo, useState } from "react";
+import { useDebounce } from "use-debounce";
 import { ProductsTable } from "../components/products-table";
 import { ProductTableRow } from "../components/products-table/columns";
 
@@ -9,8 +10,11 @@ const PAGE_SIZE = 20;
 
 export const ProductsView = () => {
   const [currentPage, setCurrentPage] = useState(0);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearchTerm] = useDebounce(searchTerm, 300);
 
   const { data, isLoading } = useListProducts({
+    q: debouncedSearchTerm || undefined,
     fields: "*categories",
     limit: PAGE_SIZE,
     offset: currentPage * PAGE_SIZE,
@@ -32,10 +36,6 @@ export const ProductsView = () => {
   const hasNextPage = (currentPage + 1) * PAGE_SIZE < totalItems;
   const hasPreviousPage = currentPage > 0;
 
-  if (isLoading) {
-    return <div className="p-4">Loading products...</div>;
-  }
-
   return (
     <ProductsTable
       data={tableData}
@@ -46,6 +46,9 @@ export const ProductsView = () => {
       hasPreviousPage={hasPreviousPage}
       onNextPage={() => setCurrentPage((p) => p + 1)}
       onPreviousPage={() => setCurrentPage((p) => p - 1)}
+      searchTerm={searchTerm}
+      onSearchChange={setSearchTerm}
+      isLoading={isLoading}
     />
   );
 };
