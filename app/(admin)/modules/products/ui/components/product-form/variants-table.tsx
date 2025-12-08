@@ -14,23 +14,35 @@ import {
   TableHeader,
   TableRow,
 } from "@/app/components/ui/table";
-import { CURRENCY_CODE } from "@/app/constants/api";
+import { useSuspenseDefaultRegion } from "@/app/modules/region/hooks/use-region-queries";
 import { useFormContext } from "react-hook-form";
 import { ProductFormValues } from "../../../schemas";
 
-const DEFAULT_CURRENCY = { code: CURRENCY_CODE, symbol: "₦" };
+// Currency symbol mapping for common currencies
+const CURRENCY_SYMBOLS: Record<string, string> = {
+  ngn: "₦",
+  usd: "$",
+  eur: "€",
+  gbp: "£",
+};
 
 export const VariantsTable = () => {
   const { watch, setValue } = useFormContext<ProductFormValues>();
   const variants = watch("variants") || [];
 
+  // Get currency code from the default region
+  const { data: regionData } = useSuspenseDefaultRegion();
+  const currencyCode = regionData.region.currency_code;
+  const currencySymbol =
+    CURRENCY_SYMBOLS[currencyCode.toLowerCase()] || currencyCode.toUpperCase();
+
   const updateVariantPrice = (variantIndex: number, amount: number) => {
     const currentVariants = [...variants];
     const variant = currentVariants[variantIndex];
 
-    // Set price for the default currency
+    // Set price for the region's currency
     if (amount > 0) {
-      variant.prices = [{ currency_code: CURRENCY_CODE, amount }];
+      variant.prices = [{ currency_code: currencyCode, amount }];
     } else {
       variant.prices = [];
     }
@@ -74,9 +86,7 @@ export const VariantsTable = () => {
                 <TableCell>
                   <div className="flex items-center gap-2">
                     <InputGroup>
-                      <InputGroupAddon>
-                        {DEFAULT_CURRENCY.symbol}
-                      </InputGroupAddon>
+                      <InputGroupAddon>{currencySymbol}</InputGroupAddon>
                       <InputGroupInput
                         type="number"
                         step="0.01"
@@ -85,7 +95,7 @@ export const VariantsTable = () => {
                           variant.prices?.find(
                             (p) =>
                               p.currency_code?.toUpperCase() ===
-                              DEFAULT_CURRENCY.code.toUpperCase(),
+                              currencyCode.toUpperCase(),
                           )?.amount || ""
                         }
                         onChange={(e) =>

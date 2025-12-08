@@ -1,5 +1,5 @@
-import { REGION_ID } from "@/app/constants/api";
 import { getQueryClient } from "@/app/lib/query/get-query-client";
+import { storeQueries } from "@/app/modules/store/queries";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { Suspense } from "react";
 import { productQueries } from "../../queries";
@@ -17,16 +17,24 @@ export const ProductDetailsView = async ({
 }: ProductDetailsViewProps) => {
   const queryClient = getQueryClient();
 
-  // TODO: Convert to an infinite query
-  queryClient.prefetchQuery(
-    productQueries.getProduct.queryOptions({
-      productId,
-      query: {
-        fields: `*variants.calculated_price,*categories`,
-        region_id: REGION_ID,
-      },
-    }),
+  // Get store config to access the default region ID
+  const storeConfig = await queryClient.fetchQuery(
+    storeQueries.getStoreConfig.queryOptions(),
   );
+  const regionId = storeConfig.default_region_id;
+
+  // TODO: Convert to an infinite query
+  if (regionId) {
+    queryClient.prefetchQuery(
+      productQueries.getProduct.queryOptions({
+        productId,
+        query: {
+          fields: `*variants.calculated_price,*categories`,
+          region_id: regionId,
+        },
+      }),
+    );
+  }
 
   queryClient.prefetchQuery(
     productQueries.getProductReviews.queryOptions({ productId }),

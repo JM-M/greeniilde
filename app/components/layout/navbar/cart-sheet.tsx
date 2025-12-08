@@ -10,7 +10,6 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/app/components/ui/sheet";
-import { CURRENCY_CODE } from "@/app/constants/api";
 import { useCartSheet } from "@/app/contexts/cart-sheet-context";
 import { convertToLocale } from "@/app/lib/utils";
 import { useSuspenseRetrieveCart } from "@/app/modules/cart/hooks/use-cart-queries";
@@ -31,6 +30,8 @@ export function CartSheet({ className }: CartSheetProps) {
 
   const { items, numCartItems, cart, subtotal, total } =
     useSuspenseRetrieveCart();
+
+  const currencyCode = cart?.currency_code || "ngn";
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -69,7 +70,7 @@ export function CartSheet({ className }: CartSheetProps) {
               <span className="text-lg font-semibold">
                 {convertToLocale({
                   amount: subtotal,
-                  currencyCode: cart?.currency_code || CURRENCY_CODE,
+                  currencyCode,
                 })}
               </span>
             </div>

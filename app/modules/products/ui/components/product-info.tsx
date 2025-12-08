@@ -1,6 +1,5 @@
 import { Badge } from "@/app/components/ui/badge";
 import { Skeleton } from "@/app/components/ui/skeleton";
-import { CURRENCY_CODE } from "@/app/constants/api";
 import { cn, convertToLocale } from "@/app/lib/utils";
 import { HttpTypes } from "@medusajs/types";
 import { useProductDetailsContext } from "../contexts/product-details-context";
@@ -18,7 +17,7 @@ export const ProductInfo = ({ name, tags, className }: ProductInfoProps) => {
     selectedVariant?.calculated_price as HttpTypes.StoreCalculatedPrice;
 
   const price = calculatedPrice?.calculated_amount;
-  const currencyCode = calculatedPrice?.currency_code;
+  const currencyCode = calculatedPrice?.currency_code || "ngn";
 
   const sku = selectedVariant?.sku;
 
@@ -32,7 +31,7 @@ export const ProductInfo = ({ name, tags, className }: ProductInfoProps) => {
       <div className="text-xl font-semibold uppercase">
         {convertToLocale({
           amount: price || 0,
-          currencyCode: currencyCode || CURRENCY_CODE,
+          currencyCode,
         })}
       </div>
 

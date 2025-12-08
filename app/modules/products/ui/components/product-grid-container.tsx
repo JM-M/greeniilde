@@ -1,5 +1,6 @@
 "use client";
 
+import { useSuspenseDefaultRegion } from "@/app/modules/region/hooks/use-region-queries";
 import { useSuspenseGetProductsFromMeilisearch } from "../../hooks/use-product-queries";
 import { SortOption } from "../../hooks/use-product-sort-params";
 import { convertFiltersToMeilisearch } from "../../utils/filter";
@@ -21,6 +22,9 @@ export const ProductGridContainer = ({
   sort,
   filter,
 }: ProductGridContainerProps) => {
+  const { data: regionData } = useSuspenseDefaultRegion();
+  const currencyCode = regionData.region.currency_code;
+
   const { data: productsData } = useSuspenseGetProductsFromMeilisearch({
     sort: convertSortToMeilisearch(sort),
     filter: convertFiltersToMeilisearch(filter),
@@ -31,10 +35,13 @@ export const ProductGridContainer = ({
       return {
         id: hit.id,
         name: hit.title || "",
-        price: formatPriceRange({
-          min: hit.min_price,
-          max: hit.max_price,
-        }),
+        price: formatPriceRange(
+          {
+            min: hit.min_price,
+            max: hit.max_price,
+          },
+          currencyCode,
+        ),
         specs: hit.tags?.map((tag) => tag.value) || [],
         image: hit.thumbnail || "",
       };

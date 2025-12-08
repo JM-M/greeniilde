@@ -8,7 +8,6 @@ import { AuthModal } from "../modules/auth/components/auth-modal";
 import { authQueries } from "../modules/auth/queries";
 import { cartQueries } from "../modules/cart/queries";
 import { categoryQueries } from "../modules/categories/queries";
-import { storeQueries } from "../modules/store/queries";
 import { terminalQueries } from "../modules/terminal/queries";
 import { AuthModalProvider } from "../providers/auth-modal-provider";
 
@@ -30,9 +29,6 @@ const PagesLayout = async ({ children }: { children: React.ReactNode }) => {
       countryIsoCode: DEFAULT_COUNTRY_CODE,
     }),
   );
-
-  // Prefetch store configuration
-  queryClient.prefetchQuery(storeQueries.getStoreConfig.queryOptions());
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

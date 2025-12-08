@@ -7,6 +7,7 @@ import { useSuspenseListCategories } from "@/app/modules/categories/hooks/use-ca
 import { useSuspenseGetProductsFromMeilisearch } from "@/app/modules/products/hooks/use-product-queries";
 import { ProductCarousel } from "@/app/modules/products/ui/components/product-carousel";
 import { formatPriceRange } from "@/app/modules/products/utils/price";
+import { useSuspenseDefaultRegion } from "@/app/modules/region/hooks/use-region-queries";
 import Link from "next/link";
 import { useLandingProductsParams } from "../../hooks/use-landing-products-params";
 import { getMeilisearchFilterFromLandingProductsParams } from "../../utils";
@@ -14,6 +15,9 @@ import { getMeilisearchFilterFromLandingProductsParams } from "../../utils";
 export const Products = () => {
   const { data: categoriesData } = useSuspenseListCategories({});
   const categories = categoriesData.product_categories;
+
+  const { data: regionData } = useSuspenseDefaultRegion();
+  const currencyCode = regionData.region.currency_code;
 
   const [landingProductsParams, setLandingProductsParams] =
     useLandingProductsParams();
@@ -30,10 +34,13 @@ export const Products = () => {
       return {
         id: hit.id,
         name: hit.title || "",
-        price: formatPriceRange({
-          min: hit.min_price,
-          max: hit.max_price,
-        }),
+        price: formatPriceRange(
+          {
+            min: hit.min_price,
+            max: hit.max_price,
+          },
+          currencyCode,
+        ),
         specs: hit.tags?.map((tag) => tag.value) || [],
         image: hit.thumbnail || "",
       };

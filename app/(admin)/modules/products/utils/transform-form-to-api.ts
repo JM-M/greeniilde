@@ -1,4 +1,3 @@
-import { CURRENCY_CODE } from "@/app/constants/api";
 import { HttpTypes } from "@medusajs/types";
 import { ProductFormValues } from "../schemas";
 
@@ -36,14 +35,17 @@ const buildOptions = (formValues: ProductFormValues) => {
 /**
  * Build variants array - either from explicit variants or create a default
  */
-const buildVariants = (formValues: ProductFormValues) => {
+const buildVariants = (
+  formValues: ProductFormValues,
+  currencyCode: string = "ngn",
+) => {
   if (usesDefaultVariant(formValues)) {
     const dv = formValues.defaultVariant;
     return [
       {
         title: DEFAULT_VARIANT_NAME,
         prices: dv?.price
-          ? [{ currency_code: CURRENCY_CODE, amount: dv.price }]
+          ? [{ currency_code: currencyCode, amount: dv.price }]
           : [],
         options: { [DEFAULT_OPTION_NAME]: DEFAULT_VARIANT_NAME },
         manage_inventory: true,
@@ -64,6 +66,7 @@ const buildVariants = (formValues: ProductFormValues) => {
 
 export const transformFormToCreateProduct = (
   formValues: ProductFormValues,
+  salesChannelId?: string,
 ): HttpTypes.AdminCreateProduct => {
   return {
     title: formValues.title,
@@ -79,6 +82,7 @@ export const transformFormToCreateProduct = (
     variants: buildVariants(formValues),
     // tags: formValues.tags?.map((tag) => ({ value: tag })) || [],
     categories: formValues.category ? [{ id: formValues.category }] : [],
+    ...(salesChannelId && { sales_channels: [{ id: salesChannelId }] }),
   };
 };
 

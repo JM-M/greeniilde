@@ -1,6 +1,5 @@
 "use server";
 
-import { CURRENCY_CODE, REGION_ID } from "@/app/constants/api";
 import {
   MeilisearchHitsResponse,
   ProductIndexDocument,
@@ -12,6 +11,8 @@ import {
   getMeilisearchMasterClient,
 } from "../meilisearch/config";
 import { buildQueryString } from "../utils";
+import { getRegion } from "./region";
+import { getStoreConfig } from "./store";
 
 export interface SearchProductsInput extends Record<string, unknown> {
   query: string;
@@ -50,10 +51,20 @@ export const getProduct = async ({
  * Custom endpoint for advanced search functionality
  */
 export const searchProducts = async (input: SearchProductsInput) => {
+  // Get store config for region ID
+  const storeConfig = await getStoreConfig();
+  const regionId = storeConfig.default_region_id;
+
+  let currencyCode = "ngn"; // default fallback
+  if (regionId) {
+    const regionData = await getRegion(regionId);
+    currencyCode = regionData.region.currency_code;
+  }
+
   const queryString = buildQueryString({
     ...input,
-    region_id: REGION_ID,
-    currency_code: CURRENCY_CODE,
+    region_id: regionId,
+    currency_code: currencyCode,
   });
   const url = `/store/meilisearch/products?${queryString}`;
   return await sdk.client.fetch<{

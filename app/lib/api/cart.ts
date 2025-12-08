@@ -2,7 +2,6 @@
 
 import { z } from "zod";
 
-import { REGION_ID } from "@/app/constants/api";
 import { TerminalRate } from "@/app/modules/terminal/types";
 import { HttpTypes } from "@medusajs/types";
 import { redirect } from "next/navigation";
@@ -13,6 +12,7 @@ import {
   removeCartIdCookie,
   setCartIdCookie,
 } from "./cookies";
+import { getStoreConfig } from "./store";
 
 export type RetrieveCartParams = { cartId?: string; fields?: string };
 
@@ -57,11 +57,19 @@ export async function retrieveCart({
 }
 
 export async function getOrSetCart() {
+  // Get the store's default region ID
+  const storeConfig = await getStoreConfig();
+  const regionId = storeConfig.default_region_id;
+
+  if (!regionId) {
+    throw new Error("Store does not have a default region configured");
+  }
+
   let cart = await retrieveCart({ fields: "id,region_id" });
 
   if (!cart) {
     const cartResp = await sdk.store.cart.create(
-      { region_id: REGION_ID },
+      { region_id: regionId },
       {},
       await getAuthHeaders(),
     );
@@ -69,10 +77,10 @@ export async function getOrSetCart() {
     await setCartIdCookie(cart.id);
   }
 
-  if (cart && cart?.region_id !== REGION_ID) {
+  if (cart && cart?.region_id !== regionId) {
     await sdk.store.cart.update(
       cart.id,
-      { region_id: REGION_ID },
+      { region_id: regionId },
       {},
       await getAuthHeaders(),
     );
@@ -362,11 +370,19 @@ export async function createCartWithChannel({
 }: CreateCartWithChannelParams) {
   const headers = await getAuthHeaders();
 
+  // Get the store's default region ID
+  const storeConfig = await getStoreConfig();
+  const regionId = storeConfig.default_region_id;
+
+  if (!regionId) {
+    throw new Error("Store does not have a default region configured");
+  }
+
   const parsedChannel = CartChannelSchema.parse(channel);
 
   const cartResp = await sdk.store.cart.create(
     {
-      region_id: REGION_ID,
+      region_id: regionId,
       metadata: {
         channel: parsedChannel,
       },

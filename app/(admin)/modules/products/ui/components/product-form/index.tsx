@@ -15,20 +15,19 @@ import {
   transformFormToUpdateProduct,
 } from "@/app/(admin)/modules/products/utils/transform-form-to-api";
 import { Form } from "@/app/components/ui/form";
+import { cn } from "@/app/lib/utils";
+import { useStoreConfig } from "@/app/modules/store/hooks/use-store-queries";
 import { zodResolver } from "@hookform/resolvers/zod";
-
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { VariantToggle } from "./variant-toggle";
-
-import { cn } from "@/app/lib/utils";
 import { ContentFields } from "./content-fields";
 import { ShippingField } from "./shipping-field";
 import { SimpleVariantFields } from "./simple-variant-fields";
 import { StatusToggle } from "./status-toggle";
 import { TagsField } from "./tags-field";
+import { VariantToggle } from "./variant-toggle";
 import { VariantsManager } from "./variants-manager";
 
 const DEFAULT_VALUES: ProductFormValues = {
@@ -98,6 +97,9 @@ export const ProductForm = ({
   const isUpdate = Boolean(productId);
   const [enableVariants, setEnableVariants] = useState(enableVariantsInitially);
 
+  // Get store config for default sales channel
+  const { data: storeConfig } = useStoreConfig();
+
   // Track if enableVariants has changed from initial
   const enableVariantsChanged = enableVariants !== enableVariantsInitially;
 
@@ -147,8 +149,15 @@ export const ProductForm = ({
         },
       );
     } else {
-      // Create new product
-      const createData = transformFormToCreateProduct(values);
+      if (!storeConfig?.default_sales_channel_id) {
+        toast.error("Default sales channel not found");
+        return;
+      }
+      // Create new product - include default sales channel
+      const createData = transformFormToCreateProduct(
+        values,
+        storeConfig?.default_sales_channel_id,
+      );
       createProductMutation.mutate({
         product: createData,
       });

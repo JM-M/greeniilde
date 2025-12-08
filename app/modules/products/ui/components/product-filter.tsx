@@ -11,8 +11,8 @@ import { ScrollArea } from "@/app/components/ui/scroll-area";
 import { Separator } from "@/app/components/ui/separator";
 import { Skeleton } from "@/app/components/ui/skeleton";
 import { Slider } from "@/app/components/ui/slider";
-import { CURRENCY_CODE } from "@/app/constants/api";
 import { convertToLocale } from "@/app/lib/utils";
+import { useSuspenseDefaultRegion } from "@/app/modules/region/hooks/use-region-queries";
 import { ChevronDown } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useSuspenseListCategories } from "../../../categories/hooks/use-category-queries";
@@ -26,6 +26,10 @@ export const ProductFilter = () => {
     useProductFilterParams();
 
   const { data: facetDistributions } = useSuspenseGetFacetDistributions();
+
+  // Get currency from region
+  const { data: regionData } = useSuspenseDefaultRegion();
+  const currencyCode = regionData.region.currency_code;
 
   // Get available categories from facets and fetch category details
   const { data: categoriesData } = useSuspenseListCategories({});
@@ -154,13 +158,13 @@ export const ProductFilter = () => {
                   <span>
                     {convertToLocale({
                       amount: priceSliderValue[0],
-                      currencyCode: CURRENCY_CODE,
+                      currencyCode,
                     })}
                   </span>
                   <span>
                     {convertToLocale({
                       amount: priceSliderValue[1],
-                      currencyCode: CURRENCY_CODE,
+                      currencyCode,
                     })}
                   </span>
                 </div>

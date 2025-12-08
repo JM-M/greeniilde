@@ -1,11 +1,12 @@
 "use client";
 
-import { CURRENCY_CODE } from "@/app/constants/api";
 import { z } from "zod";
 
-// Price structure for single currency (CURRENCY_CODE)
+// Currency code is dynamically determined from the store's default region.
+// Using z.string() allows flexibility while the actual currency is validated
+// at runtime when fetching from the region config.
 const priceSchema = z.object({
-  currency_code: z.literal(CURRENCY_CODE),
+  currency_code: z.string(),
   amount: z.number().min(0),
 });
 

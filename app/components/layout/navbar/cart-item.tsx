@@ -9,7 +9,6 @@ import {
   ItemMedia,
   ItemTitle,
 } from "@/app/components/ui/item";
-import { CURRENCY_CODE } from "@/app/constants/api";
 import { cn, convertToLocale } from "@/app/lib/utils";
 import {
   useRemoveCartItem,
@@ -43,6 +42,7 @@ export function CartItem({
 }: CartItemProps) {
   const { cart } = useSuspenseRetrieveCart();
   const cartId = cart?.id || "";
+  const currencyCode = cart?.currency_code || "ngn";
 
   const updateCartItemMutation = useUpdateCartItem();
   const removeCartItemMutation = useRemoveCartItem();
@@ -82,7 +82,7 @@ export function CartItem({
           <span className="text-sm font-medium">
             {convertToLocale({
               amount: Number(price),
-              currencyCode: cart?.currency_code || CURRENCY_CODE,
+              currencyCode,
             })}
           </span>
         </ItemHeader>

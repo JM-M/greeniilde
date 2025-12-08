@@ -5,12 +5,15 @@ import {
   ProductCarousel,
   ProductCarouselSkeleton,
 } from "@/app/modules/products/ui/components/product-carousel";
+import { useSuspenseDefaultRegion } from "@/app/modules/region/hooks/use-region-queries";
 import { useGetProductsFromMeilisearch } from "../../hooks/use-product-queries";
 import { formatPriceRange } from "../../utils/price";
 import { useProductDetailsContext } from "../contexts/product-details-context";
 
 export const SimilarProducts = () => {
   const { product } = useProductDetailsContext();
+  const { data: regionData } = useSuspenseDefaultRegion();
+  const currencyCode = regionData.region.currency_code;
 
   const categoryId = product.categories?.[0]?.id;
 
@@ -22,10 +25,13 @@ export const SimilarProducts = () => {
     return {
       id: hit.id,
       name: hit.title || "",
-      price: formatPriceRange({
-        min: hit.min_price,
-        max: hit.max_price,
-      }),
+      price: formatPriceRange(
+        {
+          min: hit.min_price,
+          max: hit.max_price,
+        },
+        currencyCode,
+      ),
       specs: hit.tags?.map((tag) => tag.value) || [],
       image: hit.thumbnail || "",
     };

@@ -1,6 +1,6 @@
 "use client";
 
-import { REGION_ID } from "@/app/constants/api";
+import { useSuspenseStoreConfig } from "@/app/modules/store/hooks/use-store-queries";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { useMemo } from "react";
@@ -32,13 +32,15 @@ import { SimilarProducts, SimilarProductsSkeleton } from "./similar-products";
 
 export const ProductDetailsViewClient = () => {
   const { id: productId } = useParams<{ id: string }>();
+  const { data: storeConfig } = useSuspenseStoreConfig();
+  const regionId = storeConfig.default_region_id;
 
   const { data } = useSuspenseQuery(
     productQueries.getProduct.queryOptions({
       productId,
       query: {
         fields: `*variants.calculated_price,*categories`,
-        region_id: REGION_ID,
+        region_id: regionId,
       },
     }),
   );

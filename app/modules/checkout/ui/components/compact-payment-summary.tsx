@@ -1,6 +1,5 @@
 "use client";
 
-import { CURRENCY_CODE } from "@/app/constants/api";
 import { convertToLocale } from "@/app/lib/utils";
 import { useRetrieveCart } from "@/app/modules/cart/hooks/use-cart-queries";
 
@@ -29,7 +28,7 @@ export const CompactPaymentSummary = ({
     cartId,
   });
 
-  const currencyCode = cart?.currency_code || CURRENCY_CODE;
+  const currencyCode = cart?.currency_code || "ngn";
 
   const showTotals = isShippingAddressValid && isShippingMethodSelected;
   const showSkeleton =

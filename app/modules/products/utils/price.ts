@@ -1,4 +1,3 @@
-import { CURRENCY_CODE } from "@/app/constants/api";
 import { convertToLocale } from "@/app/lib/utils";
 import { ProductIndexDocument } from "../types";
 
@@ -49,12 +48,12 @@ export function getProductPriceRange(product: ProductIndexDocument): {
 /**
  * Formats a price range for display
  * @param priceRange - The price range object from getProductPriceRange
- * @param currency - The currency code (default: CURRENCY_CODE from api constants)
+ * @param currency - The currency code (required)
  * @returns Formatted price string
  */
 export function formatPriceRange(
   priceRange: { min: number; max: number } | null,
-  currency: string = CURRENCY_CODE,
+  currency: string,
 ): string {
   if (!priceRange) {
     return "Price not available";

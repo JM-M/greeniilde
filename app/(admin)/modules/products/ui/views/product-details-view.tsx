@@ -5,7 +5,6 @@ import { useDeleteProduct } from "@/app/(admin)/modules/products/hooks/use-produ
 import { useGetProduct } from "@/app/(admin)/modules/products/hooks/use-product-queries";
 import { ProductFormValues } from "@/app/(admin)/modules/products/schemas";
 import { Button } from "@/app/components/ui/button";
-import { CURRENCY_CODE } from "@/app/constants/api";
 import { HttpTypes } from "@medusajs/types";
 import { Trash2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -53,8 +52,7 @@ const transformProductToFormValues = (
         ) || {},
       prices:
         variant.prices?.map((price) => ({
-          currency_code:
-            (price.currency_code as typeof CURRENCY_CODE) || CURRENCY_CODE,
+          currency_code: price.currency_code || "ngn",
           amount: price.amount || 0,
         })) || [],
     })) || [],

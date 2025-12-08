@@ -9,7 +9,7 @@ import {
   FormMessage,
 } from "@/app/components/ui/form";
 import { Input } from "@/app/components/ui/input";
-import { CURRENCY_CODE } from "@/app/constants/api";
+import { useSuspenseDefaultRegion } from "@/app/modules/region/hooks/use-region-queries";
 import { useFormContext } from "react-hook-form";
 import { ProductFormValues } from "../../../schemas";
 
@@ -19,6 +19,8 @@ import { ProductFormValues } from "../../../schemas";
  */
 export const SimpleVariantFields = () => {
   const { control } = useFormContext<ProductFormValues>();
+  const { data: regionData } = useSuspenseDefaultRegion();
+  const currencyCode = regionData.region.currency_code;
 
   return (
     <Card>
@@ -29,7 +31,7 @@ export const SimpleVariantFields = () => {
             name="defaultVariant.price"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Price ({CURRENCY_CODE.toUpperCase()})</FormLabel>
+                <FormLabel>Price ({currencyCode.toUpperCase()})</FormLabel>
                 <FormControl>
                   <Input
                     type="number"
