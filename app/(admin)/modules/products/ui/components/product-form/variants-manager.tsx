@@ -138,8 +138,8 @@ export const VariantsManager = () => {
       {variants.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              Product Variants
+            <CardTitle className="flex items-center gap-2 font-medium">
+              Variants
               <Badge variant="secondary">{variants.length}</Badge>
             </CardTitle>
           </CardHeader>

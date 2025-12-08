@@ -26,6 +26,7 @@ import { VariantToggle } from "./variant-toggle";
 import { cn } from "@/app/lib/utils";
 import { ContentFields } from "./content-fields";
 import { ShippingField } from "./shipping-field";
+import { SimpleVariantFields } from "./simple-variant-fields";
 import { StatusToggle } from "./status-toggle";
 import { TagsField } from "./tags-field";
 import { VariantsManager } from "./variants-manager";
@@ -41,6 +42,10 @@ const DEFAULT_VALUES: ProductFormValues = {
   },
   media: [],
   tags: [],
+  defaultVariant: {
+    price: undefined,
+    inventory: undefined,
+  },
   options: [],
   variants: [],
 };
@@ -208,7 +213,7 @@ export const ProductForm = ({
               onCheckedChange={setEnableVariants}
             />
 
-            {enableVariants && <VariantsManager />}
+            {enableVariants ? <VariantsManager /> : <SimpleVariantFields />}
           </div>
 
           <div className="space-y-8 lg:col-span-3">

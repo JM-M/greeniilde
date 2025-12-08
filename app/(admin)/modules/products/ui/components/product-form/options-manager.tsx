@@ -8,8 +8,15 @@ import {
   CardTitle,
 } from "@/app/components/ui/card";
 import { Input } from "@/app/components/ui/input";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+} from "@/app/components/ui/input-group";
 import { Label } from "@/app/components/ui/label";
-import { Plus, Trash2, X } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
+import { useCallback, useEffect, useRef } from "react";
 import { useFormContext } from "react-hook-form";
 import { ProductFormValues, ProductOption } from "../../../schemas";
 
@@ -17,16 +24,47 @@ export const OptionsManager = () => {
   const { watch, setValue } = useFormContext<ProductFormValues>();
   const options = watch("options") || [];
 
+  // Refs for value inputs - Map of "optionIndex-valueIndex" -> input element
+  const valueInputRefs = useRef<Map<string, HTMLInputElement>>(new Map());
+  // Track which input to focus after render
+  const focusTarget = useRef<string | null>(null);
+
+  // Focus the target input after state update
+  useEffect(() => {
+    if (focusTarget.current) {
+      const input = valueInputRefs.current.get(focusTarget.current);
+      if (input) {
+        input.focus();
+      }
+      focusTarget.current = null;
+    }
+  }, [options]);
+
+  // Register input ref
+  const registerInputRef = useCallback(
+    (optionIndex: number, valueIndex: number, el: HTMLInputElement | null) => {
+      const key = `${optionIndex}-${valueIndex}`;
+      if (el) {
+        valueInputRefs.current.set(key, el);
+      } else {
+        valueInputRefs.current.delete(key);
+      }
+    },
+    [],
+  );
+
   // Add a new empty option to the options array
   const addOption = () => {
-    setValue("options", [...options, { name: "", values: [""] }]);
+    setValue("options", [...options, { name: "", values: [""] }], {
+      shouldDirty: true,
+    });
   };
 
   // Update a specific option at the given index
   const updateOption = (index: number, option: ProductOption) => {
     const newOptions = [...options];
     newOptions[index] = option;
-    setValue("options", newOptions);
+    setValue("options", newOptions, { shouldDirty: true });
   };
 
   // Remove an option from the options array
@@ -34,16 +72,21 @@ export const OptionsManager = () => {
     setValue(
       "options",
       options.filter((_, i) => i !== index),
+      { shouldDirty: true },
     );
   };
 
   // Add a new empty value to a specific option's values array
-  const addValue = (optionIndex: number) => {
+  const addValue = (optionIndex: number, focusNew = false) => {
     const option = options[optionIndex];
+    const newValueIndex = option.values.length;
     updateOption(optionIndex, {
       ...option,
       values: [...option.values, ""],
     });
+    if (focusNew) {
+      focusTarget.current = `${optionIndex}-${newValueIndex}`;
+    }
   };
 
   // Update a specific value within an option's values array
@@ -70,11 +113,45 @@ export const OptionsManager = () => {
     });
   };
 
+  // Handle key down on value inputs for comma/enter navigation
+  const handleValueKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    optionIndex: number,
+    valueIndex: number,
+  ) => {
+    if (e.key === "Enter" || e.key === ",") {
+      e.preventDefault();
+
+      // Remove trailing comma from current value if comma was pressed
+      if (e.key === ",") {
+        const currentValue = options[optionIndex].values[valueIndex];
+        if (currentValue.endsWith(",")) {
+          updateValue(optionIndex, valueIndex, currentValue.slice(0, -1));
+        }
+      }
+
+      const option = options[optionIndex];
+      const isLastValue = valueIndex === option.values.length - 1;
+
+      if (isLastValue) {
+        // Add new value and focus it
+        addValue(optionIndex, true);
+      } else {
+        // Focus next value input
+        const nextKey = `${optionIndex}-${valueIndex + 1}`;
+        const nextInput = valueInputRefs.current.get(nextKey);
+        if (nextInput) {
+          nextInput.focus();
+        }
+      }
+    }
+  };
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center justify-between">
-          Product Options
+        <CardTitle className="flex items-center justify-between font-medium">
+          Options
           <Button type="button" onClick={addOption} size="sm">
             <Plus className="mr-2 h-4 w-4" />
             Add Option
@@ -107,25 +184,30 @@ export const OptionsManager = () => {
               <Label className="text-sm font-medium">Values</Label>
               <div className="mt-1 space-y-2">
                 {option.values.map((value, valueIndex) => (
-                  <div key={valueIndex} className="flex items-center gap-2">
-                    <Input
+                  <InputGroup key={valueIndex}>
+                    <InputGroupInput
+                      ref={(el) =>
+                        registerInputRef(optionIndex, valueIndex, el)
+                      }
                       placeholder="Value (e.g., Small, Red)"
                       value={value}
                       onChange={(e) =>
                         updateValue(optionIndex, valueIndex, e.target.value)
                       }
-                      className="flex-1"
+                      onKeyDown={(e) =>
+                        handleValueKeyDown(e, optionIndex, valueIndex)
+                      }
                     />
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => removeValue(optionIndex, valueIndex)}
-                      disabled={option.values.length === 1}
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
-                  </div>
+                    <InputGroupAddon align="inline-end">
+                      <InputGroupButton
+                        size="icon-xs"
+                        onClick={() => removeValue(optionIndex, valueIndex)}
+                        disabled={option.values.length === 1}
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </InputGroupButton>
+                    </InputGroupAddon>
+                  </InputGroup>
                 ))}
                 <Button
                   type="button"
@@ -133,7 +215,7 @@ export const OptionsManager = () => {
                   size="sm"
                   onClick={() => addValue(optionIndex)}
                 >
-                  <Plus className="mr-2 h-4 w-4" />
+                  <Plus />
                   Add Value
                 </Button>
               </div>

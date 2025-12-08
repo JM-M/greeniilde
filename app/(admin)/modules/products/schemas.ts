@@ -34,7 +34,15 @@ export const productFormSchema = z.object({
   category: z.string().optional(),
   tags: z.array(z.string()).optional(),
 
-  // New variant-related fields (required, with defaults)
+  // Default variant fields (used when variants are disabled)
+  defaultVariant: z
+    .object({
+      price: z.number().min(0).optional(),
+      inventory: z.number().min(0).optional(),
+    })
+    .optional(),
+
+  // Variant-related fields (used when variants are enabled)
   options: z.array(productOptionSchema),
   variants: z.array(productVariantSchema),
   shipping: z.object({

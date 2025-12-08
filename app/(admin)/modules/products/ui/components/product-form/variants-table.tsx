@@ -18,7 +18,7 @@ import { CURRENCY_CODE } from "@/app/constants/api";
 import { useFormContext } from "react-hook-form";
 import { ProductFormValues } from "../../../schemas";
 
-const DEFAULT_CURRENCY = { code: CURRENCY_CODE, symbol: "€" };
+const DEFAULT_CURRENCY = { code: CURRENCY_CODE, symbol: "₦" };
 
 export const VariantsTable = () => {
   const { watch, setValue } = useFormContext<ProductFormValues>();
@@ -35,7 +35,7 @@ export const VariantsTable = () => {
       variant.prices = [];
     }
 
-    setValue("variants", currentVariants);
+    setValue("variants", currentVariants, { shouldDirty: true });
   };
 
   return (
@@ -63,7 +63,9 @@ export const VariantsTable = () => {
                     onChange={(e) => {
                       const currentVariants = [...variants];
                       currentVariants[variantIndex].sku = e.target.value;
-                      setValue("variants", currentVariants);
+                      setValue("variants", currentVariants, {
+                        shouldDirty: true,
+                      });
                     }}
                     className="w-32"
                   />

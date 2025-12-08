@@ -2,6 +2,7 @@
 
 import { FloatingActionBar } from "@/app/(admin)/dashboard/components/shared/floating-action-bar";
 import { Button } from "@/app/components/ui/button";
+import { Spinner } from "@/app/components/ui/spinner";
 import { cn } from "@/app/lib/utils";
 
 interface FormActionsBarProps {
@@ -60,6 +61,7 @@ export const FormActionsBar = ({
       </span>
       <div className="flex items-center gap-1">
         <Button
+          type="button"
           variant="outline"
           size="sm"
           onClick={onCancel}
@@ -67,8 +69,15 @@ export const FormActionsBar = ({
         >
           Cancel
         </Button>
-        <Button size="sm" onClick={onSave} disabled={isSaving}>
-          {isSaving ? "Saving..." : "Save"}
+        <Button type="button" size="sm" onClick={onSave} disabled={isSaving}>
+          {isSaving ? (
+            <>
+              <Spinner />
+              Saving...
+            </>
+          ) : (
+            "Save"
+          )}
         </Button>
       </div>
     </FloatingActionBar>
