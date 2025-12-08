@@ -13,7 +13,7 @@ import {
   SidebarTrigger,
 } from "@/app/components/ui/sidebar";
 import { PropsWithChildren } from "react";
-import { DashboardSidebar } from "./components/dashboard-sidebar";
+import { DashboardSidebar } from "./components/layout/dashboard-sidebar";
 
 export default function DashboardLayout({ children }: PropsWithChildren) {
   return (

@@ -1,3 +1,5 @@
+import { ProductsTable } from "../components/products-table";
+
 export const ProductsView = () => {
-  return <div>Hi</div>;
+  return <ProductsTable />;
 };

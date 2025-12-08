@@ -1,3 +1,5 @@
+import { OrdersTable } from "../components/orders-table";
+
 export const OrdersView = () => {
-  return <div>Orders</div>;
+  return <OrdersTable />;
 };

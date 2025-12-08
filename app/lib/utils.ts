@@ -1,4 +1,5 @@
 import { clsx, type ClassValue } from "clsx";
+import { capitalize } from "lodash-es";
 import { twMerge } from "tailwind-merge";
 import { CURRENCY_CODE } from "../constants/api";
 
@@ -30,3 +31,9 @@ export const convertToLocale = ({
     currency: currencyCode || CURRENCY_CODE,
   }).format(amount);
 };
+
+export const formatStatus = (status: string) =>
+  status
+    .split("_")
+    .map((s) => capitalize(s))
+    .join(" ");

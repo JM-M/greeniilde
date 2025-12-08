@@ -12,10 +12,10 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/app/components/ui/sidebar";
-import { NavMain } from "./nav-main";
-import { NavSecondary } from "./nav-secondary";
-import { NavStore } from "./nav-store";
-import { NavUser } from "./nav-user";
+import { NavMain } from "../layout/nav-main";
+import { NavSecondary } from "../layout/nav-secondary";
+import { NavStore } from "../layout/nav-store";
+import { NavUser } from "../layout/nav-user";
 
 const data = {
   user: {
