@@ -46,7 +46,10 @@ export const CategoriesTable = ({
         getRowId={(row) => row.id}
         isLoading={isLoading}
       />
-      <CategoriesTableActions selectedCount={selectedCategoryIds.length} />
+      <CategoriesTableActions
+        selectedIds={selectedCategoryIds}
+        onDeleteSuccess={() => setRowSelection({})}
+      />
       <DataTablePagination
         currentPage={currentPage}
         pageSize={pageSize}
