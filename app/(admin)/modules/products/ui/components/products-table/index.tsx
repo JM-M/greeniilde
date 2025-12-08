@@ -2,65 +2,62 @@
 
 import { DataTable } from "@/app/(admin)/dashboard/components/shared/data-table";
 import { DataTablePagination } from "@/app/(admin)/dashboard/components/shared/data-table/pagination";
-import { useListProducts } from "@/app/(admin)/modules/products/hooks/use-product-queries";
-import { RowSelectionState } from "@tanstack/react-table";
+import { Row, RowSelectionState } from "@tanstack/react-table";
+import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { ProductsTableActions } from "./actions";
 import { columns, ProductTableRow } from "./columns";
 
-const PAGE_SIZE = 20;
+interface ProductsTableProps {
+  data: ProductTableRow[];
+  currentPage: number;
+  pageSize: number;
+  totalItems: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+  onNextPage: () => void;
+  onPreviousPage: () => void;
+}
 
-export const ProductsTable = () => {
-  const [currentPage, setCurrentPage] = useState(0);
+export const ProductsTable = ({
+  data,
+  currentPage,
+  pageSize,
+  totalItems,
+  hasNextPage,
+  hasPreviousPage,
+  onNextPage,
+  onPreviousPage,
+}: ProductsTableProps) => {
+  const router = useRouter();
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
-  const { data, isLoading } = useListProducts({
-    fields: "*categories",
-    limit: PAGE_SIZE,
-    offset: currentPage * PAGE_SIZE,
-  });
-
-  const tableData: ProductTableRow[] = useMemo(() => {
-    if (!data?.products) return [];
-    return data.products.map((product) => ({
-      id: product.id,
-      title: product.title,
-      status: product.status as ProductTableRow["status"],
-      thumbnail: product.thumbnail,
-      category: product.categories?.[0],
-      variants: product.variants || [],
-    }));
-  }, [data?.products]);
-
-  // Get selected product IDs from the row selection state
   const selectedProductIds = useMemo(() => {
     return Object.keys(rowSelection).filter((id) => rowSelection[id]);
   }, [rowSelection]);
 
-  const totalItems = data?.count ?? 0;
-  const hasNextPage = (currentPage + 1) * PAGE_SIZE < totalItems;
-  const hasPreviousPage = currentPage > 0;
-
-  if (isLoading) {
-    return <div className="p-4">Loading products...</div>;
-  }
+  const handleRowClick = (row: Row<ProductTableRow>) => {
+    router.push(`/dashboard/products/${row.original.id}`);
+  };
 
   return (
     <div className="space-y-3">
       <DataTable
         columns={columns}
-        data={tableData}
+        data={data}
         rowSelection={rowSelection}
         onRowSelectionChange={setRowSelection}
         getRowId={(row) => row.id}
+        onRowClick={handleRowClick}
+        getRowClassName={() => "cursor-pointer"}
       />
       <ProductsTableActions selectedCount={selectedProductIds.length} />
       <DataTablePagination
         currentPage={currentPage}
-        pageSize={PAGE_SIZE}
+        pageSize={pageSize}
         totalItems={totalItems}
-        onNext={() => setCurrentPage((p) => p + 1)}
-        onPrevious={() => setCurrentPage((p) => p - 1)}
+        onNext={onNextPage}
+        onPrevious={onPreviousPage}
         nextDisabled={!hasNextPage}
         previousDisabled={!hasPreviousPage}
       />
