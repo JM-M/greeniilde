@@ -47,9 +47,7 @@ export function ProductSelector({
     });
 
   const products = useMemo(() => {
-    const allProducts = data?.pages.flatMap((page) => page.products) as
-      | HttpTypes.AdminProduct[]
-      | undefined;
+    const allProducts = data?.products as HttpTypes.AdminProduct[] | undefined;
     if (!allProducts) return [];
 
     // Filter out excluded products

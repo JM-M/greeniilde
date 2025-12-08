@@ -26,7 +26,7 @@ export function PaymentSummaryCard({ order }: PaymentSummaryCardProps) {
           <CardTitle className="text-muted-foreground text-sm font-medium">
             Payment
           </CardTitle>
-          <PaymentStatusBadge status={isPaid ? "paid" : "pending"} />
+          <PaymentStatusBadge status={isPaid ? "authorized" : "not_paid"} />
         </div>
       </CardHeader>
       <CardContent className="px-0">

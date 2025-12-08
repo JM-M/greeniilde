@@ -24,5 +24,7 @@ export const useGetCategory = (
   categoryId: string,
   query?: Parameters<typeof getCategory>[1],
 ) => {
-  return useQuery(categoryQueries.getCategory.queryOptions(categoryId, query));
+  return useQuery(
+    categoryQueries.getCategory.queryOptions({ id: categoryId, query }),
+  );
 };

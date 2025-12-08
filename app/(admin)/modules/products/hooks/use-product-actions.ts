@@ -39,7 +39,7 @@ export const useUpdateProduct = (
       queryClient.invalidateQueries({
         queryKey: productQueries.listProducts.queryKey(),
       });
-      options?.onSuccess?.(data, variables, context);
+      options?.onSuccess?.(data, variables, context, undefined as any);
     },
   });
 };
@@ -64,7 +64,7 @@ export const useCreateProduct = (
       queryClient.invalidateQueries({
         queryKey: productQueries.listProducts.queryKey(),
       });
-      options?.onSuccess?.(data, variables, context);
+      options?.onSuccess?.(data, variables, context, undefined as any);
     },
   });
 };
@@ -86,7 +86,7 @@ export const useDeleteProduct = (
       queryClient.invalidateQueries({
         queryKey: productQueries.listProducts.queryKey(),
       });
-      options?.onSuccess?.(data, variables, context);
+      options?.onSuccess?.(data, variables, context, undefined as any);
     },
   });
 };
@@ -108,7 +108,7 @@ export const useBatchDeleteProducts = (
       queryClient.invalidateQueries({
         queryKey: productQueries.listProducts.queryKey(),
       });
-      options?.onSuccess?.(data, variables, context);
+      options?.onSuccess?.(data, variables, context, undefined as any);
     },
   });
 };

@@ -33,7 +33,7 @@ export const useCreateCategory = (
       queryClient.invalidateQueries({
         queryKey: categoryQueries.listCategories.queryKey(),
       });
-      options?.onSuccess?.(data, variables, context);
+      options?.onSuccess?.(data, variables, context, undefined as any);
     },
   });
 };
@@ -55,7 +55,7 @@ export const useUpdateCategory = (
       queryClient.invalidateQueries({
         queryKey: categoryQueries.listCategories.queryKey(),
       });
-      options?.onSuccess?.(data, variables, context);
+      options?.onSuccess?.(data, variables, context, undefined as any);
     },
   });
 };
@@ -77,7 +77,7 @@ export const useBatchDeleteCategories = (
       queryClient.invalidateQueries({
         queryKey: categoryQueries.listCategories.queryKey(),
       });
-      options?.onSuccess?.(data, variables, context);
+      options?.onSuccess?.(data, variables, context, undefined as any);
     },
   });
 };
@@ -103,7 +103,7 @@ export const useUpdateCategoryProducts = (
       queryClient.invalidateQueries({
         queryKey: productQueries.listProducts.queryKey(),
       });
-      options?.onSuccess?.(data, variables, context);
+      options?.onSuccess?.(data, variables, context, undefined as any);
     },
   });
 };
@@ -125,7 +125,7 @@ export const useDeleteCategory = (
       queryClient.invalidateQueries({
         queryKey: categoryQueries.listCategories.queryKey(),
       });
-      options?.onSuccess?.(data, variables, context);
+      options?.onSuccess?.(data, variables, context, undefined as any);
     },
   });
 };
