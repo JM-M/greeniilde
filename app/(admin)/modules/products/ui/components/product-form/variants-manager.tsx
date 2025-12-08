@@ -86,6 +86,10 @@ function mergeVariantData(
       id: existing?.id, // Preserve ID for updates
       sku: existing?.sku || generated.sku, // Preserve existing SKU or use generated
       prices: existing?.prices || [], // Preserve prices
+      // Preserve inventory fields
+      available: existing?.available,
+      inventory_item_id: existing?.inventory_item_id,
+      has_inventory_level: existing?.has_inventory_level,
     };
   });
 }

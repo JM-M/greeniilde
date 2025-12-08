@@ -56,8 +56,8 @@ export const VariantsTable = () => {
         <TableHeader>
           <TableRow>
             <TableHead>Variant</TableHead>
-            <TableHead>SKU</TableHead>
             <TableHead>Prices</TableHead>
+            <TableHead>Available</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -66,21 +66,6 @@ export const VariantsTable = () => {
               <TableRow key={variantIndex}>
                 <TableCell>
                   <div className="font-medium">{variant.title}</div>
-                </TableCell>
-
-                <TableCell>
-                  <Input
-                    placeholder="Auto-generated SKU"
-                    value={variant.sku || ""}
-                    onChange={(e) => {
-                      const currentVariants = [...variants];
-                      currentVariants[variantIndex].sku = e.target.value;
-                      setValue("variants", currentVariants, {
-                        shouldDirty: true,
-                      });
-                    }}
-                    className="w-32"
-                  />
                 </TableCell>
 
                 <TableCell>
@@ -108,6 +93,26 @@ export const VariantsTable = () => {
                       />
                     </InputGroup>
                   </div>
+                </TableCell>
+
+                <TableCell>
+                  <Input
+                    type="number"
+                    min="0"
+                    placeholder="0"
+                    value={variant.available ?? ""}
+                    onChange={(e) => {
+                      const currentVariants = [...variants];
+                      currentVariants[variantIndex].available =
+                        e.target.value === ""
+                          ? undefined
+                          : parseInt(e.target.value, 10);
+                      setValue("variants", currentVariants, {
+                        shouldDirty: true,
+                      });
+                    }}
+                    className="w-20"
+                  />
                 </TableCell>
               </TableRow>
             );

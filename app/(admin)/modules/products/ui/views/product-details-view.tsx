@@ -38,31 +38,43 @@ const transformProductToFormValues = (
       values: opt.values?.map((v) => v.value) || [],
     })) || [],
   variants:
-    product.variants?.map((variant) => ({
-      id: variant.id,
-      title: variant.title || "",
-      sku: variant.sku || "",
-      options:
-        variant.options?.reduce(
-          (acc, opt) => ({
-            ...acc,
-            [opt.option?.title || ""]: opt.value,
-          }),
-          {} as Record<string, string>,
-        ) || {},
-      prices:
-        variant.prices?.map((price) => ({
-          currency_code: price.currency_code || "ngn",
-          amount: price.amount || 0,
-        })) || [],
-    })) || [],
+    product.variants?.map((variant) => {
+      // Extract inventory data - variant.inventory is an array of inventory items
+      const inventory = (variant as any).inventory;
+      const inventoryItem = inventory?.[0];
+      const locationLevel = inventoryItem?.location_levels?.[0];
+
+      return {
+        id: variant.id,
+        title: variant.title || "",
+        sku: variant.sku || "",
+        options:
+          variant.options?.reduce(
+            (acc, opt) => ({
+              ...acc,
+              [opt.option?.title || ""]: opt.value,
+            }),
+            {} as Record<string, string>,
+          ) || {},
+        prices:
+          variant.prices?.map((price) => ({
+            currency_code: price.currency_code || "ngn",
+            amount: price.amount || 0,
+          })) || [],
+        // Inventory tracking
+        inventory_item_id: inventoryItem?.id,
+        available: locationLevel?.stocked_quantity ?? 0,
+        // Track if inventory level exists (needed for create vs update)
+        has_inventory_level: !!locationLevel,
+      };
+    }) || [],
 });
 
 export const ProductDetailsView = ({ productId }: ProductDetailsViewProps) => {
   const router = useRouter();
   const { data, isLoading } = useGetProduct(productId, {
     fields:
-      "*categories,*options,*options.values,*variants,*variants.options,*variants.prices",
+      "*categories,*options,*options.values,*variants,*variants.options,*variants.prices,*variants.inventory,*variants.inventory.location_levels",
   });
 
   const deleteProductMutation = useDeleteProduct({

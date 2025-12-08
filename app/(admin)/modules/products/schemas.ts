@@ -23,7 +23,10 @@ const productVariantSchema = z.object({
   sku: z.string().optional(),
   options: z.record(z.string(), z.string()), // e.g., { Size: "M", Color: "Red" }
   prices: z.array(priceSchema),
-  // Note: inventory_quantity is managed separately through inventory items in Medusa
+  // Inventory tracking
+  available: z.number().min(0).optional(),
+  inventory_item_id: z.string().optional(),
+  has_inventory_level: z.boolean().optional(), // Tracks if level exists (for create vs update)
 });
 
 // Updated product form schema

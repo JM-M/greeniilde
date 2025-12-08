@@ -2,6 +2,7 @@
 
 import { FormActionsBar } from "@/app/(admin)/dashboard/components/shared/form-actions-bar";
 import { usePresignedUpload } from "@/app/(admin)/hooks/use-presigned-upload";
+import { useBatchInventoryLevels } from "@/app/(admin)/modules/products/hooks/use-inventory-actions";
 import {
   useCreateProduct,
   useUpdateProduct,
@@ -10,6 +11,11 @@ import {
   productFormSchema,
   type ProductFormValues,
 } from "@/app/(admin)/modules/products/schemas";
+import {
+  buildInventoryCreatePayload,
+  buildInventoryUpdatePayload,
+} from "@/app/(admin)/modules/products/utils/build-inventory-payload";
+import { prepareFilesForUpload } from "@/app/(admin)/modules/products/utils/prepare-files-for-upload";
 import {
   transformFormToCreateProduct,
   transformFormToUpdateProduct,
@@ -64,30 +70,6 @@ type ProductFormProps = {
   enableVariantsInitially?: boolean;
 };
 
-const prepareFilesForUpload = async (mediaUrls: string[]) => {
-  const filesToUpload: File[] = [];
-  const blobIndices: number[] = [];
-
-  for (let i = 0; i < mediaUrls.length; i++) {
-    const url = mediaUrls[i];
-    if (url.startsWith("blob:")) {
-      const response = await fetch(url);
-      const blob = await response.blob();
-      const file = new File(
-        [blob],
-        `image-${Date.now()}-${i}.${blob.type.split("/")[1]}`,
-        {
-          type: blob.type,
-        },
-      );
-      filesToUpload.push(file);
-      blobIndices.push(i);
-    }
-  }
-
-  return { filesToUpload, blobIndices };
-};
-
 export const ProductForm = ({
   productId,
   initialValues,
@@ -105,6 +87,7 @@ export const ProductForm = ({
 
   // Mutations
   const presignedUploadMutation = usePresignedUpload();
+  const batchInventoryMutation = useBatchInventoryLevels();
 
   const createProductMutation = useCreateProduct({
     onSuccess: (res) => {
@@ -145,6 +128,17 @@ export const ProductForm = ({
         {
           onSuccess: () => {
             form.reset(values); // Reset form with submitted values to clear isDirty
+
+            // Sync inventory levels
+            if (storeConfig?.default_location_id) {
+              const inventoryPayload = buildInventoryUpdatePayload(
+                values,
+                storeConfig.default_location_id,
+              );
+              if (inventoryPayload) {
+                batchInventoryMutation.mutate(inventoryPayload);
+              }
+            }
           },
         },
       );
@@ -158,9 +152,30 @@ export const ProductForm = ({
         values,
         storeConfig?.default_sales_channel_id,
       );
-      createProductMutation.mutate({
-        product: createData,
-      });
+      createProductMutation.mutate(
+        {
+          product: createData,
+          query: {
+            fields: "*variants,*variants.inventory_items",
+          },
+        },
+        {
+          onSuccess: (res) => {
+            // Sync inventory levels for created variants
+            const createdVariants = res.product.variants || [];
+            if (storeConfig?.default_location_id) {
+              const inventoryPayload = buildInventoryCreatePayload(
+                values,
+                createdVariants,
+                storeConfig.default_location_id,
+              );
+              if (inventoryPayload) {
+                batchInventoryMutation.mutate(inventoryPayload);
+              }
+            }
+          },
+        },
+      );
     }
   };
 
