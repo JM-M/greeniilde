@@ -1,9 +1,15 @@
 "use client";
 
+import { DeleteConfirmationDialog } from "@/app/(admin)/dashboard/components/shared/delete-confirmation-dialog";
+import { useDeleteProduct } from "@/app/(admin)/modules/products/hooks/use-product-actions";
 import { useGetProduct } from "@/app/(admin)/modules/products/hooks/use-product-queries";
 import { ProductFormValues } from "@/app/(admin)/modules/products/schemas";
+import { Button } from "@/app/components/ui/button";
 import { CURRENCY_CODE } from "@/app/constants/api";
 import { HttpTypes } from "@medusajs/types";
+import { Trash2Icon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { ProductForm } from "../components/product-form";
 import { ProductFormSkeleton } from "../components/product-form/skeleton";
 
@@ -55,9 +61,20 @@ const transformProductToFormValues = (
 });
 
 export const ProductDetailsView = ({ productId }: ProductDetailsViewProps) => {
+  const router = useRouter();
   const { data, isLoading } = useGetProduct(productId, {
     fields:
       "*categories,*options,*options.values,*variants,*variants.options,*variants.prices",
+  });
+
+  const deleteProductMutation = useDeleteProduct({
+    onSuccess: () => {
+      toast.success("Product deleted successfully");
+      router.push("/dashboard/products");
+    },
+    onError: (error) => {
+      toast.error(`Failed to delete product: ${error.message}`);
+    },
   });
 
   if (isLoading) {
@@ -73,11 +90,35 @@ export const ProductDetailsView = ({ productId }: ProductDetailsViewProps) => {
   const enableVariantsInitially =
     (product.variants?.length || 0) > 1 || (product.options?.length || 0) > 0;
 
+  const handleDeleteProduct = () => {
+    deleteProductMutation.mutate(productId);
+  };
+
   return (
-    <ProductForm
-      productId={productId}
-      initialValues={initialValues}
-      enableVariantsInitially={enableVariantsInitially}
-    />
+    <div className="space-y-8">
+      <ProductForm
+        productId={productId}
+        initialValues={initialValues}
+        enableVariantsInitially={enableVariantsInitially}
+      />
+
+      <div className="border-t pt-4">
+        <DeleteConfirmationDialog
+          trigger={
+            <Button
+              variant="outline"
+              className="border-destructive/80 text-destructive/80 hover:border-destructive hover:text-destructive w-full border hover:bg-transparent sm:w-auto"
+            >
+              <Trash2Icon />
+              Delete product
+            </Button>
+          }
+          title="Delete product?"
+          description="This action cannot be undone. This will permanently delete this product and all its variants."
+          onConfirm={handleDeleteProduct}
+          isDeleting={deleteProductMutation.isPending}
+        />
+      </div>
+    </div>
   );
 };

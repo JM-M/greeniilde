@@ -98,6 +98,9 @@ export const ProductForm = ({
   const isUpdate = Boolean(productId);
   const [enableVariants, setEnableVariants] = useState(enableVariantsInitially);
 
+  // Track if enableVariants has changed from initial
+  const enableVariantsChanged = enableVariants !== enableVariantsInitially;
+
   // Mutations
   const presignedUploadMutation = usePresignedUpload();
 
@@ -190,15 +193,24 @@ export const ProductForm = ({
     updateProductMutation.isPending ||
     presignedUploadMutation.isPending;
 
+  // Form is dirty if form fields changed or enableVariants toggle changed
+  const isFormDirty = form.formState.isDirty || enableVariantsChanged;
+
+  // Handle cancel - reset form and enableVariants
+  const handleCancel = () => {
+    form.reset();
+    setEnableVariants(enableVariantsInitially);
+  };
+
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(handleSubmit)}
-        className={cn({ "mt-12": form.formState.isDirty })}
+        className={cn({ "mt-12": isFormDirty })}
       >
         <FormActionsBar
-          visible={form.formState.isDirty}
-          onCancel={() => form.reset()}
+          visible={isFormDirty}
+          onCancel={handleCancel}
           onSave={() => form.handleSubmit(handleSubmit)()}
           isSaving={isPending}
           slideDistance={2.3}

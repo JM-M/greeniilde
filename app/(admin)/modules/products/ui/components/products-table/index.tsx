@@ -60,7 +60,10 @@ export const ProductsTable = ({
         getRowClassName={() => "cursor-pointer"}
         isLoading={isLoading}
       />
-      <ProductsTableActions selectedCount={selectedProductIds.length} />
+      <ProductsTableActions
+        selectedIds={selectedProductIds}
+        onDeleteSuccess={() => setRowSelection({})}
+      />
       <DataTablePagination
         currentPage={currentPage}
         pageSize={pageSize}

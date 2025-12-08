@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  batchDeleteProducts,
   createProduct,
   deleteProduct,
   updateProduct,
@@ -80,6 +81,28 @@ export const useDeleteProduct = (
 
   return useMutation({
     mutationFn: deleteProduct,
+    ...options,
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries({
+        queryKey: productQueries.listProducts.queryKey(),
+      });
+      options?.onSuccess?.(data, variables, context);
+    },
+  });
+};
+
+export const useBatchDeleteProducts = (
+  options?: UseMutationOptions<
+    Awaited<ReturnType<typeof batchDeleteProducts>>,
+    Error,
+    string[], // Array of product IDs
+    unknown
+  >,
+) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: batchDeleteProducts,
     ...options,
     onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries({

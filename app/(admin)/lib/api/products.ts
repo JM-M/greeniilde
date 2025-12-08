@@ -47,3 +47,12 @@ export const deleteProduct = async (productId: string) => {
   const headers = await getAuthHeaders();
   return await sdk.admin.product.delete(productId, headers);
 };
+
+export const batchDeleteProducts = async (productIds: string[]) => {
+  const headers = await getAuthHeaders();
+  return await sdk.admin.product.batch(
+    { delete: productIds },
+    undefined,
+    headers,
+  );
+};
