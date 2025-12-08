@@ -5,8 +5,9 @@ export const convertFiltersToMeilisearch = (filters: {
   categories: string[];
   priceRange: number[] | null;
   specs: string[];
-}): string | undefined => {
-  const conditions: string[] = [];
+}): string => {
+  // Always filter for published products only
+  const conditions: string[] = ['status = "published"'];
 
   // Categories filter - OR condition (product belongs to any selected category)
   if (filters.categories.length > 0) {
@@ -39,5 +40,5 @@ export const convertFiltersToMeilisearch = (filters: {
   }
 
   // Combine all conditions with AND
-  return conditions.length > 0 ? conditions.join(" AND ") : undefined;
+  return conditions.join(" AND ");
 };

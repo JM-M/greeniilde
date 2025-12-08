@@ -1,13 +1,11 @@
 import { selectColumn } from "@/app/(admin)/dashboard/components/shared/data-table/columns";
 import { Avatar, AvatarFallback } from "@/app/components/ui/avatar";
 import { convertToLocale } from "@/app/lib/utils";
+import { FulfillmentStatusBadge } from "@/app/modules/orders/ui/components/fulfillment-status-badge";
+import { PaymentStatusBadge } from "@/app/modules/orders/ui/components/payment-status-badge";
 import { HttpTypes } from "@medusajs/types";
 import { ColumnDef } from "@tanstack/react-table";
 import { UserIcon } from "lucide-react";
-import {
-  FulfillmentStatusBadge,
-  PaymentStatusBadge,
-} from "../order-status-badge";
 
 export type OrderTableRow = {
   id: string;
@@ -50,13 +48,16 @@ export const columns: ColumnDef<OrderTableRow>[] = [
     accessorKey: "displayId",
     header: "Order",
     cell: ({ row }) => {
-      const order = row.original;
+      return <div className="font-medium">#{row.original.displayId}</div>;
+    },
+  },
+  {
+    accessorKey: "createdAt",
+    header: "Date",
+    cell: ({ row }) => {
       return (
-        <div>
-          <div className="font-medium">#{order.displayId}</div>
-          <div className="text-muted-foreground text-sm">
-            {formatDate(order.createdAt)}
-          </div>
+        <div className="text-muted-foreground">
+          {formatDate(row.original.createdAt)}
         </div>
       );
     },

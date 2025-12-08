@@ -66,7 +66,7 @@ export const SinglePageCheckout = ({
   }
 
   return (
-    <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
+    <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
       <div className="lg:col-span-7">
         <div className="space-y-8">
           {/* Shipping Address Section */}

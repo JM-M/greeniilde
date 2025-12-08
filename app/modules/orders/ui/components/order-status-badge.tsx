@@ -1,28 +1,33 @@
 import { Badge } from "@/app/components/ui/badge";
-import { cn } from "@/app/lib/utils";
+import { cn, formatStatus } from "@/app/lib/utils";
 import { HttpTypes } from "@medusajs/types";
 
-type OrderStatus = HttpTypes.StoreOrder["status"];
+type OrderStatus = HttpTypes.AdminOrder["status"];
 
-const statusClassNames: Record<OrderStatus, string> = {
-  processing:
-    "bg-amber-100 text-amber-800 border-transparent dark:bg-amber-400/20 dark:text-amber-300",
-  shipped:
-    "bg-blue-100 text-blue-800 border-transparent dark:bg-blue-400/20 dark:text-blue-300",
-  delivered:
-    "bg-emerald-100 text-emerald-800 border-transparent dark:bg-emerald-400/20 dark:text-emerald-300",
-  canceled:
-    "bg-muted text-muted-foreground border-transparent dark:bg-muted/50 dark:text-muted-foreground",
+const getOrderStatusStyles = (status: OrderStatus): string => {
+  switch (status) {
+    case "completed":
+      // Green - completed
+      return "bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-400 dark:border-emerald-800";
+    case "pending":
+      // Gray - default
+      return "bg-neutral-100 text-neutral-600 border-neutral-200 dark:bg-neutral-800 dark:text-neutral-400 dark:border-neutral-700";
+    case "canceled":
+    case "archived":
+      // Red - canceled/archived
+      return "bg-red-100 text-red-700 border-red-200 dark:bg-red-950 dark:text-red-400 dark:border-red-800";
+    case "requires_action":
+      // Amber - action needed
+      return "bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-950 dark:text-amber-400 dark:border-amber-800";
+    default:
+      return "bg-neutral-100 text-neutral-600 border-neutral-200 dark:bg-neutral-800 dark:text-neutral-400 dark:border-neutral-700";
+  }
 };
 
-interface OrderStatusBadgeProps {
-  status: OrderStatus;
-}
-
-export const OrderStatusBadge = ({ status }: OrderStatusBadgeProps) => {
+export const OrderStatusBadge = ({ status }: { status: OrderStatus }) => {
   return (
-    <Badge className={cn("capitalize", statusClassNames[status])}>
-      {status.replaceAll("_", " ")}
+    <Badge className={cn(getOrderStatusStyles(status))}>
+      {formatStatus(status)}
     </Badge>
   );
 };

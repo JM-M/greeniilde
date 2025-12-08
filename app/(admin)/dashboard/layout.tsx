@@ -19,7 +19,7 @@ export default function DashboardLayout({ children }: PropsWithChildren) {
   return (
     <SidebarProvider>
       <DashboardSidebar />
-      <SidebarInset>
+      <SidebarInset className="flex min-h-svh flex-1 flex-col md:max-w-[calc(100vw-var(--sidebar-width))] peer-data-[state=collapsed]:md:max-w-[calc(100vw-var(--sidebar-width-icon))]">
         <header className="flex h-16 shrink-0 items-center gap-2">
           <div className="flex items-center gap-2 px-4">
             <SidebarTrigger className="-ml-1" />

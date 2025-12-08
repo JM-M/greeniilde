@@ -14,6 +14,7 @@ import {
 } from "@tanstack/react-table";
 import * as React from "react";
 
+import { ScrollArea, ScrollBar } from "@/app/components/ui/scroll-area";
 import {
   Table,
   TableBody,
@@ -100,7 +101,7 @@ export function DataTable<TData, TValue>({
     return table.getRowModel().rows.map((row) => (
       <TableRow
         key={row.id}
-        className={getRowClassName?.(row)}
+        className={`${onRowClick ? "cursor-pointer" : ""} ${getRowClassName?.(row) ?? ""}`}
         data-state={row.getIsSelected() && "selected"}
         onClick={() => onRowClick?.(row)}
         role={onRowClick ? "button" : undefined}
@@ -120,34 +121,37 @@ export function DataTable<TData, TValue>({
   return (
     <div className="w-full space-y-3">
       {renderAboveTable}
-      <div className="overflow-hidden rounded-md border">
-        <Table>
-          <TableHeader className="bg-muted/30">
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead
-                      key={header.id}
-                      className={
-                        (header.column.columnDef.meta as any)?.className
-                      }
-                    >
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
-                    </TableHead>
-                  );
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>{renderTableBody()}</TableBody>
-        </Table>
-      </div>
+      <ScrollArea className="w-full">
+        <div className="overflow-hidden rounded-md border">
+          <Table>
+            <TableHeader className="bg-muted/30">
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => {
+                    return (
+                      <TableHead
+                        key={header.id}
+                        className={
+                          (header.column.columnDef.meta as any)?.className
+                        }
+                      >
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext(),
+                            )}
+                      </TableHead>
+                    );
+                  })}
+                </TableRow>
+              ))}
+            </TableHeader>
+            <TableBody>{renderTableBody()}</TableBody>
+          </Table>
+        </div>
+        <ScrollBar orientation="horizontal" className="mx-0.5 mb-0.5" />
+      </ScrollArea>
       {renderBelowTable}
     </div>
   );

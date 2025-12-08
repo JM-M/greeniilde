@@ -1,19 +1,6 @@
 "use client";
 
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/app/components/ui/alert-dialog";
-import { buttonVariants } from "@/app/components/ui/button";
-import { Spinner } from "@/app/components/ui/spinner";
-import { cn } from "@/app/lib/utils";
+import { ConfirmationDialog } from "./confirmation-dialog";
 
 interface DeleteConfirmationDialogProps {
   /**
@@ -56,34 +43,17 @@ export const DeleteConfirmationDialog = ({
   onOpenChange,
 }: DeleteConfirmationDialogProps) => {
   return (
-    <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>{title}</AlertDialogTitle>
-          <AlertDialogDescription>{description}</AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
-          <AlertDialogAction
-            onClick={(e) => {
-              e.preventDefault();
-              onConfirm();
-            }}
-            disabled={isDeleting}
-            className={cn(buttonVariants({ variant: "destructive" }))}
-          >
-            {isDeleting ? (
-              <>
-                <Spinner />
-                Deleting...
-              </>
-            ) : (
-              "Delete"
-            )}
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+    <ConfirmationDialog
+      trigger={trigger}
+      title={title}
+      description={description}
+      confirmText="Delete"
+      confirmingText="Deleting..."
+      confirmVariant="destructive"
+      onConfirm={onConfirm}
+      isLoading={isDeleting}
+      open={open}
+      onOpenChange={onOpenChange}
+    />
   );
 };

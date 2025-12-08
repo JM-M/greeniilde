@@ -3,9 +3,11 @@
 import { DataTable } from "@/app/(admin)/dashboard/components/shared/data-table";
 import { DataTablePagination } from "@/app/(admin)/dashboard/components/shared/data-table/pagination";
 import { RowSelectionState } from "@tanstack/react-table";
+import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { OrdersTableActions } from "./actions";
 import { columns, OrderTableRow } from "./columns";
+import { OrderTableHeader } from "./header";
 
 interface OrdersTableProps {
   data: OrderTableRow[];
@@ -16,6 +18,8 @@ interface OrdersTableProps {
   hasPreviousPage: boolean;
   onNextPage: () => void;
   onPreviousPage: () => void;
+  searchTerm: string;
+  onSearchChange: (value: string) => void;
   isLoading?: boolean;
 }
 
@@ -28,8 +32,11 @@ export const OrdersTable = ({
   hasPreviousPage,
   onNextPage,
   onPreviousPage,
+  searchTerm,
+  onSearchChange,
   isLoading,
 }: OrdersTableProps) => {
+  const router = useRouter();
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
   const selectedOrderIds = useMemo(() => {
@@ -38,6 +45,7 @@ export const OrdersTable = ({
 
   return (
     <div className="space-y-3">
+      <OrderTableHeader value={searchTerm} onChange={onSearchChange} />
       <DataTable
         columns={columns}
         data={data}
@@ -45,6 +53,7 @@ export const OrdersTable = ({
         onRowSelectionChange={setRowSelection}
         getRowId={(row) => row.id}
         isLoading={isLoading}
+        onRowClick={(row) => router.push(`/dashboard/orders/${row.id}`)}
       />
       <OrdersTableActions selectedCount={selectedOrderIds.length} />
       <DataTablePagination

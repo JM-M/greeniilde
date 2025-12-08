@@ -9,9 +9,10 @@ const PAGE_SIZE = 20;
 
 export const OrdersView = () => {
   const [currentPage, setCurrentPage] = useState(0);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const { data, isLoading } = useListOrders({
-    fields: "*customer,*items",
+    fields: "*customer,*items,+currency_code",
     limit: PAGE_SIZE,
     offset: currentPage * PAGE_SIZE,
   });
@@ -49,6 +50,8 @@ export const OrdersView = () => {
       hasPreviousPage={hasPreviousPage}
       onNextPage={() => setCurrentPage((p) => p + 1)}
       onPreviousPage={() => setCurrentPage((p) => p - 1)}
+      searchTerm={searchTerm}
+      onSearchChange={setSearchTerm}
       isLoading={isLoading}
     />
   );

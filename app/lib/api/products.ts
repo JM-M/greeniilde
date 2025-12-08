@@ -178,12 +178,12 @@ export const getFacetDistributions = async (
   }
 
   const storeId = process.env.STORE_ID;
-  const storeFilter = `store_id = "${storeId}"`;
+  const baseFilter = `store_id = "${storeId}" AND status = "published"`;
 
   if (filter) {
-    searchParams.filter = `${storeFilter} AND (${filter})`;
+    searchParams.filter = `${baseFilter} AND (${filter})`;
   } else {
-    searchParams.filter = storeFilter;
+    searchParams.filter = baseFilter;
   }
 
   const result = await index.search("", searchParams);
