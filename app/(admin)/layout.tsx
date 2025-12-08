@@ -1,6 +1,12 @@
 import { getUser } from "@/app/(admin)/lib/api/auth";
+import { Work_Sans } from "next/font/google";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+
+const workSans = Work_Sans({
+  subsets: ["latin"],
+  variable: "--font-work-sans",
+});
 
 export default async function EditorLayout({
   children,
@@ -22,5 +28,5 @@ export default async function EditorLayout({
     }
   }
 
-  return <div>{children}</div>;
+  return <div className={workSans.className}>{children}</div>;
 }
