@@ -8,6 +8,7 @@ import {
 } from "@/app/components/ui/input-group";
 import { Spinner } from "@/app/components/ui/spinner";
 import { PlusIcon, Search } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 import { useGetPages } from "../../../hooks/use-editor-queries";
 import { CreatePageDialog } from "../create-page-dialog";
@@ -32,6 +33,11 @@ export const EditorHome = () => {
           <p className="text-muted-foreground mt-2">
             Select a page to start editing
           </p>
+          <div className="flex items-center justify-center py-2">
+            <Button variant="link" asChild>
+              <Link href="/dashboard">Go to dashboard</Link>
+            </Button>
+          </div>
         </div>
 
         <div className="mx-auto flex max-w-md items-center gap-2">

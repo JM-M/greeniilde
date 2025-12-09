@@ -20,7 +20,7 @@ interface DataTableSkeletonProps<TData, TValue> {
  */
 export function DataTableSkeleton<TData, TValue>({
   columns,
-  rowCount = 5,
+  rowCount = 10,
 }: DataTableSkeletonProps<TData, TValue>) {
   return (
     <>
