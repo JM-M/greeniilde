@@ -332,6 +332,7 @@ export async function setAddresses({
  */
 export async function placeOrder(cartId?: string) {
   if (!cartId) {
+    console.log("No existing cart found when placing an order");
     throw new Error("No existing cart found when placing an order");
   }
 
@@ -340,6 +341,7 @@ export async function placeOrder(cartId?: string) {
   const cartRes = await sdk.store.cart
     .complete(cartId, {}, headers)
     .catch((error) => {
+      console.log("store.cart error: ", error);
       throw new Error(`Failed to place order: ${error.message}`);
     });
 

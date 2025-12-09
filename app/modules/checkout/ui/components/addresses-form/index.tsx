@@ -125,7 +125,6 @@ export const AddressesForm = ({
             step: CHECKOUT_STEPS[1],
           });
         }
-        toast.success("Shipping address set successfully");
         form.reset(values);
       },
       onError: () => {

@@ -68,7 +68,6 @@ export const useAddToCart = () => {
     },
     onSuccess: () => {
       invalidateCart(queryClient);
-      toast.success("Item added to cart");
     },
   });
 };
@@ -138,7 +137,6 @@ export const useUpdateCartItem = () => {
     },
     onSuccess: () => {
       invalidateCart(queryClient);
-      toast.success("Cart item updated");
     },
   });
 };
@@ -196,7 +194,6 @@ export const useRemoveCartItem = () => {
     },
     onSuccess: () => {
       invalidateCart(queryClient);
-      toast.success("Item removed from cart");
     },
   });
 };
@@ -208,7 +205,6 @@ export const useUpdateCart = () => {
     mutationFn: (params: UpdateCartParams) => updateCart(params),
     onSuccess: () => {
       invalidateCart(queryClient);
-      toast.success("Cart updated successfully");
     },
     onError: (error) => {
       console.error("Failed to update cart:", error);
@@ -224,7 +220,6 @@ export const useSetCartAddresses = () => {
     cartMutations.setCartAddresses.mutationOptions({
       onSuccess: () => {
         invalidateCart(queryClient);
-        toast.success("Addresses updated successfully");
       },
       onError: (error) => {
         console.error("Failed to set addresses:", error);
@@ -241,7 +236,6 @@ export const useSetCartShippingMethod = () => {
     mutationFn: (params: SetShippingMethodParams) => setShippingMethod(params),
     onSuccess: () => {
       invalidateCart(queryClient);
-      toast.success("Shipping method updated successfully");
     },
     onError: (error) => {
       console.error("Failed to set shipping method:", error);
@@ -263,7 +257,6 @@ export const useInitiatePaymentSession = () => {
     }) => initiatePaymentSession(cart, data),
     onSuccess: () => {
       invalidateCart(queryClient);
-      toast.success("Payment session initiated successfully");
     },
     onError: (error) => {
       console.error("Failed to initiate payment session:", error);
@@ -277,14 +270,15 @@ export const usePlaceOrder = () => {
 
   return useMutation({
     mutationFn: (cartId?: string) => placeOrder(cartId),
-    onSuccess: () => {
-      invalidateCart(queryClient);
-      toast.success("Order placed successfully");
-    },
-    onError: (error) => {
-      console.error("Failed to place order:", error);
-      toast.error("Failed to place order");
-    },
+    // onSuccess: () => {
+    //   invalidateCart(queryClient);
+    //   toast.success("Order placed successfully");
+    // },
+    // Because this is passed to Paystack onSuccess, it seems to always error
+    // onError: (error) => {
+    //   console.error("Failed to place order:", error);
+    //   toast.error("Failed to place order");
+    // },
   });
 };
 
@@ -296,7 +290,6 @@ export const useCreateChannelCart = () => {
       createCartWithChannel(params),
     onSuccess: () => {
       invalidateCart(queryClient);
-      toast.success("Cart created successfully");
     },
     onError: (error) => {
       console.error("Failed to create cart:", error);

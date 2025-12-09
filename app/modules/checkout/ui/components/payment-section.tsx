@@ -9,7 +9,6 @@ import {
 import { useRetrieveCart } from "@/app/modules/cart/hooks/use-cart-queries";
 import { useEffect } from "react";
 import { usePaystackPayment } from "react-paystack";
-import { toast } from "sonner";
 
 export const PaymentSection = ({
   cartId,
@@ -80,13 +79,9 @@ export const PaymentSection = ({
     placeOrder(cart?.id, {
       onSuccess: (data) => {
         if (data.type === "order" && data.order) {
-          const orderId = data.order.id;
-          window.location.href = `/checkout/confirmation?orderId=${orderId}`;
+          // const orderId = data.order.id;
+          // window.location.href = `/checkout/confirmation?orderId=${orderId}`;
         }
-      },
-      onError: (error) => {
-        console.error("Error placing order:", error);
-        toast.error("Failed to place order");
       },
     });
   };
@@ -110,12 +105,13 @@ export const PaymentSection = ({
     !paystackSession ||
     isRetrievingCart;
 
-  const isPaymentDisabled =
-    isLoading ||
+  const isCartUnready =
     !isShippingAddressValid ||
     !isShippingMethodSelected ||
     isUpdatingAddress ||
     isSettingShippingMethod;
+
+  const isPaymentDisabled = isLoading || isCartUnready;
 
   return (
     <div className="mt-4">
@@ -124,7 +120,7 @@ export const PaymentSection = ({
         onClick={handlePayment}
         disabled={isPaymentDisabled}
       >
-        {isLoading ? (
+        {isLoading && !isCartUnready ? (
           <>
             <Spinner />
             Please wait...
