@@ -7,9 +7,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "../../ui/button";
-import { AuthButton } from "./auth-button";
-import { CartButton } from "./cart-button";
-import { CartSheet } from "./cart-sheet";
+// E-commerce disabled: hiding cart and auth buttons
+// import { AuthButton } from "./auth-button";
+// import { CartButton } from "./cart-button";
+// import { CartSheet } from "./cart-sheet";
 import { MenuSheet } from "./menu-sheet";
 import { useActiveIndicator } from "./use-active-indicator";
 
@@ -51,10 +52,11 @@ export const Navbar = () => {
 
   return (
     <>
-      {/* TODO: Add a fallback for the cart sheet */}
+      {/* E-commerce disabled: cart sheet hidden
       <Suspense fallback={<></>}>
         <CartSheet className="text-background ml-auto md:ml-0" />
       </Suspense>
+      */}
       <Suspense fallback={<></>}>
         <MenuSheet open={isMenuOpen} onOpenChange={setIsMenuOpen} />
       </Suspense>
@@ -103,8 +105,8 @@ export const Navbar = () => {
               }}
             />
           </div>
+          {/* E-commerce disabled: cart and auth buttons hidden
           <div className="flex items-center gap-4 md:ml-0">
-            {/* TODO: Add a fallback for the cart button */}
             <Suspense fallback={<></>}>
               <CartButton className="text-background" />
             </Suspense>
@@ -112,6 +114,7 @@ export const Navbar = () => {
               <AuthButton />
             </Suspense>
           </div>
+          */}
         </nav>
       </div>
       <div ref={sentinelRef} className="h-px" aria-hidden />

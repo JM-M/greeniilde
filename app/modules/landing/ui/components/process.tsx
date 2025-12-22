@@ -65,7 +65,7 @@ export const Process = ({
       </div>
       <div className="flex justify-center">
         <PrimaryCta
-          label={ctaText || "Book a project consult"}
+          label={ctaText || "Get a free quote"}
           className="max-w-xs"
         />
       </div>

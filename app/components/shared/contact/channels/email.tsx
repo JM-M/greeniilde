@@ -1,11 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import { Mail } from "lucide-react";
+import Link from "next/link";
 
+import { CopyButton } from "@/app/components/shared/copy-button";
 import { Button } from "@/app/components/ui/button";
-
-const emailAddress = "projects@greeniilde.com";
+import { siteConfig } from "@/app/site.config";
 
 export const ContactEmailChannel = () => (
   <div className="flex flex-col gap-4">
@@ -16,17 +16,25 @@ export const ContactEmailChannel = () => (
         </span>
         <div className="space-y-1">
           <div>
-            <p className="text-lg font-semibold text-foreground">
+            <p className="text-foreground text-lg font-semibold">
               Email our project desk
             </p>
-            <p className="text-sm font-medium text-primary/80">
-              Same-day response
-            </p>
+            <div className="flex items-center gap-2">
+              <p className="text-primary/80 text-sm font-medium">
+                {siteConfig.email}
+              </p>
+              <CopyButton text={siteConfig.email} />
+            </div>
+            <p className="text-muted-foreground text-xs">Same-day response</p>
           </div>
         </div>
       </div>
-      <Button asChild size="lg" className="h-12 px-8 w-full mt-5">
-        <Link href={`mailto:${emailAddress}`} target="_blank" rel="noreferrer">
+      <Button asChild size="lg" className="mt-5 h-12 w-full px-8">
+        <Link
+          href={`mailto:${siteConfig.email}`}
+          target="_blank"
+          rel="noreferrer"
+        >
           Email project desk
         </Link>
       </Button>

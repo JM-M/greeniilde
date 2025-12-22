@@ -1,5 +1,8 @@
 "use client";
 
+// E-commerce disabled: simplified menu sheet without cart/auth
+// Original imports and content preserved below for re-enabling
+
 import { Button } from "@/app/components/ui/button";
 import {
   Sheet,
@@ -7,13 +10,15 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/app/components/ui/sheet";
-import { useCartSheet } from "@/app/contexts/cart-sheet-context";
-import { useLogout } from "@/app/modules/auth/hooks/use-auth-mutations";
-import { useSuspenseCustomer } from "@/app/modules/auth/hooks/use-customer-queries";
-import { useAuthModal } from "@/app/providers/auth-modal-provider";
 import { siteConfig } from "@/app/site.config";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+
+// E-commerce imports - hidden
+// import { useCartSheet } from "@/app/contexts/cart-sheet-context";
+// import { useLogout } from "@/app/modules/auth/hooks/use-auth-mutations";
+// import { useSuspenseCustomer } from "@/app/modules/auth/hooks/use-customer-queries";
+// import { useAuthModal } from "@/app/providers/auth-modal-provider";
 
 type MenuSheetProps = {
   open: boolean;
@@ -22,10 +27,12 @@ type MenuSheetProps = {
 
 export function MenuSheet({ open, onOpenChange }: MenuSheetProps) {
   const pathname = usePathname();
-  const customer = useSuspenseCustomer();
-  const { openAuthModal } = useAuthModal();
-  const { setOpen: setCartOpen } = useCartSheet();
-  const { mutate: logout } = useLogout();
+
+  // E-commerce hooks - hidden
+  // const customer = useSuspenseCustomer();
+  // const { openAuthModal } = useAuthModal();
+  // const { setOpen: setCartOpen } = useCartSheet();
+  // const { mutate: logout } = useLogout();
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -53,6 +60,7 @@ export function MenuSheet({ open, onOpenChange }: MenuSheetProps) {
             </Button>
           ))}
 
+          {/* E-commerce menu items - hidden
           <Button
             variant="ghost"
             className="justify-start text-base font-medium"
@@ -97,6 +105,7 @@ export function MenuSheet({ open, onOpenChange }: MenuSheetProps) {
               Login
             </Button>
           )}
+          */}
         </nav>
       </SheetContent>
     </Sheet>

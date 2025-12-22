@@ -118,7 +118,7 @@ export const ValueProp = ({
         </div>
         <div className="mt-10 flex justify-center">
           <PrimaryCta
-            label={ctaText || "Book a project consult"}
+            label={ctaText || "Get a free quote"}
             className="max-w-xs"
           />
         </div>

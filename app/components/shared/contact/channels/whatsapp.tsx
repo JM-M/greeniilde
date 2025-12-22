@@ -13,15 +13,15 @@ export const ContactWhatsappChannel = () => (
         <SiWhatsapp className="size-5" />
       </span>
       <div className="space-y-1">
-        <p className="text-lg font-semibold text-foreground">
+        <p className="text-foreground text-lg font-semibold">
           WhatsApp Concierge
         </p>
-        <p className="text-sm font-medium text-primary/80">
-          Replies in 5 minutes
+        <p className="text-primary/80 text-sm font-medium">
+          Replies in 10 minutes
         </p>
       </div>
     </div>
-    <Button asChild size="lg" className="h-12 px-8 w-full mt-5">
+    <Button asChild size="lg" className="mt-5 h-12 w-full px-8">
       <Link href={siteConfig.links.whatsapp} target="_blank" rel="noreferrer">
         Continue in WhatsApp
       </Link>

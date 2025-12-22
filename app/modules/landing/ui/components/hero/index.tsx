@@ -56,10 +56,7 @@ export const Hero = ({
               "We design, supply, and install turnkey residential and commercial solar systems across Nigeria—built for uptime, backed by proactive monitoring, and tailored to your energy profile."
             }
           />
-          <HeroActions
-            primaryCta={primaryCta || "Book a project consult"}
-            secondaryCta={secondaryCta || "Get in touch"}
-          />
+          <HeroActions primaryCta={primaryCta || "Get a free quote"} />
           <HeroFocusAreas areas={focusAreas || defaultFocusAreas} />
         </div>
 

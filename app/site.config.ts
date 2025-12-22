@@ -11,15 +11,15 @@ export const siteConfig = {
     facebook: "https://www.facebook.com/greeniilde",
     whatsapp: "https://wa.me/2348065653807",
   },
+  phone: "+2348065653807",
+  displayPhone: "+234 806 565 3807",
+  email: "greeniilde@gmail.com",
   nav: [
     {
       title: "Solutions",
       href: "/#value-prop",
     },
-    {
-      title: "Products",
-      href: "/products",
-    },
+    // { title: "Products", href: "/products" }, // Hidden: e-commerce disabled
     {
       title: "Process",
       href: "/#process",

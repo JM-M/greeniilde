@@ -153,7 +153,7 @@ export const landingPageConfig: Config<Props> = {
           "Save on electricity with reliable, maintenance-free solar power.",
         description:
           "We design, supply, and install turnkey residential and commercial solar systems across Nigeria—built for uptime, backed by proactive monitoring, and tailored to your energy profile.",
-        primaryCta: "Book a project consult",
+        primaryCta: "Get a free quote",
         secondaryCta: "Get in touch",
         focusAreas: [
           {
@@ -289,7 +289,7 @@ export const landingPageConfig: Config<Props> = {
           { label: "Consumption", value: "36.8 kWh" },
           { label: "Battery", value: "72%" },
         ],
-        ctaText: "Book a project consult",
+        ctaText: "Get a free quote",
         videoSrc: "/videos/installation.mp4",
       },
       render: ({
@@ -367,7 +367,7 @@ export const landingPageConfig: Config<Props> = {
               "We monitor system performance in real time and offer support and maintenance plans to keep your system running at peak efficiency.",
           },
         ],
-        ctaText: "Book a project consult",
+        ctaText: "Get a free quote",
       },
       render: ({ sectionTitle, sectionDescription, steps, ctaText }) => (
         <Process
@@ -422,7 +422,7 @@ export const landingPageConfig: Config<Props> = {
               "We work across climate tech, circular logistics, and other sustainability-focused sectors.",
           },
         ],
-        ctaText: "Book a project consult",
+        ctaText: "Get a free quote",
       },
       render: ({ sectionTitle, faqs, ctaText }) => (
         <FAQs sectionTitle={sectionTitle} faqs={faqs} ctaText={ctaText} />

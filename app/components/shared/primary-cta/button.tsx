@@ -29,7 +29,7 @@ export const PrimaryCta = ({ label, className }: PrimaryCtaProps) => {
         isOpen={isDialogOpen}
         onOpenChange={setIsDialogOpen}
         title={label}
-        description="Please fill in the form below to book a project consult."
+        description="Please fill in the form below to Get a free quote."
       />
     </>
   );

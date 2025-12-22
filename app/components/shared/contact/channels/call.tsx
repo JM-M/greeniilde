@@ -1,12 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import { PhoneCall } from "lucide-react";
+import Link from "next/link";
 
+import { CopyButton } from "@/app/components/shared/copy-button";
 import { Button } from "@/app/components/ui/button";
-
-const phoneNumber = "+2348065653807";
-const displayPhoneNumber = "+234 806 565 3807";
+import { siteConfig } from "@/app/site.config";
 
 export const ContactCallChannel = () => (
   <div className="flex flex-col gap-4">
@@ -17,26 +16,34 @@ export const ContactCallChannel = () => (
         </span>
         <div className="space-y-1">
           <div>
-            <p className="text-lg font-semibold text-foreground">
+            <p className="text-foreground text-lg font-semibold">
               Call the project desk
             </p>
-            <p className="text-sm font-medium text-primary/80">
-              Mon–Fri · 8a–6p WAT
+            <div className="flex items-center gap-2">
+              <p className="text-primary/80 text-sm font-medium">
+                {siteConfig.displayPhone}
+              </p>
+              <CopyButton text={siteConfig.phone} />
+            </div>
+            <p className="text-muted-foreground text-xs">
+              Mon-Sat · 8am-6pm WAT
             </p>
           </div>
         </div>
       </div>
-      <Button asChild size="lg" className="h-12 px-8 w-full mt-5">
-        <Link href={`tel:${phoneNumber}`}>Call {displayPhoneNumber}</Link>
+      <Button asChild size="lg" className="mt-5 h-12 w-full px-8">
+        <Link href={`tel:${siteConfig.phone}`}>
+          Call {siteConfig.displayPhone}
+        </Link>
       </Button>
     </div>
-    <p className="text-sm text-muted-foreground">
+    <p className="text-muted-foreground text-sm">
       Prefer a scheduled call? Email{" "}
       <Link
-        href="mailto:projects@greeniilde.com"
+        href={`mailto:${siteConfig.email}`}
         className="text-primary underline-offset-4 hover:underline"
       >
-        projects@greeniilde.com
+        {siteConfig.email}
       </Link>{" "}
       with your availability.
     </p>
