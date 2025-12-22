@@ -20,7 +20,7 @@ export async function POST(req: Request) {
     const { name, email, phone, message } = contactFormSchema.parse(body);
 
     const { data, error } = await resend.emails.send({
-      from: "Greeniilde Contact Form <onboarding@resend.dev>", // Using default Resend testing domain or verified domain
+      from: "Greeniilde Contact Form <greeniilde@inmybio.info>",
       to: [siteConfig.email],
       subject: `New Project Inquiry from ${name}`,
       react: (
