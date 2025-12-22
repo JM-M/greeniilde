@@ -5,7 +5,7 @@ import { siteConfig } from "@/app/site.config";
 import { MenuIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { Button } from "../../ui/button";
 // E-commerce disabled: hiding cart and auth buttons
 // import { AuthButton } from "./auth-button";
@@ -14,23 +14,16 @@ import { Button } from "../../ui/button";
 import { PrimaryCta } from "@/app/components/shared/primary-cta/button";
 import { MenuSheet } from "./menu-sheet";
 import { useActiveIndicator } from "./use-active-indicator";
+import { useActiveSectionIndex } from "./use-active-section-index";
 
 export const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const pathname = usePathname();
+  const { activeSectionIndex, setActiveIndex } = useActiveSectionIndex();
 
-  const activeIndex = useMemo(() => {
-    const index = siteConfig.nav.findIndex((item) => {
-      if (pathname === "/") return item.href === "/";
-      if (item.href !== "/") return pathname.startsWith(item.href);
-      return false;
-    });
-    return index === -1 ? 0 : index;
-  }, [pathname]);
-
-  const { itemRefs, styles } = useActiveIndicator(activeIndex);
+  const { itemRefs, styles } = useActiveIndicator(activeSectionIndex);
 
   const sentinelRef = useRef<HTMLDivElement | null>(null);
 
@@ -93,6 +86,7 @@ export const Navbar = () => {
                 ref={(el) => {
                   itemRefs.current[index] = el;
                 }}
+                onClick={() => setActiveIndex(index)}
               >
                 {item.title}
               </Link>
