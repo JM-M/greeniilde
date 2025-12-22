@@ -11,6 +11,7 @@ import { Button } from "../../ui/button";
 // import { AuthButton } from "./auth-button";
 // import { CartButton } from "./cart-button";
 // import { CartSheet } from "./cart-sheet";
+import { PrimaryCta } from "@/app/components/shared/primary-cta/button";
 import { MenuSheet } from "./menu-sheet";
 import { useActiveIndicator } from "./use-active-indicator";
 
@@ -105,16 +106,9 @@ export const Navbar = () => {
               }}
             />
           </div>
-          {/* E-commerce disabled: cart and auth buttons hidden
           <div className="flex items-center gap-4 md:ml-0">
-            <Suspense fallback={<></>}>
-              <CartButton className="text-background" />
-            </Suspense>
-            <Suspense fallback={<></>}>
-              <AuthButton />
-            </Suspense>
+            <PrimaryCta label="Get a free quote" className="h-10 text-sm" />
           </div>
-          */}
         </nav>
       </div>
       <div ref={sentinelRef} className="h-px" aria-hidden />
