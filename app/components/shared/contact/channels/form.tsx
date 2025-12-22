@@ -22,18 +22,23 @@ const contactFormSchema = z.object({
 type ContactFormValues = z.infer<typeof contactFormSchema>;
 
 const formFields = [
-  { id: "name", label: "Full name", type: "text", placeholder: "Adaeze Okoye" },
+  {
+    id: "name",
+    label: "Full name",
+    type: "text",
+    placeholder: "Enter your full name",
+  },
   {
     id: "email",
-    label: "Business email",
+    label: "Email",
     type: "email",
-    placeholder: "adaeze@solarsupply.ng",
+    placeholder: "Enter your email",
   },
   {
     id: "phone",
     label: "Phone number",
     type: "tel",
-    placeholder: "+234 801 234 5678",
+    placeholder: "080XXXXXXXX",
   },
 ] as const;
 
