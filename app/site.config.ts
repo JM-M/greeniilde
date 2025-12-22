@@ -13,7 +13,8 @@ export const siteConfig = {
   },
   phone: "+2348065653807",
   displayPhone: "+234 806 565 3807",
-  email: "greeniilde@gmail.com",
+  // email: "greeniilde@gmail.com",
+  email: "mikejolamoses@gmail.com",
   nav: [
     {
       title: "Solutions",
