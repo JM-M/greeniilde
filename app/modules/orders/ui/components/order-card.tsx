@@ -94,7 +94,7 @@ export function OrderCard({
             </div>
           ))}
           {overflowCount > 0 && (
-            <div className="text-muted-foreground pl-15 text-xs">
+            <div className="text-muted-foreground text-xs">
               + {overflowCount} more item{overflowCount > 1 ? "s" : ""}
             </div>
           )}
